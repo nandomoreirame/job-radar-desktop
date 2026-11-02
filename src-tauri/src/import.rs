@@ -128,7 +128,7 @@ fn read_seen(path: &Path) -> Result<Vec<Seen>, String> {
     .collect::<Result<_, _>>()
     .map_err(|e| e.to_string())
 }
-fn read_candidates(path: &Path) -> Result<Vec<Candidate>, String> {
+fn read_candidates(path: &Path) -> Result<Vec<serde_json::Value>, String> {
     let text = std::fs::read_to_string(path).map_err(|e| format!("{}: {e}", path.display()))?;
     serde_json::from_str(&text).map_err(|e| format!("{}: {e}", path.display()))
 }
@@ -165,7 +165,14 @@ pub fn import_history(
             discard: None,
         })
     }
-    for item in candidates {
+    for value in candidates {
+        let item: Candidate = match serde_json::from_value(value) {
+            Ok(item) => item,
+            Err(_) => {
+                report.invalid += 1;
+                continue;
+            }
+        };
         if !valid(&item.fingerprint, &item.title, &item.url) {
             report.invalid += 1;
             continue;
@@ -212,6 +219,14 @@ mod tests {
         }
         p
     }
+    fn candidate(fp: &str) -> serde_json::Value {
+        serde_json::json!({"fingerprint":fp,"source":"greenhouse","title":"Data Engineer","company":"Beta","url":"https://a.example/2","description":"Python e AWS","location":"Remoto","work_mode_hint":"remote","published_at":"2026-10-20T08:00:00+00:00","contact_email":"rh@beta.example"})
+    }
+    fn candidates(dir: &Path, values: serde_json::Value) -> std::path::PathBuf {
+        let p = dir.join("candidates.json");
+        std::fs::write(&p, values.to_string()).unwrap();
+        p
+    }
     fn store() -> SqliteStore {
         SqliteStore::open_in_memory().unwrap()
     }
@@ -222,8 +237,9 @@ mod tests {
             d.path(),
             &[("aaaaaaaaaaaaaaaa", "Tech Lead", "https://a.example/1")],
         );
-        let r = import_history(&store(), &p, None, "2026-11-02").unwrap();
-        assert_eq!(r.inbox, 1)
+        let c = candidates(d.path(), serde_json::json!([candidate("bbbbbbbbbbbbbbbb")]));
+        let r = import_history(&store(), &p, Some(&c), "2026-11-02").unwrap();
+        assert_eq!((r.inbox, r.discarded), (1, 1))
     }
     #[test]
     fn maps_a_record_to_a_card() {

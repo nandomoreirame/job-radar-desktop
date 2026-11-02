@@ -226,9 +226,26 @@ mod tests {
 
     #[test]
     fn opens_only_a_stored_http_url() {
+        let state = state();
+        update_card_impl(
+            &state,
+            "c01",
+            CardDetails {
+                job_url: Some("https://a.example/1".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let opened = std::cell::RefCell::new(Vec::new());
+        open_job_url_impl(&state, "c01", |url| {
+            opened.borrow_mut().push(url.to_owned());
+            Ok(())
+        })
+        .unwrap();
+        assert_eq!(opened.borrow().as_slice(), ["https://a.example/1"]);
         assert_eq!(
-            open_job_url_impl(&state(), "c01", |_| Ok(())),
-            Err("no_url".into())
+            open_job_url_impl(&state, "", |_| Ok(())),
+            Err("invalid card id".into())
         );
     }
 
