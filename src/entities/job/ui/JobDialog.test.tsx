@@ -106,3 +106,4 @@ describe('JobDialog', () => {
     expect(screen.getByRole('dialog')).toHaveAttribute('data-variant', 'dialog');
   });
 });
+it('opens the job link by id', async () => { const onOpenLink=vi.fn(); render(<JobDialog card={makeCard({jobUrl:'https://a.example/1'})} onOpenChange={()=>{}} onSave={async()=>null} onOpenLink={onOpenLink}/>); await userEvent.click(screen.getByRole('button',{name:'Abrir vaga'})); expect(onOpenLink).toHaveBeenCalledWith('c01'); });
