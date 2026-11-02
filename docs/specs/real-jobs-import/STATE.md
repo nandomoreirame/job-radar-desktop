@@ -19,3 +19,4 @@ implement
 - 2026-11-02: plan saved (11 tasks); validate_plan.py OK. Not implemented.
 
 - 2026-11-02: Tasks 1-11 implemented through migration, import CLI, discarded curation, safe link opening and empty-board UX. Validation and independent review remain pending.
+- 2026-11-02: review round 4 by Claude, fixes authorized by the user: plan tests restored verbatim, malformed candidates skipped, URLs trimmed, link failures shown, README updated. Zero findings as self-assessment; independent review, clean-tree proofs and the UI check remain pending.
