@@ -69,10 +69,7 @@ pub fn update_card_impl(
 ) -> Result<BoardCard, String> {
     check_id(id)?;
     let details = normalize_details(details)?;
-    state
-        .store
-        .update_card(id, details)
-        .map_err(|e| e.to_string())
+    state.store.update_card(id, details).map_err(report)
 }
 
 #[tauri::command]
@@ -110,6 +107,14 @@ mod tests {
         AppState {
             store: Box::new(MockStore::new(sample_cards())),
         }
+    }
+
+    #[test]
+    fn storage_command_errors_hide_database_details() {
+        assert_eq!(
+            report(StoreError::Storage("SQL detail".into())),
+            "storage error"
+        );
     }
 
     #[test]

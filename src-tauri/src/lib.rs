@@ -44,18 +44,6 @@ fn startup_failed(message: &str) -> ! {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let app = tauri::Builder::default()
-        .setup(|app| {
-            let debug = cfg!(debug_assertions);
-            let env_override = std::env::var(db_path::ENV_VAR).ok();
-            let data_dir = app.path().data_dir().map_err(|e| e.to_string())?;
-            let path = db_path::db_path(env_override.as_deref(), &data_dir, debug);
-            let store = open_store(&path, debug)
-                .map_err(|message| -> Box<dyn std::error::Error> { message.into() })?;
-            app.manage(AppState {
-                store: Box::new(store),
-            });
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             commands::list_board,
             commands::move_card,
@@ -63,10 +51,25 @@ pub fn run() {
             commands::window_controls
         ])
         .build(tauri::generate_context!());
-    match app {
-        Ok(app) => app.run(|_, _| {}),
+    let app = match app {
+        Ok(app) => app,
         Err(error) => startup_failed(&error.to_string()),
-    }
+    };
+    let debug = cfg!(debug_assertions);
+    let env_override = std::env::var(db_path::ENV_VAR).ok();
+    let data_dir = match app.path().data_dir() {
+        Ok(path) => path,
+        Err(error) => startup_failed(&error.to_string()),
+    };
+    let path = db_path::db_path(env_override.as_deref(), &data_dir, debug);
+    let store = match open_store(&path, debug) {
+        Ok(store) => store,
+        Err(message) => startup_failed(&message),
+    };
+    app.manage(AppState {
+        store: Box::new(store),
+    });
+    app.run(|_, _| {});
 }
 
 #[cfg(test)]

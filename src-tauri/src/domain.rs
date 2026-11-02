@@ -173,23 +173,39 @@ mod tests {
 
     #[test]
     fn stage_serializes_as_snake_case() {
-        assert_eq!(serde_json::to_value(Stage::InProcess).unwrap(), json!("in_process"));
+        assert_eq!(
+            serde_json::to_value(Stage::InProcess).unwrap(),
+            json!("in_process")
+        );
     }
 
     #[test]
     fn outcome_serializes_as_snake_case() {
-        assert_eq!(serde_json::to_value(Outcome::NoResponse).unwrap(), json!("no_response"));
+        assert_eq!(
+            serde_json::to_value(Outcome::NoResponse).unwrap(),
+            json!("no_response")
+        );
     }
 
     #[test]
     fn salary_keeps_a_missing_regime_as_null() {
-        let salary = Salary { pj: Some(28_000), clt: None };
-        assert_eq!(serde_json::to_value(salary).unwrap(), json!({ "pj": 28000, "clt": null }));
+        let salary = Salary {
+            pj: Some(28_000),
+            clt: None,
+        };
+        assert_eq!(
+            serde_json::to_value(salary).unwrap(),
+            json!({ "pj": 28000, "clt": null })
+        );
     }
 
     #[test]
     fn artifacts_use_camel_case() {
-        let artifacts = Artifacts { cv: true, coverage: false, interview_prep: true };
+        let artifacts = Artifacts {
+            cv: true,
+            coverage: false,
+            interview_prep: true,
+        };
         assert_eq!(
             serde_json::to_value(artifacts).unwrap(),
             json!({ "cv": true, "coverage": false, "interviewPrep": true })

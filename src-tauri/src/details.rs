@@ -49,7 +49,9 @@ fn email(field: &str, value: Option<String>) -> Result<Option<String>, String> {
 fn url(field: &str, value: Option<String>) -> Result<Option<String>, String> {
     let value = text(field, value, MAX_URL_LEN)?;
     if let Some(v) = &value {
-        let rest = v.strip_prefix("https://").or_else(|| v.strip_prefix("http://"));
+        let rest = v
+            .strip_prefix("https://")
+            .or_else(|| v.strip_prefix("http://"));
         let host = rest.map(|r| r.split(['/', '?', '#']).next().unwrap_or(""));
         let valid = matches!(host, Some(h) if !h.is_empty()) && !v.chars().any(char::is_whitespace);
         if !valid {
@@ -69,11 +71,14 @@ fn date(field: &str, value: Option<String>) -> Result<Option<String>, String> {
 
 fn is_iso_date(value: &str) -> bool {
     let parts: Vec<&str> = value.split('-').collect();
-    let [y, m, d] = parts.as_slice() else { return false };
+    let [y, m, d] = parts.as_slice() else {
+        return false;
+    };
     if y.len() != 4 || m.len() != 2 || d.len() != 2 {
         return false;
     }
-    let (Ok(year), Ok(month), Ok(day)) = (y.parse::<u32>(), m.parse::<u32>(), d.parse::<u32>()) else {
+    let (Ok(year), Ok(month), Ok(day)) = (y.parse::<u32>(), m.parse::<u32>(), d.parse::<u32>())
+    else {
         return false;
     };
     let leap = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
@@ -96,7 +101,11 @@ fn salary(value: Option<Salary>) -> Result<Option<Salary>, String> {
         return Err(fail("salaryClt", "out_of_range"));
     }
     // Both regimes empty means nothing was negotiated.
-    Ok(if s.pj.is_none() && s.clt.is_none() { None } else { Some(s) })
+    Ok(if s.pj.is_none() && s.clt.is_none() {
+        None
+    } else {
+        Some(s)
+    })
 }
 
 pub fn normalize_details(input: CardDetails) -> Result<CardDetails, String> {
@@ -141,7 +150,10 @@ mod tests {
     #[test]
     fn accepts_full_valid_details() {
         let input = CardDetails {
-            salary: Some(Salary { pj: Some(28_000), clt: Some(21_000) }),
+            salary: Some(Salary {
+                pj: Some(28_000),
+                clt: Some(21_000),
+            }),
             process_step: Some("Técnica".into()),
             next_action: Some("Entrevista técnica".into()),
             next_action_date: Some("2026-11-05".into()),
@@ -161,7 +173,10 @@ mod tests {
             recruiter_name: Some("  Ana  ".into()),
             process_step: Some("   ".into()),
             notes: "  nota  ".into(),
-            salary: Some(Salary { pj: None, clt: None }),
+            salary: Some(Salary {
+                pj: None,
+                clt: None,
+            }),
             ..details()
         };
         let out = normalize_details(input).unwrap();
@@ -173,41 +188,101 @@ mod tests {
 
     #[test]
     fn rejects_an_invalid_email() {
-        for email in ["ana", "ana@", "@example.com", "ana @example.com", "ana@example"] {
-            let input = CardDetails { recruiter_email: Some(email.into()), ..details() };
-            assert_eq!(normalize_details(input), Err("recruiterEmail: invalid_email".into()), "{email}");
+        for email in [
+            "ana",
+            "ana@",
+            "@example.com",
+            "ana @example.com",
+            "ana@example",
+        ] {
+            let input = CardDetails {
+                recruiter_email: Some(email.into()),
+                ..details()
+            };
+            assert_eq!(
+                normalize_details(input),
+                Err("recruiterEmail: invalid_email".into()),
+                "{email}"
+            );
         }
     }
 
     #[test]
     fn rejects_urls_that_are_not_http() {
-        for url in ["javascript:alert(1)", "ftp://example.com", "https://", "example.com", "https://exa mple.com"] {
-            let input = CardDetails { job_url: Some(url.into()), ..details() };
-            assert_eq!(normalize_details(input), Err("jobUrl: invalid_url".into()), "{url}");
+        for url in [
+            "javascript:alert(1)",
+            "ftp://example.com",
+            "https://",
+            "example.com",
+            "https://exa mple.com",
+        ] {
+            let input = CardDetails {
+                job_url: Some(url.into()),
+                ..details()
+            };
+            assert_eq!(
+                normalize_details(input),
+                Err("jobUrl: invalid_url".into()),
+                "{url}"
+            );
         }
     }
 
     #[test]
     fn rejects_impossible_dates() {
-        for date in ["2026-02-30", "2026-13-01", "26-11-05", "2026-11-5", "amanhã"] {
-            let input = CardDetails { next_action_date: Some(date.into()), ..details() };
-            assert_eq!(normalize_details(input), Err("nextActionDate: invalid_date".into()), "{date}");
+        for date in [
+            "2026-02-30",
+            "2026-13-01",
+            "26-11-05",
+            "2026-11-5",
+            "amanhã",
+        ] {
+            let input = CardDetails {
+                next_action_date: Some(date.into()),
+                ..details()
+            };
+            assert_eq!(
+                normalize_details(input),
+                Err("nextActionDate: invalid_date".into()),
+                "{date}"
+            );
         }
-        let leap = CardDetails { next_action_date: Some("2028-02-29".into()), ..details() };
+        let leap = CardDetails {
+            next_action_date: Some("2028-02-29".into()),
+            ..details()
+        };
         assert!(normalize_details(leap).is_ok());
     }
 
     #[test]
     fn rejects_oversized_text() {
-        let notes = CardDetails { notes: "x".repeat(MAX_NOTES_LEN + 1), ..details() };
+        let notes = CardDetails {
+            notes: "x".repeat(MAX_NOTES_LEN + 1),
+            ..details()
+        };
         assert_eq!(normalize_details(notes), Err("notes: too_long".into()));
-        let name = CardDetails { recruiter_name: Some("x".repeat(MAX_TEXT_LEN + 1)), ..details() };
-        assert_eq!(normalize_details(name), Err("recruiterName: too_long".into()));
+        let name = CardDetails {
+            recruiter_name: Some("x".repeat(MAX_TEXT_LEN + 1)),
+            ..details()
+        };
+        assert_eq!(
+            normalize_details(name),
+            Err("recruiterName: too_long".into())
+        );
     }
 
     #[test]
     fn rejects_a_salary_out_of_range() {
-        let input = CardDetails { salary: Some(Salary { pj: Some(MAX_SALARY + 1), clt: None }), ..details() };
-        assert_eq!(normalize_details(input), Err("salaryPj: out_of_range".into()));
+        let input = CardDetails {
+            salary: Some(Salary {
+                pj: Some(MAX_SALARY + 1),
+                clt: None,
+            }),
+            ..details()
+        };
+        assert_eq!(
+            normalize_details(input),
+            Err("salaryPj: out_of_range".into())
+        );
     }
 }

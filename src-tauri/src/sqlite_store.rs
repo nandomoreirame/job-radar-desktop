@@ -29,6 +29,8 @@ impl SqliteStore {
         Self::init(Connection::open_in_memory()?)
     }
     fn init(mut conn: Connection) -> Result<Self, StoreError> {
+        // Refuse newer schemas before any write pragma can alter the file.
+        migrate(&mut conn)?;
         conn.pragma_update(None, "foreign_keys", true)?;
         let journal_mode: String =
             conn.pragma_query_value(None, "journal_mode", |row| row.get(0))?;
@@ -38,7 +40,6 @@ impl SqliteStore {
             })?;
         }
         conn.busy_timeout(Duration::from_secs(5))?;
-        migrate(&mut conn)?;
         Ok(Self {
             conn: Mutex::new(conn),
         })
@@ -353,11 +354,13 @@ mod tests {
             .unwrap()
             .pragma_update(None, "user_version", 99)
             .unwrap();
+        let before = std::fs::read(&path).unwrap();
         let Err(StoreError::Storage(detail)) = SqliteStore::open(&path) else {
             panic!("a newer schema must be refused")
         };
         assert!(detail.contains("newer"));
         assert_eq!(user_version(&path), 99);
+        assert_eq!(std::fs::read(&path).unwrap(), before);
         let tables: i64 = Connection::open(&path)
             .unwrap()
             .query_row(
@@ -417,5 +420,6 @@ mod tests {
             .unwrap();
         assert_eq!(mode(path.parent().unwrap()), 0o700);
         assert_eq!(mode(&path), 0o600);
+        assert_eq!(mode(&path.with_extension("db-wal")), 0o600);
     }
 }
