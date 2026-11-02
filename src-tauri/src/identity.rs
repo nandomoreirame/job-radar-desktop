@@ -23,9 +23,7 @@ pub fn url_key(raw: &str) -> String {
     let Ok(parsed) = Url::parse(raw.trim()) else {
         return String::new();
     };
-    if !matches!(parsed.scheme(), "http" | "https") {
-        return String::new();
-    };
+    // Any scheme with a host maps to https, as in Python: this is a key, never a link.
     let Some(host) = parsed.host_str() else {
         return String::new();
     };
@@ -35,8 +33,17 @@ pub fn url_key(raw: &str) -> String {
         Some(port) if port != 80 && port != 443 => format!("{host}:{port}"),
         _ => host.clone(),
     };
+    // Python's urlparse keeps "/" only when the URL wrote it; `url` always adds it.
+    let wrote_root = raw
+        .trim()
+        .split_once("://")
+        .and_then(|(_, rest)| {
+            rest.find(['/', '?', '#'])
+                .map(|at| rest[at..].starts_with('/'))
+        })
+        .unwrap_or(false);
     let path = if parsed.path() == "/" {
-        ""
+        if wrote_root { "/" } else { "" }
     } else {
         parsed.path().trim_end_matches('/')
     };

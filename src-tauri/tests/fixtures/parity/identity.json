@@ -13,6 +13,18 @@
    "de engenheiro senior software"
   ],
   [
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "desenvolvedor"
+  ],
+  [
+   "Dev Go - GO",
+   "dev go"
+  ],
+  [
+   "Analista - Goiânia - GO",
+   "analista"
+  ],
+  [
    "Tech Lead | Remote",
    "lead tech"
   ],
@@ -21,12 +33,36 @@
    "coracao dados de"
   ],
   [
-   "Staff AI Engineer (Remote)",
-   "ai engineer staff"
+   "Straße Developer",
+   "developer strasse"
+  ],
+  [
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "back desenvolvedora end pessoa pl sql"
   ],
   [
    "",
    ""
+  ],
+  [
+   "   ",
+   ""
+  ],
+  [
+   "Staff AI Engineer (Remote)",
+   "ai engineer staff"
+  ],
+  [
+   "C++ Developer - Porto",
+   "c developer porto"
+  ],
+  [
+   "Engenheira de Machine Learning [Remoto]",
+   "de engenheira learning machine remoto"
+  ],
+  [
+   "ＦＵＬＬ Stack",
+   "full stack"
   ]
  ],
  "companies": [
@@ -47,8 +83,28 @@
    "acme"
   ],
   [
+   "Acme S/A",
+   "acme"
+  ],
+  [
+   "Acme Inc",
+   "acme"
+  ],
+  [
+   "ME",
+   "me"
+  ],
+  [
+   "Grupo",
+   "grupo"
+  ],
+  [
    "Café & Cia LTDA ME",
    "cafe cia"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "coracao labs"
   ]
  ],
  "fingerprints": [
@@ -69,6 +125,21 @@
   ],
   [
    "",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "c1328e50b433648f"
+  ],
+  [
+   "",
+   "Dev Go - GO",
+   "fe1f5410900ae0dc"
+  ],
+  [
+   "",
+   "Analista - Goiânia - GO",
+   "1a05b53aa74c2c56"
+  ],
+  [
+   "",
    "Tech Lead | Remote",
    "1f7e4805bcb6c04e"
   ],
@@ -79,8 +150,13 @@
   ],
   [
    "",
-   "Staff AI Engineer (Remote)",
-   "685b30e11526d7f4"
+   "Straße Developer",
+   "75d182d84bc124e4"
+  ],
+  [
+   "",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "dd4b648e617938f4"
   ],
   [
    "",
@@ -88,6 +164,31 @@
    "e3b0c44298fc1c14"
   ],
   [
+   "",
+   "   ",
+   "e3b0c44298fc1c14"
+  ],
+  [
+   "",
+   "Staff AI Engineer (Remote)",
+   "685b30e11526d7f4"
+  ],
+  [
+   "",
+   "C++ Developer - Porto",
+   "77ce0f20f6b4eed8"
+  ],
+  [
+   "",
+   "Engenheira de Machine Learning [Remoto]",
+   "6f240ef25098686e"
+  ],
+  [
+   "",
+   "ＦＵＬＬ Stack",
+   "bfd29eef78158802"
+  ],
+  [
    "Acme",
    "Backend Sr",
    "e969cf4ead0be75f"
@@ -104,6 +205,21 @@
   ],
   [
    "Acme",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "9eba3d3733d17fcd"
+  ],
+  [
+   "Acme",
+   "Dev Go - GO",
+   "793937b63c4868ea"
+  ],
+  [
+   "Acme",
+   "Analista - Goiânia - GO",
+   "5cf1cf162acae337"
+  ],
+  [
+   "Acme",
    "Tech Lead | Remote",
    "4b24b183517f2bd6"
   ],
@@ -114,13 +230,43 @@
   ],
   [
    "Acme",
-   "Staff AI Engineer (Remote)",
-   "e766a7ee3d8d8dbd"
+   "Straße Developer",
+   "b45da0c17f671ab1"
+  ],
+  [
+   "Acme",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "d86c63750a272813"
   ],
   [
    "Acme",
    "",
    "500695bd82847fd9"
+  ],
+  [
+   "Acme",
+   "   ",
+   "500695bd82847fd9"
+  ],
+  [
+   "Acme",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "Acme",
+   "C++ Developer - Porto",
+   "1f514e3aa2f13dd2"
+  ],
+  [
+   "Acme",
+   "Engenheira de Machine Learning [Remoto]",
+   "002d9436c1168e4b"
+  ],
+  [
+   "Acme",
+   "ＦＵＬＬ Stack",
+   "779c7494f8bbb3c7"
   ],
   [
    "ACME Ltda",
@@ -139,6 +285,21 @@
   ],
   [
    "ACME Ltda",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "9eba3d3733d17fcd"
+  ],
+  [
+   "ACME Ltda",
+   "Dev Go - GO",
+   "793937b63c4868ea"
+  ],
+  [
+   "ACME Ltda",
+   "Analista - Goiânia - GO",
+   "5cf1cf162acae337"
+  ],
+  [
+   "ACME Ltda",
    "Tech Lead | Remote",
    "4b24b183517f2bd6"
   ],
@@ -149,13 +310,43 @@
   ],
   [
    "ACME Ltda",
-   "Staff AI Engineer (Remote)",
-   "e766a7ee3d8d8dbd"
+   "Straße Developer",
+   "b45da0c17f671ab1"
+  ],
+  [
+   "ACME Ltda",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "d86c63750a272813"
   ],
   [
    "ACME Ltda",
    "",
    "500695bd82847fd9"
+  ],
+  [
+   "ACME Ltda",
+   "   ",
+   "500695bd82847fd9"
+  ],
+  [
+   "ACME Ltda",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "ACME Ltda",
+   "C++ Developer - Porto",
+   "1f514e3aa2f13dd2"
+  ],
+  [
+   "ACME Ltda",
+   "Engenheira de Machine Learning [Remoto]",
+   "002d9436c1168e4b"
+  ],
+  [
+   "ACME Ltda",
+   "ＦＵＬＬ Stack",
+   "779c7494f8bbb3c7"
   ],
   [
    "Grupo Acme S.A.",
@@ -174,6 +365,21 @@
   ],
   [
    "Grupo Acme S.A.",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "9eba3d3733d17fcd"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Dev Go - GO",
+   "793937b63c4868ea"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Analista - Goiânia - GO",
+   "5cf1cf162acae337"
+  ],
+  [
+   "Grupo Acme S.A.",
    "Tech Lead | Remote",
    "4b24b183517f2bd6"
   ],
@@ -184,13 +390,363 @@
   ],
   [
    "Grupo Acme S.A.",
-   "Staff AI Engineer (Remote)",
-   "e766a7ee3d8d8dbd"
+   "Straße Developer",
+   "b45da0c17f671ab1"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "d86c63750a272813"
   ],
   [
    "Grupo Acme S.A.",
    "",
    "500695bd82847fd9"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "   ",
+   "500695bd82847fd9"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "C++ Developer - Porto",
+   "1f514e3aa2f13dd2"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Engenheira de Machine Learning [Remoto]",
+   "002d9436c1168e4b"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "ＦＵＬＬ Stack",
+   "779c7494f8bbb3c7"
+  ],
+  [
+   "Acme S/A",
+   "Backend Sr",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Acme S/A",
+   "Sr Backend",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Acme S/A",
+   "Engenheiro de Software Sênior - Remoto",
+   "2134ac4f0c7e3902"
+  ],
+  [
+   "Acme S/A",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "9eba3d3733d17fcd"
+  ],
+  [
+   "Acme S/A",
+   "Dev Go - GO",
+   "793937b63c4868ea"
+  ],
+  [
+   "Acme S/A",
+   "Analista - Goiânia - GO",
+   "5cf1cf162acae337"
+  ],
+  [
+   "Acme S/A",
+   "Tech Lead | Remote",
+   "4b24b183517f2bd6"
+  ],
+  [
+   "Acme S/A",
+   "Coração de Dados / São Paulo",
+   "9e05de062835355b"
+  ],
+  [
+   "Acme S/A",
+   "Straße Developer",
+   "b45da0c17f671ab1"
+  ],
+  [
+   "Acme S/A",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "d86c63750a272813"
+  ],
+  [
+   "Acme S/A",
+   "",
+   "500695bd82847fd9"
+  ],
+  [
+   "Acme S/A",
+   "   ",
+   "500695bd82847fd9"
+  ],
+  [
+   "Acme S/A",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "Acme S/A",
+   "C++ Developer - Porto",
+   "1f514e3aa2f13dd2"
+  ],
+  [
+   "Acme S/A",
+   "Engenheira de Machine Learning [Remoto]",
+   "002d9436c1168e4b"
+  ],
+  [
+   "Acme S/A",
+   "ＦＵＬＬ Stack",
+   "779c7494f8bbb3c7"
+  ],
+  [
+   "Acme Inc",
+   "Backend Sr",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Acme Inc",
+   "Sr Backend",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Acme Inc",
+   "Engenheiro de Software Sênior - Remoto",
+   "2134ac4f0c7e3902"
+  ],
+  [
+   "Acme Inc",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "9eba3d3733d17fcd"
+  ],
+  [
+   "Acme Inc",
+   "Dev Go - GO",
+   "793937b63c4868ea"
+  ],
+  [
+   "Acme Inc",
+   "Analista - Goiânia - GO",
+   "5cf1cf162acae337"
+  ],
+  [
+   "Acme Inc",
+   "Tech Lead | Remote",
+   "4b24b183517f2bd6"
+  ],
+  [
+   "Acme Inc",
+   "Coração de Dados / São Paulo",
+   "9e05de062835355b"
+  ],
+  [
+   "Acme Inc",
+   "Straße Developer",
+   "b45da0c17f671ab1"
+  ],
+  [
+   "Acme Inc",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "d86c63750a272813"
+  ],
+  [
+   "Acme Inc",
+   "",
+   "500695bd82847fd9"
+  ],
+  [
+   "Acme Inc",
+   "   ",
+   "500695bd82847fd9"
+  ],
+  [
+   "Acme Inc",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "Acme Inc",
+   "C++ Developer - Porto",
+   "1f514e3aa2f13dd2"
+  ],
+  [
+   "Acme Inc",
+   "Engenheira de Machine Learning [Remoto]",
+   "002d9436c1168e4b"
+  ],
+  [
+   "Acme Inc",
+   "ＦＵＬＬ Stack",
+   "779c7494f8bbb3c7"
+  ],
+  [
+   "ME",
+   "Backend Sr",
+   "f5781b9d2215aff9"
+  ],
+  [
+   "ME",
+   "Sr Backend",
+   "f5781b9d2215aff9"
+  ],
+  [
+   "ME",
+   "Engenheiro de Software Sênior - Remoto",
+   "30c991ca89563043"
+  ],
+  [
+   "ME",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "c286f2e0f5ddfd1e"
+  ],
+  [
+   "ME",
+   "Dev Go - GO",
+   "e375161434699711"
+  ],
+  [
+   "ME",
+   "Analista - Goiânia - GO",
+   "affd7410326ab89e"
+  ],
+  [
+   "ME",
+   "Tech Lead | Remote",
+   "3e4e346a22b6c0b4"
+  ],
+  [
+   "ME",
+   "Coração de Dados / São Paulo",
+   "1c233bbd5685342c"
+  ],
+  [
+   "ME",
+   "Straße Developer",
+   "97e4d2bda8ce3bf1"
+  ],
+  [
+   "ME",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "bfff91848f4c6501"
+  ],
+  [
+   "ME",
+   "",
+   "c678e72cea46c319"
+  ],
+  [
+   "ME",
+   "   ",
+   "c678e72cea46c319"
+  ],
+  [
+   "ME",
+   "Staff AI Engineer (Remote)",
+   "798492770163d369"
+  ],
+  [
+   "ME",
+   "C++ Developer - Porto",
+   "f427578a06d4cc90"
+  ],
+  [
+   "ME",
+   "Engenheira de Machine Learning [Remoto]",
+   "de28ab3c77d558cd"
+  ],
+  [
+   "ME",
+   "ＦＵＬＬ Stack",
+   "8412d1afe80456ce"
+  ],
+  [
+   "Grupo",
+   "Backend Sr",
+   "7e291986cc3f9638"
+  ],
+  [
+   "Grupo",
+   "Sr Backend",
+   "7e291986cc3f9638"
+  ],
+  [
+   "Grupo",
+   "Engenheiro de Software Sênior - Remoto",
+   "6187acd9619a1efe"
+  ],
+  [
+   "Grupo",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "151a30502cf370c7"
+  ],
+  [
+   "Grupo",
+   "Dev Go - GO",
+   "c9d4f732b53122a8"
+  ],
+  [
+   "Grupo",
+   "Analista - Goiânia - GO",
+   "5c93f3ae4cc98550"
+  ],
+  [
+   "Grupo",
+   "Tech Lead | Remote",
+   "8d6852bcfc5708a0"
+  ],
+  [
+   "Grupo",
+   "Coração de Dados / São Paulo",
+   "dfdd5ebaa2f380d3"
+  ],
+  [
+   "Grupo",
+   "Straße Developer",
+   "a05d1ad43fc319ef"
+  ],
+  [
+   "Grupo",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "eed2a2b8422928ff"
+  ],
+  [
+   "Grupo",
+   "",
+   "49390285472d951e"
+  ],
+  [
+   "Grupo",
+   "   ",
+   "49390285472d951e"
+  ],
+  [
+   "Grupo",
+   "Staff AI Engineer (Remote)",
+   "0594867c895daec5"
+  ],
+  [
+   "Grupo",
+   "C++ Developer - Porto",
+   "5880fd8f7448261c"
+  ],
+  [
+   "Grupo",
+   "Engenheira de Machine Learning [Remoto]",
+   "a0b594fee8ef9305"
+  ],
+  [
+   "Grupo",
+   "ＦＵＬＬ Stack",
+   "b570e16621a887d1"
   ],
   [
    "Café & Cia LTDA ME",
@@ -209,6 +765,21 @@
   ],
   [
    "Café & Cia LTDA ME",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "70abb5804bca5336"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Dev Go - GO",
+   "6e1cd0b157498a9e"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Analista - Goiânia - GO",
+   "2abda12589664f71"
+  ],
+  [
+   "Café & Cia LTDA ME",
    "Tech Lead | Remote",
    "c347df12d291ea9d"
   ],
@@ -219,13 +790,123 @@
   ],
   [
    "Café & Cia LTDA ME",
-   "Staff AI Engineer (Remote)",
-   "08872f08b6e57641"
+   "Straße Developer",
+   "bef719136a330d84"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "01d9053584fc1508"
   ],
   [
    "Café & Cia LTDA ME",
    "",
    "4b619a9980c2bf9a"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "   ",
+   "4b619a9980c2bf9a"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Staff AI Engineer (Remote)",
+   "08872f08b6e57641"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "C++ Developer - Porto",
+   "dce77d843b461d28"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Engenheira de Machine Learning [Remoto]",
+   "aa9892e63ed51b32"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "ＦＵＬＬ Stack",
+   "831c27b684466e30"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Backend Sr",
+   "288b5df32356f534"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Sr Backend",
+   "288b5df32356f534"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Engenheiro de Software Sênior - Remoto",
+   "84b4133c5c3b30bd"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Desenvolvedor (Híbrido - São Paulo/SP)",
+   "a76df3c7701d5860"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Dev Go - GO",
+   "29dcf139617e4617"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Analista - Goiânia - GO",
+   "b2a1e0c288f7acf9"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Tech Lead | Remote",
+   "a3769aff2051848d"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Coração de Dados / São Paulo",
+   "d6a611213dcb09fa"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Straße Developer",
+   "82f1a61db0e8e78b"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Pessoa Desenvolvedora Back-end PL/SQL",
+   "430b92cb6a3da8df"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "",
+   "b808433d5532c2be"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "   ",
+   "b808433d5532c2be"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Staff AI Engineer (Remote)",
+   "b1f052228aa7190a"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "C++ Developer - Porto",
+   "274b6c790d9e421b"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "Engenheira de Machine Learning [Remoto]",
+   "09b69daac50f28fb"
+  ],
+  [
+   "Coração Labs EIRELI",
+   "ＦＵＬＬ Stack",
+   "e7f3ac4eb4cd8b9b"
   ]
  ],
  "urls": [
@@ -242,8 +923,52 @@
    "https://example.com:8080/a"
   ],
   [
+   "https://example.com:443/a",
+   "https://example.com/a"
+  ],
+  [
+   "https://boards.greenhouse.io/x/jobs/1?gh_src=abc",
+   "https://boards.greenhouse.io/x/jobs/1"
+  ],
+  [
+   "https://example.com/a?gh_src=keep",
+   "https://example.com/a?gh_src=keep"
+  ],
+  [
+   "https://x.lever.co/a/1?lever-source=li",
+   "https://x.lever.co/a/1"
+  ],
+  [
+   "https://www.linkedin.com/jobs/view/1?trk=a&refId=b",
+   "https://linkedin.com/jobs/view/1"
+  ],
+  [
+   "https://example.com/a?q=caf%C3%A9+bar",
+   "https://example.com/a?q=caf%C3%A9+bar"
+  ],
+  [
+   "https://example.com/?b=&a=1",
+   "https://example.com/?a=1&b="
+  ],
+  [
+   "https://example.com/",
+   "https://example.com/"
+  ],
+  [
    "not a url",
    ""
+  ],
+  [
+   "",
+   ""
+  ],
+  [
+   "ftp://example.com/a",
+   "https://example.com/a"
+  ],
+  [
+   "HTTPS://Example.COM/Path/",
+   "https://example.com/Path"
   ]
  ]
 }
