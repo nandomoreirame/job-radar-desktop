@@ -60,6 +60,33 @@ describe('useKanbanColumns', () => {
     rerender({ cards: [a, { ...b, stage: 'offer' as const }] });
     expect(ids(result.current.columns.offer)).toEqual(['b']);
   });
+  it('shows new card data when the card stays in its column', () => {
+    const hired = makeCard({ id: 'h', stage: 'closed', outcome: 'hired' });
+    const { result, rerender } = renderHook(({ cards }) => useKanbanColumns(cards), {
+      initialProps: { cards: [hired] },
+    });
+    rerender({ cards: [{ ...hired, outcome: 'rejected' as const }] });
+    expect(result.current.columns.closed[0].outcome).toBe('rejected');
+  });
+  it('restores the latest store data after a cancelled drag', () => {
+    const { result, rerender } = renderHook(({ cards }) => useKanbanColumns(cards), {
+      initialProps: { cards: [a, b] },
+    });
+    rerender({ cards: [{ ...a, title: 'Renamed' }, b] });
+    act(() => result.current.begin('a'));
+    dragTo(result, 'triage');
+    act(() => result.current.restore());
+    expect(result.current.columns.inbox[0].title).toBe('Renamed');
+  });
+  it('keeps the dragged columns while a drag is in progress', () => {
+    const { result, rerender } = renderHook(({ cards }) => useKanbanColumns(cards), {
+      initialProps: { cards: [a, b] },
+    });
+    act(() => result.current.begin('a'));
+    dragTo(result, 'triage');
+    rerender({ cards: [a, b] });
+    expect(ids(result.current.columns.triage)).toEqual(['a']);
+  });
   it('finishes nothing without a drag in progress', () => {
     const { result } = renderHook(() => useKanbanColumns([a]));
     expect(result.current.finish()).toBeNull();

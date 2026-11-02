@@ -8,23 +8,17 @@ export function useKanbanColumns(cards: BoardCard[]) {
   const columnsRef = useRef(columns);
   const cardsRef = useRef(cards);
   const origin = useRef<{ id: string; stage: NonNullable<ReturnType<typeof columnOf>> } | null>(null);
-  const sameColumns = (left: Columns, right: Columns) =>
-    Object.keys(left).every(stage => {
-      const key = stage as keyof Columns;
-      return (
-        left[key].map(card => `${card.id}:${card.stage}`).join('|') ===
-        right[key].map(card => `${card.id}:${card.stage}`).join('|')
-      );
-    });
   const setColumns = useCallback((next: Columns) => {
     columnsRef.current = next;
     setColumnsState(next);
   }, []);
+  // Every new `cards` array is store truth (a failed move hands out an equal
+  // copy on purpose), so resync on identity. Mid-drag, keep Kanban's local
+  // columns; `restore` and the next store update bring the latest data back.
   useEffect(() => {
-    const nextColumns = groupByStage(cards);
-    if (cards === cardsRef.current || origin.current || sameColumns(columnsRef.current, nextColumns)) return;
+    if (cards === cardsRef.current) return;
     cardsRef.current = cards;
-    setColumns(nextColumns);
+    if (!origin.current) setColumns(groupByStage(cards));
   }, [cards, setColumns]);
   const begin = useCallback((id: string) => {
     const stage = columnOf(columnsRef.current, id);
