@@ -1,6 +1,6 @@
 # Proofs: sqlite-store
 
-- **Commit:** 6ad49acda4170fe7e3d58b166205fd3fc79e16d8
+- **Commit:** a9db292348150127b7313b90f4b473ae5ef4989e
 - **Tree:** clean
 - **Result:** PASS
 
@@ -26,7 +26,7 @@
 ### run rust (exit 0)
 
 ```text
-test sqlite_store::tests::a_failed_write_leaves_the_data_intact ... ok
+test domain::export_bindings_salary ... ok
 test domain::export_bindings_target ... ok
 test store::tests::an_outcome_outside_closed_is_rejected ... ok
 test store::tests::an_unknown_card_is_not_found ... ok
@@ -40,8 +40,8 @@ test domain::export_bindings_workmodel ... ok
 test domain::export_bindings_carddetails ... ok
 test domain::export_bindings_timelineevent ... ok
 test store::tests::updating_an_unknown_card_is_not_found ... ok
-test domain::export_bindings_boardcard ... ok
 test store::tests::updating_applies_the_details_for_the_session ... ok
+test domain::export_bindings_boardcard ... ok
 test sqlite_store::tests::refuses_a_newer_schema_without_touching_it ... ok
 test tests::open_store_reports_the_path_and_cause ... ok
 test sqlite_store::tests::migrates_once_to_the_latest_version ... ok
@@ -52,7 +52,7 @@ test sqlite_store::tests::moves_and_edits_survive_a_reopen ... ok
 test tests::open_store_seeds_only_debug_and_only_when_empty ... ok
 test sqlite_store::tests::sqlite_store_honors_the_store_contract ... ok
 
-test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
 
      Running unittests src/main.rs (target/debug/deps/job_radar_desktop-db6316a8c15a255b)
 
@@ -74,7 +74,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 running 58 tests
 ..........................................................
-test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
 
 
 running 0 tests
