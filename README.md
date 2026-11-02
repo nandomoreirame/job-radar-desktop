@@ -59,7 +59,7 @@ On Wayland, if the window stays blank, run `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnp
 | Filter | Source, target and minimum score in the toolbar |
 | Switch the visual style | Set `VITE_VISUAL_MODE=flat` (solid panels) or `glass` (default, translucent panels) |
 
-Everything is saved in SQLite at `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (development builds use `dev.nandomoreira.jobradar-local`). Set `JOB_RADAR_DB` to use another file.
+Everything is saved in SQLite at `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (development builds use `dev.nandomoreira.jobradar-local`). Set `JOB_RADAR_DB` to use another file. Imported jobs have no score until the crawler reads their page.
 
 ## Development
 
@@ -96,7 +96,8 @@ MVP progress and every planned milestone live in [ROADMAP.md](ROADMAP.md). The m
 - **No open port.** The frontend talks to Rust through Tauri IPC, not a local web server. Only
   `pnpm tauri dev` starts Vite on `localhost:1420`, for development.
 - **Minimal permissions.** The window gets Tauri's core defaults plus minimize, maximize, close
-  and drag for the custom title bar; no shell, file system or HTTP plugins are enabled.
+  and drag for the custom title bar; no shell, file system or HTTP plugins are enabled. The opener plugin is used only from Rust, for a link already stored and checked; the webview cannot open a URL of its own.
+- **Import reads local files only,** read-only, and treats their content as untrusted.
 - **IPC input is validated.** Card ids are bounded (1 to 64 characters) and stage/outcome pairs
   are checked in Rust before any data changes.
 - **Local data only.** Jobs live in a SQLite file in your data directory, created readable only by you (0600); the browser storage keeps only the visual mode.

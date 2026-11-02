@@ -57,10 +57,12 @@ No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 
 | Editar uma vaga | Clique no título do card (ou chegue nele com Tab e aperte Enter), altere os campos e salve |
 | Mover uma vaga | Arraste o card, ou abra o menu "..." e escolha a coluna |
 | Encerrar uma vaga | Solte em Encerradas e escolha o motivo, ou use "Encerrar como" no menu |
+| Carregar histórico do crawler | `job-radar-desktop import --seen seen.db --candidates candidates.json` (pode repetir com segurança) |
+| Revisar vagas descartadas | Abra Descartadas na sidebar, depois mova para a Caixa de entrada ou exclua de vez |
 | Filtrar | Fonte, alvo e score mínimo na barra de ferramentas |
 | Trocar o estilo visual | Defina `VITE_VISUAL_MODE=flat` (painéis sólidos) ou `glass` (padrão, painéis translúcidos) |
 
-Tudo fica salvo em SQLite em `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (o build de desenvolvimento usa `dev.nandomoreira.jobradar-local`). Use `JOB_RADAR_DB` para apontar outro arquivo.
+Tudo fica salvo em SQLite em `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (o build de desenvolvimento usa `dev.nandomoreira.jobradar-local`). Use `JOB_RADAR_DB` para apontar outro arquivo. Vagas importadas ficam sem score até o crawler ler a página.
 
 ## Desenvolvimento
 
@@ -98,7 +100,8 @@ O progresso até o MVP e todos os marcos planejados estão no [ROADMAP.md](ROADM
   local. Só o `pnpm tauri dev` sobe o Vite em `localhost:1420`, para desenvolvimento.
 - **Permissões mínimas.** A janela tem os padrões do núcleo do Tauri mais minimizar, maximizar,
   fechar e arrastar, para a barra de título própria; nenhum plugin de shell, sistema de arquivos ou
-  HTTP está habilitado.
+  HTTP está habilitado. O plugin opener só é usado pelo Rust, para um link já salvo e conferido; a webview não abre uma URL própria.
+- **A importação lê apenas arquivos locais,** somente para leitura, e trata o conteúdo como não confiável.
 - **Entrada do IPC validada.** Os ids de card têm de 1 a 64 caracteres e os pares etapa/motivo são
   conferidos no Rust antes de qualquer dado mudar.
 - **Dados só locais.** As vagas ficam num arquivo SQLite no seu diretório de dados, criado legível só por você (0600); o armazenamento do navegador guarda só o modo visual.
