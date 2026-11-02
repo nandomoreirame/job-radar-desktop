@@ -97,7 +97,8 @@
       "done": "done",
       "missing": "missing"
     },
-    "drag": "Drag {{title}}"
+    "drag": "Drag {{title}}",
+    "noScore": "No score"
   },
   "salary": {
     "pj": "PJ",

@@ -41,7 +41,7 @@ export function JobCommand({ cards, open, onOpenChange, onPick }: Props) {
               >
                 <span className="flex-1 truncate">{card.title}</span>
                 <span className="truncate text-xs text-noir-muted">{card.company}</span>
-                <span className="font-mono text-xs">{card.score}</span>
+                <span className="font-mono text-xs">{card.score ?? t('card.noScore')}</span>
               </CommandItem>
             ))}
           </CommandGroup>

@@ -97,7 +97,8 @@
       "done": "pronto",
       "missing": "pendente"
     },
-    "drag": "Arrastar {{title}}"
+    "drag": "Arrastar {{title}}",
+    "noScore": "Sem nota"
   },
   "salary": {
     "pj": "PJ",

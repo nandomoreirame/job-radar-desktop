@@ -114,7 +114,7 @@ function JobForm({ card, onSave, onDone }: { card: BoardCard; onSave: SaveDetail
       <ResponsiveDialogHeader className="pr-10">
         <ResponsiveDialogTitle>{card.title}</ResponsiveDialogTitle>
         <ResponsiveDialogDescription>
-          {[card.company, card.source, t(`target.${card.target}`), t(`workModel.${card.workModel}`)].join(' · ')}
+          {[card.company, card.source, card.target && t(`target.${card.target}`), card.workModel && t(`workModel.${card.workModel}`)].filter(Boolean).join(' · ')}
         </ResponsiveDialogDescription>
       </ResponsiveDialogHeader>
 

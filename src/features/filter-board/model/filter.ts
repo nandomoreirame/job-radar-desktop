@@ -16,8 +16,8 @@ export function filterCards(cards: BoardCard[], filters: BoardFilters): BoardCar
   return cards.filter(
     card =>
       (filters.sources.length === 0 || filters.sources.includes(card.source)) &&
-      (filters.targets.length === 0 || filters.targets.includes(card.target)) &&
-      card.score >= filters.minScore &&
+      (filters.targets.length === 0 || (card.target !== null && filters.targets.includes(card.target))) &&
+      (card.score === null || card.score >= filters.minScore) &&
       (!filters.unreadOnly || card.unread),
   );
 }

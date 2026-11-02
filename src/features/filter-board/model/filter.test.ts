@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { makeCard } from '@/test/factories';
-import { EMPTY_FILTERS, clampScore, filterCards, matchesText } from './filter';
+import { DEFAULT_FILTERS, EMPTY_FILTERS, clampScore, filterCards, matchesText } from './filter';
 const v = makeCard({
   id: 'v',
   title: 'Lead AI Architect',
@@ -55,5 +55,17 @@ describe('clampScore', () => {
     expect(clampScore('abc')).toBe(0);
     expect(clampScore('1e3')).toBe(100);
     expect(clampScore('9e1')).toBe(90);
+  });
+});
+
+describe('real import filters', () => {
+  it('keeps a card without a score at any minimum', () => {
+    const cards = [makeCard({ id: 'a', score: null }), makeCard({ id: 'b', score: 50 })];
+    expect(filterCards(cards, DEFAULT_FILTERS).map(c => c.id)).toEqual(['a']);
+  });
+  it('hides a card without a target only when a target is selected', () => {
+    const card = makeCard({ target: null });
+    expect(filterCards([card], EMPTY_FILTERS)).toHaveLength(1);
+    expect(filterCards([card], { ...EMPTY_FILTERS, targets: ['data'] })).toHaveLength(0);
   });
 });
