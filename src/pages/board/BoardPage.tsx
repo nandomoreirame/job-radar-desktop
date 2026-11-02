@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBoard } from "@/entities/job/model/use-board";
+import { JobDialog } from "@/entities/job/ui/JobDialog";
 import { EMPTY_FILTERS, filterCards, type BoardFilters } from "@/features/filter-board/model/filter";
 import { Toolbar } from "@/features/filter-board/ui/Toolbar";
 import { boardApi, type BoardApi } from "@/shared/api/board";
@@ -18,6 +19,8 @@ export function BoardPage({ api = boardApi, now }: Props) {
   // Metrics follow the filters, so a source or target can be judged on its own.
   const metrics = useMemo(() => computeMetrics(visible, now ?? new Date()), [visible, now]);
   const sources = useMemo(() => [...new Set(cards.map((card) => card.source))].sort(), [cards]);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const openCard = cards.find((card) => card.id === openId) ?? null;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
@@ -30,8 +33,13 @@ export function BoardPage({ api = boardApi, now }: Props) {
       {status === "loading" && <p role="status">{t("board.loading")}</p>}
       {status === "error" && <p role="alert">{t("board.error")}</p>}
       {status === "ready" && (
-        <Board cards={visible} onOpen={() => {}} onMove={(id, stage, outcome) => void move(id, stage, outcome)} />
+        <Board
+          cards={visible}
+          onOpen={(card) => setOpenId(card.id)}
+          onMove={(id, stage, outcome) => void move(id, stage, outcome)}
+        />
       )}
+      <JobDialog card={openCard} onOpenChange={(open) => !open && setOpenId(null)} />
     </div>
   );
 }
