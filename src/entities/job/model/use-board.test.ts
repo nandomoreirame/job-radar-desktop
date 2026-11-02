@@ -1,7 +1,7 @@
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { BoardCard } from "@/shared/bindings/BoardCard";
-import { fakeApi, makeCard } from "@/test/factories";
+import { EMPTY_DETAILS, fakeApi, makeCard } from "@/test/factories";
 import { useBoard } from "./use-board";
 
 describe("useBoard", () => {
@@ -65,4 +65,28 @@ describe("useBoard", () => {
     expect(result.current.cards).toEqual(before);
   });
 
+
+  it("replaces the card with the saved details", async () => {
+    const api = fakeApi([makeCard()]);
+    const { result } = renderHook(() => useBoard(api));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    let error: string | null = "unset";
+    await act(async () => {
+      error = await result.current.update("c01", { ...EMPTY_DETAILS, notes: "Ligar na sexta" });
+    });
+    expect(error).toBeNull();
+    expect(result.current.cards[0].notes).toBe("Ligar na sexta");
+  });
+
+  it("returns the store error when saving fails", async () => {
+    const api = { ...fakeApi([makeCard()]), update: async () => Promise.reject("jobUrl: invalid_url") };
+    const { result } = renderHook(() => useBoard(api));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    let error: string | null = null;
+    await act(async () => {
+      error = await result.current.update("c01", EMPTY_DETAILS);
+    });
+    expect(error).toBe("jobUrl: invalid_url");
+    expect(result.current.cards[0].notes).toBe("");
+  });
 });

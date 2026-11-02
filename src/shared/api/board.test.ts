@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { makeCard } from "@/test/factories";
+import { EMPTY_DETAILS, makeCard } from "@/test/factories";
 import { boardApi } from "./board";
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn() }));
@@ -21,5 +21,13 @@ describe("boardApi", () => {
     mockInvoke.mockResolvedValueOnce(moved);
     await expect(boardApi.move("c01", "triage", null)).resolves.toEqual(moved);
     expect(mockInvoke).toHaveBeenCalledWith("move_card", { id: "c01", stage: "triage", outcome: null });
+  });
+
+  it("sends the details edit through the Rust command", async () => {
+    const details = { ...EMPTY_DETAILS, notes: "Ligar na sexta" };
+    const saved = makeCard({ notes: "Ligar na sexta" });
+    mockInvoke.mockResolvedValueOnce(saved);
+    await expect(boardApi.update("c01", details)).resolves.toEqual(saved);
+    expect(mockInvoke).toHaveBeenCalledWith("update_card", { id: "c01", details });
   });
 });
