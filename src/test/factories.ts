@@ -51,6 +51,7 @@ export function fakeApi(cards: BoardCard[]): BoardApi {
   let state = [...cards];
   return {
     list: async () => state,
+    openLink: async () => {},
     move: async (id, stage, outcome) => {
       const card = state.find((c) => c.id === id);
       if (!card) throw new Error(`card not found: ${id}`);

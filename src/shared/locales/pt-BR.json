@@ -155,7 +155,8 @@
       "invalid_url": "Use um link http(s) válido.",
       "invalid_date": "Data inválida.",
       "out_of_range": "Valor fora do limite."
-    }
+    },
+    "openLink": "Abrir vaga"
   },
   "command": {
     "title": "Buscar vaga",

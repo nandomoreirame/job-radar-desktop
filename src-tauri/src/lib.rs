@@ -83,6 +83,7 @@ pub fn run() {
             Err(message) => startup_failed(&message),
         };
     let app = tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             commands::list_board,
             commands::move_card,
@@ -90,6 +91,7 @@ pub fn run() {
             commands::list_discarded,
             commands::restore_card,
             commands::delete_card,
+            commands::open_job_url,
             commands::window_controls
         ])
         .build(tauri::generate_context!());

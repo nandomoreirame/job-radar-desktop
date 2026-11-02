@@ -88,6 +88,34 @@ pub fn update_card(
     update_card_impl(&state, &id, details)
 }
 
+pub fn open_job_url_impl(
+    state: &AppState,
+    id: &str,
+    open: impl Fn(&str) -> Result<(), String>,
+) -> Result<(), String> {
+    check_id(id)?;
+    let url = state.store.card_url(id).map_err(report)?.ok_or("no_url")?;
+    if !crate::details::is_http_url(&url) {
+        return Err("invalid_url".into());
+    }
+    open(&url)
+}
+
+#[tauri::command]
+pub fn open_job_url(
+    app: tauri::AppHandle,
+    state: State<'_, AppState>,
+    id: String,
+) -> Result<(), String> {
+    use tauri_plugin_opener::OpenerExt;
+    open_job_url_impl(&state, &id, |url| {
+        app.opener().open_url(url, None::<&str>).map_err(|e| {
+            eprintln!("open url: {e}");
+            "open_failed".into()
+        })
+    })
+}
+
 pub fn list_discarded_impl(state: &AppState) -> Result<Vec<DiscardedJob>, String> {
     state.store.list_discarded().map_err(report)
 }

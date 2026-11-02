@@ -1,4 +1,4 @@
-import { Sparkles, X } from 'lucide-react';
+import { ExternalLink, Sparkles, X } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BoardCard } from '@/shared/bindings/BoardCard';
@@ -26,7 +26,7 @@ import {
 } from '../model/details-form';
 
 type SaveDetails = (details: CardDetails) => Promise<string | null>;
-type Props = { card: BoardCard | null; onOpenChange: (open: boolean) => void; onSave: SaveDetails };
+type Props = { card: BoardCard | null; onOpenChange: (open: boolean) => void; onSave: SaveDetails; onOpenLink?: (id: string) => void };
 
 const ARTIFACTS = ['cv', 'coverage', 'interviewPrep'] as const;
 const INPUT_TYPE: Partial<Record<DetailField, string>> = {
@@ -45,7 +45,7 @@ const SECTIONS: { key: string; fields: DetailField[] }[] = [
   { key: 'links', fields: ['jobUrl', 'applicationUrl'] },
 ];
 
-export function JobDialog({ card, onOpenChange, onSave }: Props) {
+export function JobDialog({ card, onOpenChange, onSave, onOpenLink }: Props) {
   return (
     <ResponsiveDialog open={card !== null} onOpenChange={open => onOpenChange(open)}>
       {card && (
@@ -55,14 +55,14 @@ export function JobDialog({ card, onOpenChange, onSave }: Props) {
           className="max-h-[85vh] overflow-y-auto bg-noir-card sm:max-w-[56rem]"
         >
           {/* Keyed so the form resets when another card opens. */}
-          <JobForm key={card.id} card={card} onSave={onSave} onDone={() => onOpenChange(false)} />
+          <JobForm key={card.id} card={card} onSave={onSave} onDone={() => onOpenChange(false)} onOpenLink={onOpenLink ?? (() => {})} />
         </ResponsiveDialogContent>
       )}
     </ResponsiveDialog>
   );
 }
 
-function JobForm({ card, onSave, onDone }: { card: BoardCard; onSave: SaveDetails; onDone: () => void }) {
+function JobForm({ card, onSave, onDone, onOpenLink }: { card: BoardCard; onSave: SaveDetails; onDone: () => void; onOpenLink: (id: string) => void }) {
   const { t } = useTranslation();
   const [form, setForm] = useState<DetailsForm>(() => toForm(card));
   const [fieldError, setFieldError] = useState<DetailFieldError | null>(null);
@@ -184,6 +184,7 @@ function JobForm({ card, onSave, onDone }: { card: BoardCard; onSave: SaveDetail
       <ResponsiveDialogFooter className="items-center gap-3 sm:justify-between">
         {/* CV tailoring starts from a fresh job; the AI CLI runner comes in a later plan. */}
         <div className="flex items-center gap-3">
+          {card.jobUrl && <Button type="button" variant="outline" onClick={() => onOpenLink(card.id)}><ExternalLink aria-hidden="true" />{t('dialog.openLink')}</Button>}
           {card.stage === 'inbox' && (
             <Button type="button" variant="outline" onClick={() => setNotice(true)}>
               <Sparkles aria-hidden="true" />

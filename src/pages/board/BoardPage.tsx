@@ -63,6 +63,7 @@ export function BoardPage({ api = boardApi, now }: Props) {
         card={openCard}
         onOpenChange={open => !open && setOpenId(null)}
         onSave={details => (openCard ? update(openCard.id, details) : Promise.resolve(null))}
+        onOpenLink={id => void api.openLink(id)}
       />
     </div>
   );

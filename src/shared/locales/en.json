@@ -155,7 +155,8 @@
       "invalid_url": "Use a valid http(s) link.",
       "invalid_date": "Invalid date.",
       "out_of_range": "Value out of range."
-    }
+    },
+    "openLink": "Open job"
   },
   "command": {
     "title": "Search jobs",
