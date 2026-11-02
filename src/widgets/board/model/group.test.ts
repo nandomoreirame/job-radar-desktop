@@ -25,3 +25,4 @@ describe('inbox ordering', () => {
     expect(groupByStage(cards).triage.map(c => c.id)).toEqual(['a', 'b']);
   });
 });
+it('groupByStage sorts the inbox by score then newest', () => { const cards=[makeCard({id:'low',score:10}),makeCard({id:'high',score:90})]; expect(groupByStage(cards).inbox.map(c=>c.id)).toEqual(['high','low']); });

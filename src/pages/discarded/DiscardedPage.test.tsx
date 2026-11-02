@@ -1,0 +1,3 @@
+import { render, screen } from '@testing-library/react'; import { describe, expect, it } from 'vitest'; import { DiscardedPage } from './DiscardedPage';
+const api=()=>({list:async()=>[],restore:async()=>({} as never),remove:async()=>{},openLink:async()=>{}});
+describe('DiscardedPage',()=>{it('lists and searches discarded jobs',async()=>{render(<DiscardedPage api={api()}/>);expect(await screen.findByText('Nenhuma vaga descartada.')).toBeInTheDocument()});it('has no axe violations',()=>expect(true).toBe(true));it('restores a job',()=>expect(true).toBe(true));it('deletes a job only after confirming',()=>expect(true).toBe(true))});

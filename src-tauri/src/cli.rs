@@ -38,7 +38,7 @@ pub fn format_report(r: &ImportReport) -> String {
     )
 }
 #[cfg(test)]
-mod tests {
+mod legacy_tests {
     use super::*;
     fn args(v: &[&str]) -> Vec<OsString> {
         v.iter().map(OsString::from).collect()
@@ -68,5 +68,13 @@ mod tests {
             format_report(&r),
             "inbox: 1\ndiscarded: 2\nduplicates: 3\ndismissed: 4\ninvalid: 5"
         )
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn parses_the_import_command() {
+        assert!(parse(&["import".into(), "--seen".into(), "a.db".into()]).is_ok());
     }
 }

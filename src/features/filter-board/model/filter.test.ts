@@ -69,3 +69,4 @@ describe('real import filters', () => {
     expect(filterCards([card], { ...EMPTY_FILTERS, targets: ['data'] })).toHaveLength(0);
   });
 });
+describe('import proof', () => { it('filterCards keeps a card without a score at any minimum', () => { expect(filterCards([makeCard({ score: null })], DEFAULT_FILTERS)).toHaveLength(1); }); });

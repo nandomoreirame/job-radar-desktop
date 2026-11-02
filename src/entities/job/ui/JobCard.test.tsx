@@ -85,3 +85,5 @@ describe('real import card fields', () => {
     expect(screen.queryByText(/undefined|null/)).not.toBeInTheDocument();
   });
 });
+
+describe('import proof', () => { it('JobCard shows no score label when the score is null', () => { render(<JobCard card={makeCard({ score: null, target: null, workModel: null })} onOpen={() => {}} />); expect(screen.getByText('Sem nota')).toBeInTheDocument(); }); });

@@ -7,7 +7,7 @@ pub mod domain;
 pub mod identity;
 pub mod import;
 #[cfg(test)]
-pub mod mock_data;
+mod mock_data;
 pub mod sqlite_store;
 pub mod store;
 #[cfg(test)]

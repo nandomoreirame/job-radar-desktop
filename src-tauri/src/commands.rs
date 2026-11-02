@@ -225,6 +225,14 @@ mod tests {
     }
 
     #[test]
+    fn opens_only_a_stored_http_url() {
+        assert_eq!(
+            open_job_url_impl(&state(), "c01", |_| Ok(())),
+            Err("no_url".into())
+        );
+    }
+
+    #[test]
     fn update_card_persists_valid_details() {
         let state = state();
         let details = CardDetails {

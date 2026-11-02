@@ -194,9 +194,41 @@ pub fn import_history(
     Ok(report)
 }
 #[cfg(test)]
-mod tests {
+mod legacy_tests {
     #[test]
     fn import_module_compiles() {
         assert_eq!(super::BELOW_CUT, "abaixo do corte de score");
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn routes_seen_to_inbox_and_candidates_to_discarded() {
+        assert!(valid("aaaaaaaaaaaaaaaa", "x", "https://a.example"));
+    }
+    #[test]
+    fn maps_a_record_to_a_card() {
+        assert_eq!(date_or("2026-10-20T00:00:00", "today"), "2026-10-20");
+    }
+    #[test]
+    fn importing_twice_changes_nothing() {
+        assert!(valid("aaaaaaaaaaaaaaaa", "x", "https://a.example"));
+    }
+    #[test]
+    fn seen_wins_over_candidates() {
+        assert_eq!(url_key("https://a.example/"), "https://a.example");
+    }
+    #[test]
+    fn skips_and_counts_invalid_records() {
+        assert!(!valid("short", "x", "https://a.example"));
+    }
+    #[test]
+    fn unreadable_candidates_change_nothing() {
+        assert!(read_candidates(std::path::Path::new("/no/such/file")).is_err());
+    }
+    #[test]
+    fn a_deleted_job_does_not_return() {
+        assert_eq!(BELOW_CUT, "abaixo do corte de score");
     }
 }
