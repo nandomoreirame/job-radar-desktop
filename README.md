@@ -6,8 +6,8 @@ Local-first desktop tracker for a job search: board, filters and AI-assisted app
 
 ![job-radar-desktop board: six columns from Inbox to Closed with job cards, filters, metrics and the collapsible sidebar, over the Terminal Noir skyline](docs/images/board.png)
 
-> **Status: pre-alpha.** The board runs on fictional mock data served by Rust. There is no
-> database, crawler or AI integration yet; see [Roadmap](#roadmap).
+> **Status: pre-alpha.** Cards, moves and edits are saved in a local SQLite file; there is no
+> crawler or AI integration yet; see [Roadmap](#roadmap).
 
 ## Why
 
@@ -44,7 +44,7 @@ pnpm install
 pnpm tauri dev
 ```
 
-A frameless, maximized window opens with the board filled with mock jobs.
+A frameless, maximized window opens. A development build starts with fictional jobs; a release build starts empty.
 
 On Wayland, if the window stays blank, run `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnpm tauri dev`
 (a WebKitGTK renderer issue).
@@ -59,7 +59,7 @@ On Wayland, if the window stays blank, run `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnp
 | Filter | Source, target and minimum score in the toolbar |
 | Switch the visual style | Set `VITE_VISUAL_MODE=flat` (solid panels) or `glass` (default, translucent panels) |
 
-Changes live in memory and reset when the app restarts; persistence comes with the SQLite store.
+Everything is saved in SQLite at `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (development builds use `dev.nandomoreira.jobradar-local`). Set `JOB_RADAR_DB` to use another file.
 
 ## Development
 
@@ -99,7 +99,7 @@ MVP progress and every planned milestone live in [ROADMAP.md](ROADMAP.md). The m
   and drag for the custom title bar; no shell, file system or HTTP plugins are enabled.
 - **IPC input is validated.** Card ids are bounded (1 to 64 characters) and stage/outcome pairs
   are checked in Rust before any data changes.
-- **Local data only.** Jobs live in memory; the browser storage keeps only the visual mode.
+- **Local data only.** Jobs live in a SQLite file in your data directory, created readable only by you (0600); the browser storage keeps only the visual mode.
 
 Planned features change this surface: running AI CLIs and reading Gmail will be opt-in, with
 read-only Gmail access and an explicit tool allowlist per action. To report a vulnerability,

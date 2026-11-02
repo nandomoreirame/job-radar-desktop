@@ -6,8 +6,8 @@ Rastreador desktop local-first para busca de emprego: board, filtros e candidatu
 
 ![Board do job-radar-desktop: seis colunas, da Caixa de entrada a Encerradas, com cards de vagas, filtros, métricas e a sidebar recolhível, sobre o skyline do Terminal Noir](docs/images/board.png)
 
-> **Status: pré-alpha.** O board roda com dados fictícios servidos pelo Rust. Ainda não há banco
-> de dados, crawler nem integração com IA; veja o [Roadmap](#roadmap).
+> **Status: pré-alpha.** Cards, movimentações e edições ficam salvos num arquivo SQLite local; ainda
+> não há crawler nem integração com IA; veja o [Roadmap](#roadmap).
 
 ## Por quê
 
@@ -45,7 +45,7 @@ pnpm install
 pnpm tauri dev
 ```
 
-Abre uma janela maximizada, sem bordas do sistema, com o board preenchido de vagas fictícias.
+Abre uma janela sem bordas e maximizada. O build de desenvolvimento começa com vagas fictícias; o de release começa vazio.
 
 No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnpm tauri dev`
 (um problema do renderer do WebKitGTK).
@@ -60,7 +60,7 @@ No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 
 | Filtrar | Fonte, alvo e score mínimo na barra de ferramentas |
 | Trocar o estilo visual | Defina `VITE_VISUAL_MODE=flat` (painéis sólidos) ou `glass` (padrão, painéis translúcidos) |
 
-As mudanças ficam em memória e somem quando o app reinicia; a persistência chega com o store em SQLite.
+Tudo fica salvo em SQLite em `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (o build de desenvolvimento usa `dev.nandomoreira.jobradar-local`). Use `JOB_RADAR_DB` para apontar outro arquivo.
 
 ## Desenvolvimento
 
@@ -101,7 +101,7 @@ O progresso até o MVP e todos os marcos planejados estão no [ROADMAP.md](ROADM
   HTTP está habilitado.
 - **Entrada do IPC validada.** Os ids de card têm de 1 a 64 caracteres e os pares etapa/motivo são
   conferidos no Rust antes de qualquer dado mudar.
-- **Dados só locais.** As vagas ficam em memória; o armazenamento do navegador guarda só o modo visual.
+- **Dados só locais.** As vagas ficam num arquivo SQLite no seu diretório de dados, criado legível só por você (0600); o armazenamento do navegador guarda só o modo visual.
 
 Os recursos planejados mudam essa superfície: rodar CLIs de IA e ler o Gmail serão opcionais, com
 acesso ao Gmail somente leitura e uma lista explícita de ferramentas permitidas por ação. Para
