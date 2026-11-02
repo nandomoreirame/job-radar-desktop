@@ -1,6 +1,6 @@
 # Proofs: board-ui-migration
 
-- **Commit:** 0feb5d33140f2c0968af469b720b5bff6667a443
+- **Commit:** 47a790c8df0d3918c1e7d331571e721b813b4386
 - **Tree:** clean
 - **Result:** PASS
 
@@ -29,42 +29,42 @@
 ### run web (exit 0)
 
 ```text
- ✓ src/widgets/board/model/announcements.test.ts > buildAnnouncements > names the column of the card hovered 1ms
- ✓ src/widgets/board/model/announcements.test.ts > buildAnnouncements > stays quiet when hovering nothing 1ms
- ✓ src/widgets/board/model/announcements.test.ts > buildAnnouncements > reports where the card landed 1ms
- ✓ src/widgets/board/model/announcements.test.ts > buildAnnouncements > reports a cancelled drop 1ms
- ✓ src/shared/ui/primitives.test.ts > primitives > keep radix-ui out of the dependencies 2ms
- ✓ src/shared/ui/primitives.test.ts > primitives > import no radix primitive under src 3ms
- ✓ src/pages/board/BoardPage.test.tsx > BoardPage > reports a rejected move 267ms
- ✓ src/pages/board/BoardPage.test.tsx > BoardPage > opens a job from the command palette 277ms
- ✓ src/shared/lib/sidebar-state.test.ts > sidebar state > starts collapsed when nothing was stored 3ms
- ✓ src/shared/lib/sidebar-state.test.ts > sidebar state > round-trips the stored choice 0ms
- ✓ src/shared/lib/sidebar-state.test.ts > sidebar state > survives unavailable storage 2ms
- ✓ src/shared/api/board.test.ts > boardApi > lists the board through the Rust command 3ms
- ✓ src/shared/api/board.test.ts > boardApi > sends the move through the Rust command 0ms
- ✓ src/widgets/board/model/kanban.test.ts > columnOf > finds the stage holding a card 1ms
- ✓ src/widgets/board/model/kanban.test.ts > columnOf > returns undefined for an unknown id 0ms
- ✓ src/widgets/board/model/kanban.test.ts > resolveKanbanDrop > moves to another open stage 0ms
- ✓ src/widgets/board/model/kanban.test.ts > resolveKanbanDrop > asks for an outcome before closing 0ms
- ✓ src/widgets/board/model/kanban.test.ts > resolveKanbanDrop > ignores the same column and a lost card 0ms
- ✓ src/widgets/board/model/metrics.test.ts > computeMetrics > counts applications in the last seven days 1ms
+ ✓ src/shared/lib/visual-mode.test.ts > resolveVisualMode > falls back to the env default 1ms
+ ✓ src/shared/lib/visual-mode.test.ts > resolveVisualMode > defaults to glass 1ms
+ ✓ src/shared/lib/visual-mode.test.ts > applyVisualMode > sets data-visual on the root 3ms
+ ✓ src/shared/lib/visual-mode.test.ts > readStoredVisualMode > returns the stored choice 1ms
+ ✓ src/shared/lib/visual-mode.test.ts > readStoredVisualMode > returns null when storage throws 6ms
+ ✓ src/features/filter-board/model/filter.test.ts > filterCards > keeps every card with empty filters 6ms
+ ✓ src/features/filter-board/model/filter.test.ts > filterCards > filters by source and target 1ms
+ ✓ src/features/filter-board/model/filter.test.ts > filterCards > drops cards below the minimum score 1ms
+ ✓ src/features/filter-board/model/filter.test.ts > filterCards > keeps only unread cards when asked 1ms
+ ✓ src/features/filter-board/model/filter.test.ts > matchesText > matches titles and companies without accents 2ms
+ ✓ src/features/filter-board/model/filter.test.ts > clampScore > keeps the score between 0 and 100 1ms
+ ✓ src/widgets/board/model/metrics.test.ts > computeMetrics > counts applications in the last seven days 6ms
  ✓ src/widgets/board/model/metrics.test.ts > computeMetrics > computes the response rate 0ms
  ✓ src/widgets/board/model/metrics.test.ts > computeMetrics > counts the cards in process 0ms
  ✓ src/widgets/board/model/metrics.test.ts > computeMetrics > averages the days until a response 0ms
  ✓ src/widgets/board/model/metrics.test.ts > computeMetrics > reports no data as null 1ms
- ✓ src/widgets/board/model/group.test.ts > groupByStage > keeps every stage in board order 2ms
- ✓ src/widgets/board/model/group.test.ts > groupByStage > places each card in its stage 0ms
- ✓ src/entities/job/model/format.test.ts > formatThousands > rounds monthly pay to thousands 1ms
+ ✓ src/shared/api/board.test.ts > boardApi > lists the board through the Rust command 10ms
+ ✓ src/shared/api/board.test.ts > boardApi > sends the move through the Rust command 2ms
+ ✓ src/widgets/board/model/group.test.ts > groupByStage > keeps every stage in board order 4ms
+ ✓ src/widgets/board/model/group.test.ts > groupByStage > places each card in its stage 1ms
+ ✓ src/widgets/board/model/kanban.test.ts > columnOf > finds the stage holding a card 4ms
+ ✓ src/widgets/board/model/kanban.test.ts > columnOf > returns undefined for an unknown id 1ms
+ ✓ src/widgets/board/model/kanban.test.ts > resolveKanbanDrop > moves to another open stage 2ms
+ ✓ src/widgets/board/model/kanban.test.ts > resolveKanbanDrop > asks for an outcome before closing 1ms
+ ✓ src/widgets/board/model/kanban.test.ts > resolveKanbanDrop > ignores the same column and a lost card 1ms
+ ✓ src/entities/job/model/format.test.ts > formatThousands > rounds monthly pay to thousands 2ms
  ✓ src/entities/job/model/format.test.ts > scoreTone > splits scores into three tones 0ms
  ✓ src/entities/job/model/format.test.ts > hasNegotiatedSalary > needs at least one regime 0ms
  ✓ src/entities/job/model/format.test.ts > outcomeVariant > maps each outcome to a status variant 0ms
 
  Test Files  25 passed (25)
-      Tests  111 passed (111)
-   Start at  04:56:44
-   Duration  5.16s (environment 46%, tests 26%, import 15%, setup 10%, transform 2%)
+      Tests  113 passed (113)
+   Start at  11:53:36
+   Duration  11.28s (environment 41%, tests 28%, import 17%, setup 11%, transform 2%)
 
-Environment  jsdom was created 25 times · 22.41s total, 46% of tracked time
+Environment  jsdom was created 25 times · 44.58s total, 41% of tracked time
              create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
              learn more: https://vitest.dev/guide/improving-performance#test-environments
 
@@ -97,10 +97,10 @@ dist/assets/jetbrains-mono-latin-400-normal-6-qcROiO.woff        27.49 kB
 dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2               48.25 kB
 dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2           85.06 kB
 dist/assets/noir-skyline-DGz1OufM.png                           208.94 kB
-dist/assets/index-DRP1vK_a.css                                  114.55 kB │ gzip:  25.27 kB
-dist/assets/index-CxGDlccx.js                                   722.23 kB │ gzip: 230.08 kB
+dist/assets/index-BbEwKfye.css                                  115.86 kB │ gzip:  25.42 kB
+dist/assets/index-CVmw-jCV.js                                   723.68 kB │ gzip: 230.51 kB
 
-✓ built in 507ms
+✓ built in 546ms
 $ tsc --noEmit && vite build
 [plugin builtin:vite-reporter] 
 (!) Some chunks are larger than 500 kB after minification. Consider:

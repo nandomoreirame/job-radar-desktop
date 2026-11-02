@@ -21,7 +21,11 @@ export function JobDialog({ card, onOpenChange }: Props) {
   return (
     <ResponsiveDialog open={card !== null} onOpenChange={open => onOpenChange(open)}>
       {card && (
-        <ResponsiveDialogContent showCloseButton={false} className="bg-noir-card sm:max-w-[42rem]">
+        <ResponsiveDialogContent
+          showCloseButton={false}
+          overlayClassName="backdrop-blur-none supports-backdrop-filter:backdrop-blur-none"
+          className="bg-noir-card sm:max-w-[42rem]"
+        >
           <ResponsiveDialogHeader>
             <ResponsiveDialogTitle>{card.title}</ResponsiveDialogTitle>
             <ResponsiveDialogDescription>
