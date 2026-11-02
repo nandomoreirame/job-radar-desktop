@@ -26,3 +26,7 @@ ROADMAP milestone 3: a SQLite `Store` so cards and edits survive a restart, repl
   SqliteStore persistence, private database paths, startup wiring and README/Roadmap updates.
 - 2026-11-02: Manual startup validation remains pending: `pnpm tauri dev`, persistence across
   restart, private file permissions and the native error dialog for a corrupt database.
+- 2026-11-02: Independent review was attempted through agy, Codex and Grok; all returned exit 3
+  for auth/quota/rate-limit/network. `docs/reviews/sqlite-store.md` records zero code findings
+  as a self-assessment, not an external review. Keep the phase open until review and manual
+  startup validation are available.
