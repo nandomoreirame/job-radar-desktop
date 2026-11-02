@@ -273,10 +273,7 @@ impl Store for SqliteStore {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rusqlite::types::Type;
-    use rusqlite::{Connection, OptionalExtension, Row, params};
-    use serde::Serialize;
-    use serde::de::DeserializeOwned;
+    use rusqlite::Connection;
     fn user_version(path: &Path) -> i64 {
         Connection::open(path)
             .unwrap()
