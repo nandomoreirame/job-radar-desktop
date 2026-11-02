@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "job-radar-desktop"
+    "name": "job-radar-desktop",
+    "notImplemented": "Ainda não implementado."
   },
   "titlebar": {
     "minimize": "Minimizar",
@@ -122,7 +123,38 @@
     "timeline": "Linha do tempo",
     "generateCv": "Gerar CV customizado",
     "comingSoon": "Em breve",
-    "close": "Fechar"
+    "close": "Fechar",
+    "edit": "Editar vaga",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "saveError": "Não foi possível salvar a vaga.",
+    "sections": {
+      "process": "Processo",
+      "salary": "Pretensão salarial (mensal)",
+      "recruiter": "Recrutador",
+      "links": "Links",
+      "notes": "Anotações"
+    },
+    "fields": {
+      "processStep": "Etapa do processo",
+      "nextAction": "Próxima ação",
+      "nextActionDate": "Data da próxima ação",
+      "salaryPj": "PJ (R$)",
+      "salaryClt": "CLT (R$)",
+      "recruiterName": "Nome",
+      "recruiterEmail": "E-mail",
+      "recruiterLinkedin": "LinkedIn",
+      "jobUrl": "Link da vaga",
+      "applicationUrl": "Link da candidatura",
+      "notes": "Anotações"
+    },
+    "errors": {
+      "too_long": "Texto longo demais.",
+      "invalid_email": "E-mail inválido.",
+      "invalid_url": "Use um link http(s) válido.",
+      "invalid_date": "Data inválida.",
+      "out_of_range": "Valor fora do limite."
+    }
   },
   "command": {
     "title": "Buscar vaga",

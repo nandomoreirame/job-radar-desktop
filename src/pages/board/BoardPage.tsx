@@ -15,7 +15,7 @@ type Props = { api?: BoardApi; now?: Date };
 
 export function BoardPage({ api = boardApi, now }: Props) {
   const { t } = useTranslation();
-  const { cards, status, moveError, move } = useBoard(api);
+  const { cards, status, moveError, move, update } = useBoard(api);
   const [filters, setFilters] = useState<BoardFilters>(DEFAULT_FILTERS);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const visible = useMemo(() => filterCards(cards, filters), [cards, filters]);
@@ -49,7 +49,11 @@ export function BoardPage({ api = boardApi, now }: Props) {
         />
       )}
       <JobCommand cards={cards} open={paletteOpen} onOpenChange={setPaletteOpen} onPick={card => setOpenId(card.id)} />
-      <JobDialog card={openCard} onOpenChange={open => !open && setOpenId(null)} />
+      <JobDialog
+        card={openCard}
+        onOpenChange={open => !open && setOpenId(null)}
+        onSave={details => (openCard ? update(openCard.id, details) : Promise.resolve(null))}
+      />
     </div>
   );
 }

@@ -38,7 +38,7 @@ describe('BoardPage', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Abrir detalhes de Lead AI Architect' }));
     const dialog = await screen.findByRole('dialog');
     expect(within(dialog).getByRole('heading', { name: 'Lead AI Architect' })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Fechar' }));
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancelar' }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
@@ -64,6 +64,18 @@ describe('BoardPage', () => {
     await userEvent.type(await screen.findByRole('combobox'), 'vertice');
     await userEvent.click(screen.getByRole('option', { name: /Lead AI Architect/ }));
     const dialog = await screen.findByRole('dialog', { name: 'Lead AI Architect' });
-    expect(within(dialog).getByRole('button', { name: 'Gerar CV customizado' })).toBeDisabled();
+    expect(within(dialog).getByRole('button', { name: 'Salvar' })).toBeInTheDocument();
+  });
+
+  it('saves the notes of a card through the store', async () => {
+    render(<BoardPage api={fakeApi(cards)} now={now} />);
+    await userEvent.click(await screen.findByRole('button', { name: 'Abrir detalhes de Lead AI Architect' }));
+    const dialog = await screen.findByRole('dialog');
+    await waitFor(() => expect(within(dialog).getByRole('textbox', { name: 'Etapa do processo' })).toHaveFocus());
+    await userEvent.type(within(dialog).getByRole('textbox', { name: 'Anotações' }), 'Ligar na sexta');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Salvar' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir detalhes de Lead AI Architect' }));
+    expect(await screen.findByRole('textbox', { name: 'Anotações' })).toHaveValue('Ligar na sexta');
   });
 });

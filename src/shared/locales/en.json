@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "job-radar-desktop"
+    "name": "job-radar-desktop",
+    "notImplemented": "Not implemented yet."
   },
   "titlebar": {
     "minimize": "Minimize",
@@ -122,7 +123,38 @@
     "timeline": "Timeline",
     "generateCv": "Generate tailored CV",
     "comingSoon": "Coming soon",
-    "close": "Close"
+    "close": "Close",
+    "edit": "Edit job",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saveError": "Could not save the job.",
+    "sections": {
+      "process": "Process",
+      "salary": "Salary expectation (monthly)",
+      "recruiter": "Recruiter",
+      "links": "Links",
+      "notes": "Notes"
+    },
+    "fields": {
+      "processStep": "Process step",
+      "nextAction": "Next action",
+      "nextActionDate": "Next action date",
+      "salaryPj": "PJ (R$)",
+      "salaryClt": "CLT (R$)",
+      "recruiterName": "Name",
+      "recruiterEmail": "Email",
+      "recruiterLinkedin": "LinkedIn",
+      "jobUrl": "Job link",
+      "applicationUrl": "Application link",
+      "notes": "Notes"
+    },
+    "errors": {
+      "too_long": "Text is too long.",
+      "invalid_email": "Invalid email.",
+      "invalid_url": "Use a valid http(s) link.",
+      "invalid_date": "Invalid date.",
+      "out_of_range": "Value out of range."
+    }
   },
   "command": {
     "title": "Search jobs",
