@@ -41,6 +41,11 @@ describe("JobCard", () => {
     expect(screen.getByText("Contratado")).toBeInTheDocument();
   });
 
+  it("maps the outcome to a status variant", () => {
+    render(<JobCard card={makeCard({ stage: "closed", outcome: "rejected" })} onOpen={() => {}} />);
+    expect(screen.getByText("Recusada").closest('[data-slot="status"]')).toHaveAttribute("data-variant", "error");
+  });
+
   it("shows the AI running status", () => {
     render(<JobCard card={makeCard({ aiRunning: "claude" })} onOpen={() => {}} />);
     expect(screen.getByRole("status")).toHaveTextContent("Claude trabalhando…");
