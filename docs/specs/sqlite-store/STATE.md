@@ -30,3 +30,7 @@ ROADMAP milestone 3: a SQLite `Store` so cards and edits survive a restart, repl
   for auth/quota/rate-limit/network. `docs/reviews/sqlite-store.md` records zero code findings
   as a self-assessment, not an external review. Keep the phase open until review and manual
   startup validation are available.
+- 2026-11-02: The review round identified and fixed eight findings: newer-schema byte mutation,
+  missing WAL permission assertion, startup setup panic path, unsafe update error mapping, stale
+  formatter coverage, and related proof/documentation gaps. Rust now passes 59 tests, clippy and
+  fmt; the independent reviewer chain remains unavailable.

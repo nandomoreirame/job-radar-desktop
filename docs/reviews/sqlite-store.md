@@ -39,8 +39,8 @@
 
 <!-- checks:end -->
 
-## Revisão degradada
+## Revisão da correção
 
-A implementação foi validada pelo próprio opencode. A revisão independente foi tentada pela cadeia agy -> Codex -> Grok; os três retornaram exit 3 por auth/quota/rate-limit/network. Não há corroboração cross-model.
+Os oito achados da rodada anterior foram corrigidos e revalidados localmente. A revisão independente foi tentada novamente pela cadeia agy -> Codex -> Grok; todos retornaram exit 3 por auth/quota/rate-limit/network. Não há corroboração cross-model.
 
-Validação manual pendente: `pnpm tauri dev` para confirmar o banco no diretório correto, persistência após reinício e o diálogo nativo ao abrir uma base corrompida.
+Validação manual pendente: `pnpm tauri dev`, persistência após reinício, permissões do banco e diálogo nativo para base corrompida.
