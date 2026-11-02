@@ -1,4 +1,5 @@
 pub mod commands;
+pub mod db_path;
 pub mod details;
 pub mod domain;
 pub mod mock_data;
