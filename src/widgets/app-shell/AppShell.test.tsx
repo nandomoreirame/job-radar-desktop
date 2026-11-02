@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SIDEBAR_KEY } from '@/shared/lib/sidebar-state';
@@ -50,5 +50,20 @@ describe('AppShell', () => {
     const { container } = render(<AppShell controls={controls()} renderPage={() => null} />);
     await userEvent.keyboard('{Control>}b{/Control}');
     expect(sidebarState(container)).toBe('expanded');
+  });
+
+  it('puts the sidebar toggle in the title bar, icon only', () => {
+    render(<AppShell controls={controls()} renderPage={() => null} />);
+    const toggle = within(screen.getByRole('banner')).getByRole('button', { name: 'Alternar barra lateral' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(toggle).not.toHaveTextContent('Alternar barra lateral');
+  });
+
+  it('tells that running the crawler is not implemented yet', async () => {
+    render(<AppShell controls={controls()} renderPage={() => null} />);
+    const runNow = screen.getByRole('button', { name: 'Executar agora' });
+    expect(runNow).toBeEnabled();
+    await userEvent.click(runNow);
+    expect(screen.getByRole('status')).toHaveTextContent('Ainda não implementado.');
   });
 });

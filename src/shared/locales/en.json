@@ -23,7 +23,8 @@
     "duration": "Last run: {{duration}}s",
     "nextRun": "Next: {{time}}",
     "sources": "{{ok}}/{{total}} sources ok",
-    "runNow": "Run now"
+    "runNow": "Run now",
+    "title": "Crawler"
   },
   "placeholder": {
     "body": "This screen arrives in upcoming plans."

@@ -14,7 +14,7 @@ export function AppShell({ renderPage, controls }: Props) {
   };
   return (
     <div className="noir-backdrop flex h-full flex-col">
-      <TitleBar controls={controls} />
+      <TitleBar controls={controls} sidebarOpen={sidebarOpen} onToggleSidebar={() => handleSidebar(!sidebarOpen)} />
       <SidebarProvider open={sidebarOpen} onOpenChange={handleSidebar} className="min-h-0 flex-1">
         <AppSidebar active={page} onNavigate={setPage} />
         <SidebarInset className="min-w-0 bg-transparent">{renderPage(page)}</SidebarInset>

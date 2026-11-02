@@ -1,4 +1,5 @@
-import { FileText, LayoutGrid, NotebookPen, PanelLeft, Play, Settings, UserRound, type LucideIcon } from 'lucide-react';
+import { FileText, LayoutGrid, NotebookPen, Play, Settings, UserRound, type LucideIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PageId } from '@/shared/config/navigation';
 import {
@@ -7,12 +8,10 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from '@/shared/ui/sidebar';
 type NavItem = { id: PageId; Icon: LucideIcon; pending?: number };
 const NAV: NavItem[] = [
@@ -26,23 +25,9 @@ const CRAWLER_STATUS = { time: '08:00', total: 142, fresh: 9, duration: 38, next
 type Props = { active: PageId; onNavigate: (page: PageId) => void };
 export function AppSidebar({ active, onNavigate }: Props) {
   const { t } = useTranslation();
-  const { state, toggleSidebar } = useSidebar();
+  const [notice, setNotice] = useState(false);
   return (
     <BaseSidebar collapsible="icon" className="!top-10 !h-[calc(100svh-2.5rem)]">
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={toggleSidebar}
-              tooltip={t('sidebar.toggle')}
-              aria-expanded={state === 'expanded'}
-            >
-              <PanelLeft aria-hidden="true" />
-              <span>{t('sidebar.toggle')}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -72,24 +57,37 @@ export function AppSidebar({ active, onNavigate }: Props) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="gap-1 text-xs text-noir-muted">
-        <p className="flex items-center gap-2 px-2 text-noir-teal">
-          <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-noir-teal" />
-          <span className="group-data-[collapsible=icon]:sr-only">{t('crawler.active')}</span>
-        </p>
-        <p className="px-2 group-data-[collapsible=icon]:hidden">{t('crawler.lastRun', CRAWLER_STATUS)}</p>
-        <p className="px-2 group-data-[collapsible=icon]:hidden">{t('crawler.duration', CRAWLER_STATUS)}</p>
-        <p className="px-2 group-data-[collapsible=icon]:hidden">{t('crawler.nextRun', CRAWLER_STATUS)}</p>
-        <p className="px-2 group-data-[collapsible=icon]:hidden">{t('crawler.sources', CRAWLER_STATUS)}</p>
-        <button
-          type="button"
-          disabled
-          title={t('crawler.runNow')}
-          className="mt-2 flex items-center gap-2 rounded-md px-2 py-1 text-left text-noir-muted"
+      <SidebarFooter>
+        <section
+          aria-label={t('crawler.title')}
+          className="flex flex-col gap-1 rounded-lg border border-noir-border bg-noir-card/70 p-3 text-xs text-noir-muted group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0"
         >
-          <Play aria-hidden="true" className="size-3" />
-          <span className="group-data-[collapsible=icon]:sr-only">{t('crawler.runNow')}</span>
-        </button>
+          <p className="flex items-center gap-2 text-noir-teal">
+            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-noir-teal" />
+            <span className="group-data-[collapsible=icon]:sr-only">{t('crawler.active')}</span>
+          </p>
+          <div className="flex flex-col gap-1 group-data-[collapsible=icon]:hidden">
+            <p>{t('crawler.lastRun', CRAWLER_STATUS)}</p>
+            <p>{t('crawler.duration', CRAWLER_STATUS)}</p>
+            <p>{t('crawler.nextRun', CRAWLER_STATUS)}</p>
+            <p>{t('crawler.sources', CRAWLER_STATUS)}</p>
+          </div>
+          <button
+            type="button"
+            title={t('crawler.runNow')}
+            onClick={() => setNotice(true)}
+            className="mt-2 flex items-center gap-2 rounded-md border border-noir-border px-2 py-1.5 text-left text-noir-text hover:border-noir-amber hover:text-noir-amber focus-visible:outline-2 focus-visible:outline-noir-amber group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:px-1"
+          >
+            <Play aria-hidden="true" className="size-3 shrink-0" />
+            <span className="group-data-[collapsible=icon]:sr-only">{t('crawler.runNow')}</span>
+          </button>
+          {/* The crawler runs in the homelab for now; running it from the app is a later plan. */}
+          {notice && (
+            <p role="status" className="group-data-[collapsible=icon]:sr-only">
+              {t('app.notImplemented')}
+            </p>
+          )}
+        </section>
       </SidebarFooter>
     </BaseSidebar>
   );

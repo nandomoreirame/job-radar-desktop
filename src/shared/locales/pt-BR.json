@@ -23,7 +23,8 @@
     "duration": "Última execução: {{duration}}s",
     "nextRun": "Próxima: {{time}}",
     "sources": "{{ok}}/{{total}} fontes ok",
-    "runNow": "Executar agora"
+    "runNow": "Executar agora",
+    "title": "Crawler"
   },
   "placeholder": {
     "body": "Esta tela chega nos próximos planos."
