@@ -27,7 +27,7 @@ encontra e pontua as vagas.
 - Veja cada candidatura em seis colunas: Caixa de entrada, Triagem, Candidatado, Em processo, Oferta, Encerradas.
 - Mova um card arrastando ou pelo menu dele, e registre por que ele foi encerrado (contratado, recusada, descartada, sem resposta).
 - Filtre por fonte, alvo e score mínimo; a faixa de métricas (candidaturas na semana, taxa de resposta, dias até a resposta) acompanha os filtros.
-- Abra um card para ver detalhes, salário negociado (PJ e/ou CLT) e linha do tempo.
+- Abra um card para editar o seu lado da candidatura: pretensão salarial (PJ e/ou CLT), contato do recrutador, links, próxima ação e anotações.
 - Use em português do Brasil (padrão) ou em inglês.
 
 ## Instalação
@@ -54,7 +54,7 @@ No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 
 
 | Ação | Como |
 |---|---|
-| Abrir uma vaga | Clique no título do card, ou chegue nele com Tab e aperte Enter |
+| Editar uma vaga | Clique no título do card (ou chegue nele com Tab e aperte Enter), altere os campos e salve |
 | Mover uma vaga | Arraste o card, ou abra o menu "..." e escolha a coluna |
 | Encerrar uma vaga | Solte em Encerradas e escolha o motivo, ou use "Encerrar como" no menu |
 | Filtrar | Fonte, alvo e score mínimo na barra de ferramentas |
@@ -67,13 +67,13 @@ As mudanças ficam em memória e somem quando o app reinicia; a persistência ch
 | Tarefa | Comando |
 |---|---|
 | Testes web (Vitest, jsdom) | `pnpm test` |
-| Testes Rust | `cargo test --manifest-path src-tauri/Cargo.toml` |
+| Testes Rust | `cd src-tauri && cargo test` |
 | Checagem de tipos | `pnpm typecheck` |
 | Lint | `pnpm lint` |
 | Build web de produção | `pnpm build` |
 | Pacote desktop | `pnpm tauri build` |
 
-O `cargo test` também regera os tipos TypeScript em `src/shared/bindings` a partir do domínio em
+O `cargo test`, rodado dentro de `src-tauri/`, também regera os tipos TypeScript em `src/shared/bindings` a partir do domínio em
 Rust (ts-rs), então o lado React nunca redeclara esses tipos.
 
 Estrutura: `src-tauri/` guarda o domínio em Rust, a trait `Store` e os comandos IPC; `src/` é o app

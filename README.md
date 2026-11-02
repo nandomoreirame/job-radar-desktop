@@ -26,7 +26,7 @@ scores the postings.
 - See every application in six columns: Inbox, Triage, Applied, In process, Offer, Closed.
 - Move a card by dragging it or from its menu, and record why it closed (hired, rejected, discarded, no response).
 - Filter by source, target role and minimum score; the metrics strip (applications this week, response rate, average days to a reply) follows the filters.
-- Open a card for its details, negotiated salary (PJ and/or CLT) and timeline.
+- Open a card to edit your side of the application: salary expectation (PJ and/or CLT), recruiter contact, links, next action and notes.
 - Use it in Brazilian Portuguese (default) or English.
 
 ## Quick start
@@ -53,7 +53,7 @@ On Wayland, if the window stays blank, run `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnp
 
 | Action | How |
 |---|---|
-| Open a job | Click the card title, or Tab to it and press Enter |
+| Edit a job | Click the card title (or Tab to it and press Enter), change the fields and Save |
 | Move a job | Drag the card, or open its "..." menu and pick a column |
 | Close a job | Drop it on Closed and choose the outcome, or use "Close as" in its menu |
 | Filter | Source, target and minimum score in the toolbar |
@@ -66,13 +66,13 @@ Changes live in memory and reset when the app restarts; persistence comes with t
 | Task | Command |
 |---|---|
 | Web tests (Vitest, jsdom) | `pnpm test` |
-| Rust tests | `cargo test --manifest-path src-tauri/Cargo.toml` |
+| Rust tests | `cd src-tauri && cargo test` |
 | Type-check | `pnpm typecheck` |
 | Lint | `pnpm lint` |
 | Production web build | `pnpm build` |
 | Desktop bundle | `pnpm tauri build` |
 
-`cargo test` also regenerates the TypeScript types in `src/shared/bindings` from the Rust domain
+`cargo test`, run from `src-tauri/`, also regenerates the TypeScript types in `src/shared/bindings` from the Rust domain
 (ts-rs), so the React side never redeclares them.
 
 Layout: `src-tauri/` holds the Rust domain, the `Store` trait and the IPC commands; `src/` is the
