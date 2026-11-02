@@ -159,7 +159,8 @@
       "invalid_date": "Data inválida.",
       "out_of_range": "Valor fora do limite."
     },
-    "openLink": "Abrir vaga"
+    "openLink": "Abrir vaga",
+    "openLinkError": "Não foi possível abrir o link."
   },
   "command": {
     "title": "Buscar vaga",

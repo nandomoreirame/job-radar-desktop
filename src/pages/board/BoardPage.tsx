@@ -7,6 +7,7 @@ import { Toolbar } from '@/features/filter-board/ui/Toolbar';
 import { JobCommand } from '@/features/search-jobs/ui/JobCommand';
 import { boardApi, type BoardApi } from '@/shared/api/board';
 import { useHotkey } from '@/shared/lib/hooks/use-hotkey';
+import { useOpenLink } from '@/shared/lib/hooks/use-open-link';
 import { Board } from '@/widgets/board/Board';
 import { MetricsStrip } from '@/widgets/board/MetricsStrip';
 import { computeMetrics } from '@/widgets/board/model/metrics';
@@ -26,6 +27,7 @@ export function BoardPage({ api = boardApi, now }: Props) {
   const openCard = cards.find(card => card.id === openId) ?? null;
   const openPalette = useCallback(() => setPaletteOpen(true), []);
   useHotkey('k', openPalette);
+  const { openLink, linkError } = useOpenLink(api.openLink);
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-hidden pt-6">
@@ -36,6 +38,11 @@ export function BoardPage({ api = boardApi, now }: Props) {
       <div className="px-6">
         <MetricsStrip metrics={metrics} />
       </div>
+      {linkError && (
+        <p role="alert" className="px-6 text-sm text-noir-red">
+          {t('dialog.openLinkError')}
+        </p>
+      )}
       {moveError && (
         <p role="alert" className="px-6 text-sm text-noir-red">
           {t('board.moveError')}
@@ -72,7 +79,7 @@ export function BoardPage({ api = boardApi, now }: Props) {
         card={openCard}
         onOpenChange={open => !open && setOpenId(null)}
         onSave={details => (openCard ? update(openCard.id, details) : Promise.resolve(null))}
-        onOpenLink={id => void api.openLink(id)}
+        onOpenLink={id => void openLink(id)}
       />
     </div>
   );

@@ -159,7 +159,8 @@
       "invalid_date": "Invalid date.",
       "out_of_range": "Value out of range."
     },
-    "openLink": "Open job"
+    "openLink": "Open job",
+    "openLinkError": "The link could not be opened."
   },
   "command": {
     "title": "Search jobs",

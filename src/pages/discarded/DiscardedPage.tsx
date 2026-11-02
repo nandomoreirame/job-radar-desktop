@@ -8,10 +8,12 @@ import type { DiscardedJob } from '@/shared/bindings/DiscardedJob';
 import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
+import { useOpenLink } from '@/shared/lib/hooks/use-open-link';
 type Props = { api?: DiscardedApi };
 export function DiscardedPage({ api = discardedApi }: Props) {
   const { t } = useTranslation();
   const { jobs, status, actionError, restore, remove } = useDiscarded(api);
+  const { openLink, linkError } = useOpenLink(api.openLink);
   const [q, setQ] = useState('');
   const [confirming, setConfirming] = useState<DiscardedJob | null>(null);
   const visible = useMemo(() => jobs.filter(j => matchesText(`${j.title} ${j.company} ${j.source}`, q)), [jobs, q]);
@@ -28,6 +30,11 @@ export function DiscardedPage({ api = discardedApi }: Props) {
           className="h-9 w-72"
         />
       </div>
+      {linkError && (
+        <p role="alert" className="text-sm text-noir-red">
+          {t('dialog.openLinkError')}
+        </p>
+      )}
       {actionError && (
         <p role="alert" className="text-sm text-noir-red">
           {t('discarded.actionError')}
@@ -61,7 +68,7 @@ export function DiscardedPage({ api = discardedApi }: Props) {
                   {t('discarded.restore')}
                 </Button>
                 {job.jobUrl && (
-                  <Button type="button" variant="outline" size="sm" onClick={() => void api.openLink(job.id)}>
+                  <Button type="button" variant="outline" size="sm" onClick={() => void openLink(job.id)}>
                     <ExternalLink aria-hidden="true" />
                     {t('dialog.openLink')}
                   </Button>
