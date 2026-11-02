@@ -45,7 +45,9 @@ export function Board({ cards, onOpen, onMove }: Props) {
           restore();
         }}
       >
-        <KanbanBoard className="min-h-0 min-w-0 flex-1 items-start gap-3 overflow-x-auto pb-6 pl-6">
+        {/* relative: absolute descendants (sr-only counts) must be clipped by this scroller,
+            or they stretch the page and add a second horizontal scrollbar. */}
+        <KanbanBoard className="relative min-h-0 min-w-0 flex-1 items-start gap-3 overflow-x-auto pb-6 pl-6">
           {STAGES.map(stage => (
             <BoardColumn
               key={stage}
