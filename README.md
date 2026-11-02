@@ -81,6 +81,8 @@ Specs and implementation plans live in [docs/](docs/).
 
 ## Roadmap
 
+MVP progress and every planned milestone live in [ROADMAP.md](ROADMAP.md). The main ones:
+
 - SQLite store by default, with an optional Postgres on a self-hosted server.
 - Port of the job-radar crawler to Rust, runnable headless from a timer (`job-radar crawl`).
 - AI actions through your local CLIs: tailored CV, coverage review, interview prep.

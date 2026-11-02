@@ -82,6 +82,8 @@ e planos de implementação ficam em [docs/](docs/).
 
 ## Roadmap
 
+O progresso até o MVP e todos os marcos planejados estão no [ROADMAP.md](ROADMAP.md) (em inglês). Os principais:
+
 - Store em SQLite por padrão, com Postgres opcional num servidor próprio.
 - Port do crawler do job-radar para Rust, rodando sem janela a partir de um timer (`job-radar crawl`).
 - Ações de IA pelas suas CLIs locais: currículo sob medida, revisão de cobertura, preparação de entrevista.
