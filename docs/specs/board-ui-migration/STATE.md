@@ -44,3 +44,13 @@ filters and a collapsible icon sidebar.
 - 2026-11-02: independent review of the Claude round is pending: agy, Codex and Grok all exited 3,
   and the Claude panel cannot review its own round. The round-4 review file still lists the 6
   findings until an independent reviewer rewrites it. Manual Niri validation still pending.
+- 2026-11-02: user-requested round implemented by Claude (13896fa..HEAD): job edit form backed by a
+  validated `update_card` Rust command (salary PJ/CLT, process step, next action and date,
+  recruiter name/email/LinkedIn, job and application links, notes); "Gerar CV customizado" only in
+  the inbox and enabled with a "not implemented yet" notice; "Executar agora" enabled with the same
+  notice inside a crawler card; sidebar toggle moved to the title bar (icon only); darker dialog
+  overlay; README fixed (`cargo test` must run from `src-tauri/` to regenerate bindings, because
+  `--manifest-path` from the root skips `src-tauri/.cargo/config.toml`). tier1, tier2, Rust tests,
+  clippy and check_proofs.py (17/17) pass.
+- 2026-11-02: independent review still pending: agy, Codex and Grok exited 3 again; Claude cannot
+  review its own round. Manual Niri validation pending.
