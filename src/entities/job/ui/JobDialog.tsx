@@ -3,14 +3,14 @@ import { useTranslation } from "react-i18next";
 import type { BoardCard } from "@/shared/bindings/BoardCard";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog";
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/shared/ui/responsive-dialog";
 import { hasNegotiatedSalary } from "../model/format";
 import { SalaryLine } from "./SalaryLine";
 
@@ -19,15 +19,15 @@ type Props = { card: BoardCard | null; onOpenChange: (open: boolean) => void };
 export function JobDialog({ card, onOpenChange }: Props) {
   const { t } = useTranslation();
   return (
-    <Dialog open={card !== null} onOpenChange={(open) => onOpenChange(open)}>
+    <ResponsiveDialog open={card !== null} onOpenChange={(open) => onOpenChange(open)}>
       {card && (
-        <DialogContent showCloseButton={false} className="noir-panel max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{card.title}</DialogTitle>
-            <DialogDescription>
+        <ResponsiveDialogContent showCloseButton={false} className="noir-panel max-w-2xl">
+          <ResponsiveDialogHeader>
+            <ResponsiveDialogTitle>{card.title}</ResponsiveDialogTitle>
+            <ResponsiveDialogDescription>
               {[card.company, card.source, t(`target.${card.target}`), t(`workModel.${card.workModel}`)].join(" · ")}
-            </DialogDescription>
-          </DialogHeader>
+            </ResponsiveDialogDescription>
+          </ResponsiveDialogHeader>
 
           <section aria-labelledby="job-dialog-salary" className="flex flex-col gap-1">
             <h3 id="job-dialog-salary" className="text-xs font-semibold uppercase text-noir-muted">
@@ -70,7 +70,7 @@ export function JobDialog({ card, onOpenChange }: Props) {
             </ol>
           </section>
 
-          <DialogFooter className="items-center gap-3">
+          <ResponsiveDialogFooter className="items-center gap-3">
             <span id="job-dialog-cv-hint" className="text-xs text-noir-muted">
               {t("dialog.comingSoon")}
             </span>
@@ -79,10 +79,10 @@ export function JobDialog({ card, onOpenChange }: Props) {
               <Sparkles aria-hidden="true" />
               {t("dialog.generateCv")}
             </Button>
-            <DialogClose render={<Button variant="ghost" />}>{t("dialog.close")}</DialogClose>
-          </DialogFooter>
-        </DialogContent>
+            <ResponsiveDialogClose render={<Button variant="ghost" />}>{t("dialog.close")}</ResponsiveDialogClose>
+          </ResponsiveDialogFooter>
+        </ResponsiveDialogContent>
       )}
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

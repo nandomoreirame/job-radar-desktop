@@ -44,4 +44,9 @@ describe("JobDialog", () => {
     expect(screen.getByText(/CV customizado: pronto/)).toBeInTheDocument();
     expect(screen.getByText(/Revisão de cobertura: pendente/)).toBeInTheDocument();
   });
+  it("renders the dialog variant on desktop", () => {
+    render(<JobDialog card={card} onOpenChange={() => {}} />);
+    expect(screen.getByRole("dialog")).toHaveAttribute("data-variant", "dialog");
+  });
+
 });
