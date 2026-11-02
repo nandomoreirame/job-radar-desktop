@@ -1,6 +1,7 @@
 //! Persistence boundary. Commands and the UI only see `Store`; the SQLite
 //! (default) and Postgres (self-hosted) backends implement it in later plans.
 
+#[cfg(test)]
 use std::sync::Mutex;
 
 use crate::domain::{BoardCard, CardDetails, Outcome, Stage};
@@ -51,10 +52,12 @@ pub fn validate_move(stage: Stage, outcome: Option<Outcome>) -> Result<(), Store
 }
 
 /// In-memory store seeded with fictional cards; changes last for the session.
+#[cfg(test)]
 pub struct MockStore {
     cards: Mutex<Vec<BoardCard>>,
 }
 
+#[cfg(test)]
 impl MockStore {
     pub fn new(cards: Vec<BoardCard>) -> Self {
         Self {
@@ -63,6 +66,7 @@ impl MockStore {
     }
 }
 
+#[cfg(test)]
 impl Store for MockStore {
     fn list_cards(&self) -> Result<Vec<BoardCard>, StoreError> {
         Ok(self.cards.lock().map_err(|_| StoreError::Poisoned)?.clone())

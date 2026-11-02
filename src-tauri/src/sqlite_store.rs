@@ -74,6 +74,7 @@ fn migrate(conn: &mut Connection) -> Result<(), StoreError> {
 macro_rules! card_columns { () => { "id, title, company, source, target, work_model, location, score, stage, outcome, process_step, salary_pj, salary_clt, has_cv, has_coverage, has_interview_prep, last_activity, next_action, next_action_date, ai_running, unread, recruiter_name, recruiter_email, recruiter_linkedin, job_url, application_url, notes" }; }
 const LIST_CARDS: &str = concat!("SELECT ", card_columns!(), " FROM cards ORDER BY rowid");
 const GET_CARD: &str = concat!("SELECT ", card_columns!(), " FROM cards WHERE id = ?1");
+#[cfg(test)]
 const INSERT_CARD: &str = concat!(
     "INSERT INTO cards (",
     card_columns!(),
@@ -83,6 +84,7 @@ const LIST_EVENTS: &str =
     "SELECT card_id, at, kind, label FROM timeline_events ORDER BY card_id, at, id";
 const CARD_EVENTS: &str =
     "SELECT card_id, at, kind, label FROM timeline_events WHERE card_id = ?1 ORDER BY at, id";
+#[cfg(test)]
 const INSERT_EVENT: &str =
     "INSERT INTO timeline_events (card_id, at, kind, label) VALUES (?1, ?2, ?3, ?4)";
 fn to_text<T: Serialize>(value: &T) -> Result<String, StoreError> {
@@ -150,6 +152,7 @@ fn event_from_row(row: &Row<'_>) -> rusqlite::Result<(String, TimelineEvent)> {
         },
     ))
 }
+#[cfg(test)]
 fn insert_card(conn: &Connection, card: &BoardCard) -> Result<(), StoreError> {
     let salary = card.salary.as_ref();
     conn.prepare_cached(INSERT_CARD)?.execute(params![
@@ -205,6 +208,7 @@ fn load_card(conn: &Connection, id: &str) -> Result<BoardCard, StoreError> {
         .collect::<Result<_, _>>()?;
     Ok(card)
 }
+#[cfg(test)]
 impl SqliteStore {
     pub fn seed_if_empty(&self, cards: &[BoardCard]) -> Result<bool, StoreError> {
         let mut conn = self.lock()?;
