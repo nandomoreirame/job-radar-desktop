@@ -26,7 +26,12 @@ import {
 } from '../model/details-form';
 
 type SaveDetails = (details: CardDetails) => Promise<string | null>;
-type Props = { card: BoardCard | null; onOpenChange: (open: boolean) => void; onSave: SaveDetails; onOpenLink?: (id: string) => void };
+type Props = {
+  card: BoardCard | null;
+  onOpenChange: (open: boolean) => void;
+  onSave: SaveDetails;
+  onOpenLink?: (id: string) => void;
+};
 
 const ARTIFACTS = ['cv', 'coverage', 'interviewPrep'] as const;
 const INPUT_TYPE: Partial<Record<DetailField, string>> = {
@@ -55,14 +60,30 @@ export function JobDialog({ card, onOpenChange, onSave, onOpenLink }: Props) {
           className="max-h-[85vh] overflow-y-auto bg-noir-card sm:max-w-[56rem]"
         >
           {/* Keyed so the form resets when another card opens. */}
-          <JobForm key={card.id} card={card} onSave={onSave} onDone={() => onOpenChange(false)} onOpenLink={onOpenLink ?? (() => {})} />
+          <JobForm
+            key={card.id}
+            card={card}
+            onSave={onSave}
+            onDone={() => onOpenChange(false)}
+            onOpenLink={onOpenLink ?? (() => {})}
+          />
         </ResponsiveDialogContent>
       )}
     </ResponsiveDialog>
   );
 }
 
-function JobForm({ card, onSave, onDone, onOpenLink }: { card: BoardCard; onSave: SaveDetails; onDone: () => void; onOpenLink: (id: string) => void }) {
+function JobForm({
+  card,
+  onSave,
+  onDone,
+  onOpenLink,
+}: {
+  card: BoardCard;
+  onSave: SaveDetails;
+  onDone: () => void;
+  onOpenLink: (id: string) => void;
+}) {
   const { t } = useTranslation();
   const [form, setForm] = useState<DetailsForm>(() => toForm(card));
   const [fieldError, setFieldError] = useState<DetailFieldError | null>(null);
@@ -114,7 +135,14 @@ function JobForm({ card, onSave, onDone, onOpenLink }: { card: BoardCard; onSave
       <ResponsiveDialogHeader className="pr-10">
         <ResponsiveDialogTitle>{card.title}</ResponsiveDialogTitle>
         <ResponsiveDialogDescription>
-          {[card.company, card.source, card.target && t(`target.${card.target}`), card.workModel && t(`workModel.${card.workModel}`)].filter(Boolean).join(' · ')}
+          {[
+            card.company,
+            card.source,
+            card.target && t(`target.${card.target}`),
+            card.workModel && t(`workModel.${card.workModel}`),
+          ]
+            .filter(Boolean)
+            .join(' · ')}
         </ResponsiveDialogDescription>
       </ResponsiveDialogHeader>
 
@@ -184,7 +212,12 @@ function JobForm({ card, onSave, onDone, onOpenLink }: { card: BoardCard; onSave
       <ResponsiveDialogFooter className="items-center gap-3 sm:justify-between">
         {/* CV tailoring starts from a fresh job; the AI CLI runner comes in a later plan. */}
         <div className="flex items-center gap-3">
-          {card.jobUrl && <Button type="button" variant="outline" onClick={() => onOpenLink(card.id)}><ExternalLink aria-hidden="true" />{t('dialog.openLink')}</Button>}
+          {card.jobUrl && (
+            <Button type="button" variant="outline" onClick={() => onOpenLink(card.id)}>
+              <ExternalLink aria-hidden="true" />
+              {t('dialog.openLink')}
+            </Button>
+          )}
           {card.stage === 'inbox' && (
             <Button type="button" variant="outline" onClick={() => setNotice(true)}>
               <Sparkles aria-hidden="true" />

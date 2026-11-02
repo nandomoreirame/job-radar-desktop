@@ -44,3 +44,4 @@ src/widgets/board/model/group.ts
 src/widgets/board/model/metrics.test.ts
 src/widgets/board/model/metrics.ts
 Code style issues found in 49 files. Run Prettier with --write to fix.
+src-tauri/tests/fixtures/

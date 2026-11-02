@@ -64,7 +64,9 @@ export function JobCard({ card, onOpen, actions }: Props) {
           />
         )}
         {card.score === null ? (
-          <span className="rounded-md border border-noir-border px-1.5 py-0.5 text-xs text-noir-muted">{t('card.noScore')}</span>
+          <span className="rounded-md border border-noir-border px-1.5 py-0.5 text-xs text-noir-muted">
+            {t('card.noScore')}
+          </span>
         ) : (
           <span className={cn('rounded-md border px-1.5 py-0.5 font-mono text-xs', SCORE_TONE[scoreTone(card.score)])}>
             <span className="sr-only">{`${t('card.scoreLabel')} ${card.score}`}</span>
@@ -81,7 +83,11 @@ export function JobCard({ card, onOpen, actions }: Props) {
 
       <div className="flex flex-wrap items-center gap-1.5">
         <Badge variant="secondary">{card.source}</Badge>
-          {card.target && <Badge variant="secondary" className="text-noir-amber">{t(`target.${card.target}`)}</Badge>}
+        {card.target && (
+          <Badge variant="secondary" className="text-noir-amber">
+            {t(`target.${card.target}`)}
+          </Badge>
+        )}
         {card.workModel && <span className="text-xs text-noir-muted">{t(`workModel.${card.workModel}`)}</span>}
         {card.location && <span className="text-xs text-noir-muted">· {card.location}</span>}
         {card.processStep && (
