@@ -10,7 +10,7 @@ spec_path: docs/specs/crawler-core/SPEC.md
 
 ## Current Phase
 
-plan-complete
+implement: all 10 tasks committed and validated; pending the desktop window check and an independent review
 
 ## Session Log
 
@@ -30,3 +30,4 @@ plan-complete
   - The Solides 403 path was not seen live (0 failures); it is covered by `detail_outcomes_follow_the_closed_rules`.
   - NOT done: the desktop window itself. "Executar agora", live progress, the refused message and "interrompida" on screen were only proved by component tests; `start_crawl` and the events never ran inside a real Tauri window.
 - 2026-11-02: Review round 1 (self-assessment; agy, Codex and Grok exit 3) found 3 High and 2 Medium, all fixed: a renamed job list on Gupy or Solides is now an error; every Solides detail page failing is a source error; a job whose detail failed is left out and retried next crawl (Python kept it with no description); `Source::collect` returns `Collected { jobs, warnings }`, so partial failures mark the source while keeping its jobs; `Source::accepts_url` limits requests to each source's hosts, leaving other links skipped (all 173 stored Gupy and Solides URLs on the server pass it).
+- 2026-11-02: Review round 2 recorded zero open findings and `validate_verification.py` exits 0, but both rounds are self-assessment (Claude implemented; agy, Codex and Grok exit 3). The phase stays `implement` until the Task 10 window check runs: "Executar agora", live progress, the refused message and "interrompida" on screen. Independent review stays pending.

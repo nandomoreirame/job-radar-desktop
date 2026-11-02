@@ -16,6 +16,10 @@ None.
   - Features: sqlite-store; sources: C5
 - **L-004** `process` (review_finding): An implementer closing a review round with itself as reviewer does not close the round; record the review as pending.
   - Features: sqlite-store; sources: docs/reviews/sqlite-store.rounds.jsonl
+- **L-005** `crawler` (review_finding): A parser of a third-party page treats a missing expected collection as an error, and only an existing empty collection as zero results.
+  - Features: crawler-core; sources: src-tauri/src/crawler/sources/gupy.rs parse_search
+- **L-006** `crawler` (review_finding): A request built from a stored or imported URL is checked against the hosts the docs declare before it is made.
+  - Features: crawler-core; sources: src-tauri/src/crawler/pipeline.rs rescore
 
 ## Quarantined
 

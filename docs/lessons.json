@@ -60,6 +60,36 @@
         "docs/reviews/sqlite-store.rounds.jsonl"
       ],
       "penalties": 0
+    },
+    {
+      "id": "L-005",
+      "key": "review_finding:a parser of a third party page treats a missing expected collection as an error and only an existing empty collection as zero results",
+      "signal": "review_finding",
+      "text": "A parser of a third-party page treats a missing expected collection as an error, and only an existing empty collection as zero results.",
+      "scope": "crawler",
+      "status": "candidate",
+      "features": [
+        "crawler-core"
+      ],
+      "sources": [
+        "src-tauri/src/crawler/sources/gupy.rs parse_search"
+      ],
+      "penalties": 0
+    },
+    {
+      "id": "L-006",
+      "key": "review_finding:a request built from a stored or imported url is checked against the hosts the docs declare before it is made",
+      "signal": "review_finding",
+      "text": "A request built from a stored or imported URL is checked against the hosts the docs declare before it is made.",
+      "scope": "crawler",
+      "status": "candidate",
+      "features": [
+        "crawler-core"
+      ],
+      "sources": [
+        "src-tauri/src/crawler/pipeline.rs rescore"
+      ],
+      "penalties": 0
     }
   ]
 }
