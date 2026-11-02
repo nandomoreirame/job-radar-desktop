@@ -19,7 +19,7 @@ export function Toolbar({ filters, sources, onChange, onSearch }: Props) {
   const { t } = useTranslation();
   const summary = (count: number) => (count === 0 ? t('filters.all') : t('filters.selected', { count }));
   return (
-    <FieldSet className="flex flex-1 flex-row flex-wrap items-end gap-4">
+    <FieldSet className="flex flex-1 flex-row flex-wrap items-center gap-4">
       <FieldLegend className="sr-only">{t('filters.label')}</FieldLegend>
       {onSearch && (
         <Button variant="outline" className="h-9 w-64 justify-between text-noir-muted" onClick={onSearch}>
@@ -30,14 +30,16 @@ export function Toolbar({ filters, sources, onChange, onSearch }: Props) {
           <kbd className="font-mono text-xs">{t('command.shortcut')}</kbd>
         </Button>
       )}
-      <Field className="w-48">
-        <FieldLabel htmlFor="filter-source">{t('filters.source')}</FieldLabel>
+      <Field orientation="horizontal" className="w-auto">
+        <FieldLabel htmlFor="filter-source" className="whitespace-nowrap">
+          {t('filters.source')}
+        </FieldLabel>
         <Select
           multiple
           value={filters.sources}
           onValueChange={value => onChange({ ...filters, sources: value as string[] })}
         >
-          <SelectTrigger id="filter-source" className="h-9 w-full">
+          <SelectTrigger id="filter-source" className="h-9 w-40">
             <SelectValue>{(value: string[]) => summary(value.length)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
@@ -49,14 +51,16 @@ export function Toolbar({ filters, sources, onChange, onSearch }: Props) {
           </SelectContent>
         </Select>
       </Field>
-      <Field className="w-48">
-        <FieldLabel htmlFor="filter-target">{t('filters.target')}</FieldLabel>
+      <Field orientation="horizontal" className="w-auto">
+        <FieldLabel htmlFor="filter-target" className="whitespace-nowrap">
+          {t('filters.target')}
+        </FieldLabel>
         <Select
           multiple
           value={filters.targets}
           onValueChange={value => onChange({ ...filters, targets: value as Target[] })}
         >
-          <SelectTrigger id="filter-target" className="h-9 w-full">
+          <SelectTrigger id="filter-target" className="h-9 w-40">
             <SelectValue>{(value: Target[]) => summary(value.length)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
@@ -68,8 +72,10 @@ export function Toolbar({ filters, sources, onChange, onSearch }: Props) {
           </SelectContent>
         </Select>
       </Field>
-      <Field className="w-28">
-        <FieldLabel htmlFor="filter-score">{t('filters.minScore')}</FieldLabel>
+      <Field orientation="horizontal" className="w-auto">
+        <FieldLabel htmlFor="filter-score" className="whitespace-nowrap">
+          {t('filters.minScore')}
+        </FieldLabel>
         <Input
           id="filter-score"
           type="number"
@@ -79,7 +85,7 @@ export function Toolbar({ filters, sources, onChange, onSearch }: Props) {
           step={5}
           value={filters.minScore}
           onChange={event => onChange({ ...filters, minScore: clampScore(event.target.value) })}
-          className="h-9 font-mono"
+          className="h-9 w-20 font-mono"
         />
       </Field>
       <Field orientation="horizontal" className="h-9 w-auto items-center">
