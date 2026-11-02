@@ -3,25 +3,7 @@ src/shared/bindings/
 dist/
 coverage/
 src-tauri/target/
-docs/plans/2026-11-02-sqlite-store.md
-docs/specs/sqlite-store/
-docs/reviews/sqlite-store.proofs.md
-docs/reviews/sqlite-store.md
-docs/reviews/sqlite-store.rounds.jsonl
-docs/LESSONS.md
-docs/lessons.json
-
-# Existing files were authored before the formatter gate.
-docs/plans/2026-11-02-board-prototype.md
-docs/plans/2026-11-02-board-ui-migration.md
-docs/reviews/board-prototype.md
-docs/reviews/board-prototype.proofs.md
-docs/reviews/board-ui-migration.md
-docs/reviews/board-ui-migration.proofs.md
-docs/specs/board-prototype/SPEC.md
-docs/specs/board-prototype/STATE.md
-docs/specs/board-ui-migration/SPEC.md
-docs/specs/board-ui-migration/STATE.md
+docs/
 eslint.config.js
 pnpm-lock.yaml
 README.md
