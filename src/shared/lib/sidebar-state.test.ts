@@ -1,4 +1,24 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { SIDEBAR_KEY, readSidebarOpen, writeSidebarOpen } from "./sidebar-state";
-afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
-describe("sidebar state", () => { it("starts collapsed when nothing was stored", () => expect(readSidebarOpen()).toBe(false)); it("round-trips the stored choice", () => { writeSidebarOpen(true); expect(localStorage.getItem(SIDEBAR_KEY)).toBe("true"); expect(readSidebarOpen()).toBe(true); }); it("survives unavailable storage", () => { vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => { throw new Error("denied"); }); vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("denied"); }); expect(readSidebarOpen()).toBe(false); expect(() => writeSidebarOpen(true)).not.toThrow(); }); });
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { SIDEBAR_KEY, readSidebarOpen, writeSidebarOpen } from './sidebar-state';
+afterEach(() => {
+  localStorage.clear();
+  vi.restoreAllMocks();
+});
+describe('sidebar state', () => {
+  it('starts collapsed when nothing was stored', () => expect(readSidebarOpen()).toBe(false));
+  it('round-trips the stored choice', () => {
+    writeSidebarOpen(true);
+    expect(localStorage.getItem(SIDEBAR_KEY)).toBe('true');
+    expect(readSidebarOpen()).toBe(true);
+  });
+  it('survives unavailable storage', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('denied');
+    });
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('denied');
+    });
+    expect(readSidebarOpen()).toBe(false);
+    expect(() => writeSidebarOpen(true)).not.toThrow();
+  });
+});

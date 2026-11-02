@@ -2,6 +2,7 @@
 //! without a running Tauri app; the wrappers only unpack `State`.
 
 use tauri::State;
+use std::env;
 
 use crate::domain::{BoardCard, Outcome, Stage};
 use crate::store::Store;
@@ -12,6 +13,19 @@ pub struct AppState {
 
 /// Ids are short opaque strings; anything else from the webview is rejected.
 pub const MAX_ID_LEN: usize = 64;
+
+pub fn is_tiling_wm(vars: impl IntoIterator<Item = (String, String)>) -> bool {
+    vars.into_iter().any(|(key, value)| {
+        matches!(key.as_str(), "NIRI_SOCKET" | "HYPRLAND_INSTANCE_SIGNATURE" | "SWAYSOCK" | "I3SOCK") && !value.is_empty()
+            || matches!(key.as_str(), "XDG_CURRENT_DESKTOP" | "XDG_SESSION_DESKTOP")
+                && value.to_ascii_lowercase().split(':').any(|desktop| matches!(desktop, "niri" | "hyprland" | "sway" | "i3" | "river"))
+    })
+}
+
+#[tauri::command]
+pub fn window_controls() -> bool {
+    is_tiling_wm(env::vars())
+}
 
 fn check_id(id: &str) -> Result<(), String> {
     if id.is_empty() || id.len() > MAX_ID_LEN {
@@ -57,6 +71,14 @@ mod tests {
 
     fn state() -> AppState {
         AppState { store: Box::new(MockStore::new(sample_cards())) }
+    }
+
+    #[test]
+    fn detects_tiling_window_managers() {
+        for (key, value) in [("NIRI_SOCKET", "/tmp/niri"), ("HYPRLAND_INSTANCE_SIGNATURE", "x"), ("SWAYSOCK", "x"), ("I3SOCK", "x"), ("XDG_CURRENT_DESKTOP", "river")] {
+            assert!(is_tiling_wm([(key.to_string(), value.to_string())]));
+        }
+        assert!(!is_tiling_wm([(String::from("XDG_CURRENT_DESKTOP"), String::from("gnome"))]));
     }
 
     #[test]

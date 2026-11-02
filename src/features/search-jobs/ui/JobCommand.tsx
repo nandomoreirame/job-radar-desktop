@@ -1,6 +1,52 @@
-import { useTranslation } from "react-i18next";
-import { matchesText } from "@/features/filter-board/model/filter";
-import type { BoardCard } from "@/shared/bindings/BoardCard";
-import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/ui/command";
-type Props = { cards: BoardCard[]; open: boolean; onOpenChange: (open: boolean) => void; onPick: (card: BoardCard) => void };
-export function JobCommand({ cards, open, onOpenChange, onPick }: Props) { const { t } = useTranslation(); return <CommandDialog open={open} onOpenChange={onOpenChange} title={t("command.title")} description={t("command.description")}><Command label={t("command.title")} filter={(value, search) => matchesText(value, search) ? 1 : 0}><CommandInput placeholder={t("command.placeholder")} /><CommandList><CommandEmpty>{t("command.empty")}</CommandEmpty><CommandGroup heading={t("command.group")}>{cards.map((card) => <CommandItem key={card.id} value={`${card.title} ${card.company} ${card.id}`} onSelect={() => { onOpenChange(false); onPick(card); }}><span className="flex-1 truncate">{card.title}</span><span className="truncate text-xs text-noir-muted">{card.company}</span><span className="font-mono text-xs">{card.score}</span></CommandItem>)}</CommandGroup></CommandList></Command></CommandDialog>; }
+import { useTranslation } from 'react-i18next';
+import { matchesText } from '@/features/filter-board/model/filter';
+import type { BoardCard } from '@/shared/bindings/BoardCard';
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/shared/ui/command';
+type Props = {
+  cards: BoardCard[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onPick: (card: BoardCard) => void;
+};
+export function JobCommand({ cards, open, onOpenChange, onPick }: Props) {
+  const { t } = useTranslation();
+  return (
+    <CommandDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t('command.title')}
+      description={t('command.description')}
+    >
+      <Command label={t('command.title')} filter={(value, search) => (matchesText(value, search) ? 1 : 0)}>
+        <CommandInput placeholder={t('command.placeholder')} />
+        <CommandList>
+          <CommandEmpty>{t('command.empty')}</CommandEmpty>
+          <CommandGroup heading={t('command.group')}>
+            {cards.map(card => (
+              <CommandItem
+                key={card.id}
+                value={`${card.title} ${card.company}`}
+                onSelect={() => {
+                  onOpenChange(false);
+                  onPick(card);
+                }}
+              >
+                <span className="flex-1 truncate">{card.title}</span>
+                <span className="truncate text-xs text-noir-muted">{card.company}</span>
+                <span className="font-mono text-xs">{card.score}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </CommandDialog>
+  );
+}

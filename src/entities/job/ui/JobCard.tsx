@@ -1,17 +1,17 @@
-import { FileText, ListChecks, MessagesSquare } from "lucide-react";
-import type { ReactNode } from "react";
-import { useTranslation } from "react-i18next";
-import type { BoardCard } from "@/shared/bindings/BoardCard";
-import { cn } from "@/shared/lib/utils";
-import { Badge } from "@/shared/ui/badge";
-import { Status, StatusIndicator, StatusLabel } from "@/shared/ui/status";
-import { outcomeVariant, scoreTone } from "../model/format";
-import { SalaryLine } from "./SalaryLine";
+import { FileText, ListChecks, MessagesSquare } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { BoardCard } from '@/shared/bindings/BoardCard';
+import { cn } from '@/shared/lib/utils';
+import { Badge } from '@/shared/ui/badge';
+import { Status, StatusIndicator, StatusLabel } from '@/shared/ui/status';
+import { outcomeVariant, scoreTone } from '../model/format';
+import { SalaryLine } from './SalaryLine';
 
 const SCORE_TONE = {
-  high: "border-noir-teal/60 text-noir-teal",
-  good: "border-noir-amber/60 text-noir-amber",
-  low: "border-noir-border text-noir-muted",
+  high: 'border-noir-teal/60 text-noir-teal',
+  good: 'border-noir-amber/60 text-noir-amber',
+  low: 'border-noir-border text-noir-muted',
 } as const;
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
@@ -27,14 +27,14 @@ export function JobCard({ card, onOpen, actions }: Props) {
   const { t } = useTranslation();
   const titleId = `job-${card.id}-title`;
   const artifacts = [
-    { key: "cv", done: card.artifacts.cv, Icon: FileText },
-    { key: "coverage", done: card.artifacts.coverage, Icon: ListChecks },
-    { key: "interviewPrep", done: card.artifacts.interviewPrep, Icon: MessagesSquare },
+    { key: 'cv', done: card.artifacts.cv, Icon: FileText },
+    { key: 'coverage', done: card.artifacts.coverage, Icon: ListChecks },
+    { key: 'interviewPrep', done: card.artifacts.interviewPrep, Icon: MessagesSquare },
   ] as const;
   const note = card.nextAction ?? card.lastActivity;
 
   return (
-    <article aria-labelledby={titleId} className="noir-card relative flex flex-col gap-3 rounded-lg p-4">
+    <article aria-labelledby={titleId} className="noir-card relative flex flex-col gap-3 rounded-lg p-3">
       <div className="flex items-start gap-3">
         <span
           aria-hidden="true"
@@ -48,7 +48,7 @@ export function JobCard({ card, onOpen, actions }: Props) {
             <button
               type="button"
               onClick={() => onOpen(card)}
-              aria-label={t("card.open", { title: card.title })}
+              aria-label={t('card.open', { title: card.title })}
               className="text-left after:absolute after:inset-0 after:rounded-lg focus-visible:outline-none"
             >
               {card.title}
@@ -57,10 +57,14 @@ export function JobCard({ card, onOpen, actions }: Props) {
           <p className="truncate text-sm text-noir-muted">{card.company}</p>
         </div>
         {card.unread && (
-          <span role="img" aria-label={t("card.unread")} className="mt-1.5 size-2 shrink-0 rounded-full bg-noir-amber" />
+          <span
+            role="img"
+            aria-label={t('card.unread')}
+            className="mt-1.5 size-2 shrink-0 rounded-full bg-noir-amber"
+          />
         )}
-        <span className={cn("rounded-md border px-1.5 py-0.5 font-mono text-xs", SCORE_TONE[scoreTone(card.score)])}>
-          <span className="sr-only">{`${t("card.scoreLabel")} ${card.score}`}</span>
+        <span className={cn('rounded-md border px-1.5 py-0.5 font-mono text-xs', SCORE_TONE[scoreTone(card.score)])}>
+          <span className="sr-only">{`${t('card.scoreLabel')} ${card.score}`}</span>
           <span aria-hidden="true">{card.score}</span>
         </span>
       </div>
@@ -90,16 +94,16 @@ export function JobCard({ card, onOpen, actions }: Props) {
       {card.aiRunning ? (
         <Status role="status" variant="info" className="w-full">
           <StatusIndicator />
-          <StatusLabel>{t("card.aiRunning", { cli: capitalize(card.aiRunning) })}</StatusLabel>
+          <StatusLabel>{t('card.aiRunning', { cli: capitalize(card.aiRunning) })}</StatusLabel>
         </Status>
       ) : (
-        <ul aria-label={t("card.artifacts.label")} className="flex gap-2">
+        <ul aria-label={t('card.artifacts.label')} className="flex gap-2">
           {artifacts.map(({ key, done, Icon }) => (
             <li key={key}>
               <Icon
                 role="img"
-                aria-label={`${t(`card.artifacts.${key}`)}: ${t(done ? "card.artifacts.done" : "card.artifacts.missing")}`}
-                className={cn("size-4", done ? "text-noir-teal" : "text-noir-muted/40")}
+                aria-label={`${t(`card.artifacts.${key}`)}: ${t(done ? 'card.artifacts.done' : 'card.artifacts.missing')}`}
+                className={cn('size-4', done ? 'text-noir-teal' : 'text-noir-muted/40')}
               />
             </li>
           ))}

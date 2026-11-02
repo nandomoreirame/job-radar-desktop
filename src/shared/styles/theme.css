@@ -1,9 +1,15 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
 
 @theme {
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --font-serif: ui-serif, Georgia, serif;
   --color-noir-bg: #0b0b0b;
   --color-noir-sidebar: #0e0e10;
@@ -82,7 +88,7 @@ body {
 }
 
 .noir-backdrop {
-  background: var(--color-noir-bg) url("../assets/noir-skyline.png") center bottom / cover no-repeat;
+  background: var(--color-noir-bg) url('../assets/noir-skyline.png') center bottom / cover no-repeat;
 }
 
 .noir-panel {
@@ -91,19 +97,19 @@ body {
 }
 
 /* Glass: translucent towards the bottom so the skyline shows through. */
-:root[data-visual="glass"] .noir-panel {
+:root[data-visual='glass'] .noir-panel {
   background: linear-gradient(to bottom, rgb(17 17 19 / 0.85), rgb(17 17 19 / 0.35));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 /* Flat: no blur; the skyline only shows in the gaps between panels. */
-:root[data-visual="flat"] .noir-panel {
+:root[data-visual='flat'] .noir-panel {
   background: rgb(17 17 19 / 0.92);
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  :root[data-visual="glass"] .noir-panel {
+  :root[data-visual='glass'] .noir-panel {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background: rgb(17 17 19 / 0.92);

@@ -1,7 +1,6 @@
 {
   "app": {
-    "name": "job-radar",
-    "signature": "terminal noir"
+    "name": "job-radar-desktop"
   },
   "titlebar": {
     "minimize": "Minimize",
@@ -19,7 +18,11 @@
   },
   "crawler": {
     "active": "Crawler active",
-    "lastRun": "Last run: today {{time}} · {{total}} jobs · {{fresh}} new"
+    "lastRun": "Last run: today {{time}} · {{total}} jobs · {{fresh}} new",
+    "duration": "Last run: {{duration}}s",
+    "nextRun": "Next: {{time}}",
+    "sources": "{{ok}}/{{total}} sources ok",
+    "runNow": "Run now"
   },
   "placeholder": {
     "body": "This screen arrives in upcoming plans."
@@ -31,7 +34,8 @@
     "moveError": "Could not move the job.",
     "empty": "No jobs here.",
     "count_one": "{{count}} job",
-    "count_other": "{{count}} jobs"
+    "count_other": "{{count}} jobs",
+    "addJob": "+ Add job"
   },
   "filters": {
     "source": "Source",

@@ -1,7 +1,6 @@
 {
   "app": {
-    "name": "job-radar",
-    "signature": "terminal noir"
+    "name": "job-radar-desktop"
   },
   "titlebar": {
     "minimize": "Minimizar",
@@ -19,7 +18,11 @@
   },
   "crawler": {
     "active": "Crawler ativo",
-    "lastRun": "Última varredura: hoje {{time}} · {{total}} vagas · {{fresh}} novas"
+    "lastRun": "Última varredura: hoje {{time}} · {{total}} vagas · {{fresh}} novas",
+    "duration": "Última execução: {{duration}}s",
+    "nextRun": "Próxima: {{time}}",
+    "sources": "{{ok}}/{{total}} fontes ok",
+    "runNow": "Executar agora"
   },
   "placeholder": {
     "body": "Esta tela chega nos próximos planos."
@@ -31,7 +34,8 @@
     "moveError": "Não foi possível mover a vaga.",
     "empty": "Nenhuma vaga aqui.",
     "count_one": "{{count}} vaga",
-    "count_other": "{{count}} vagas"
+    "count_other": "{{count}} vagas",
+    "addJob": "+ Adicionar vaga"
   },
   "filters": {
     "source": "Fonte",

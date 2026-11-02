@@ -10,7 +10,8 @@ keyboard support instead of local code.
 ## Goals
 
 - Every UI primitive comes from shadcn `base-nova` (Base UI) or Dice UI; `radix-ui` leaves the
-  dependency tree.
+  direct dependency tree and is not imported under `src` (cmdk may retain a transitive dialog
+  dependency).
 - The board runs on Dice UI Kanban, with pointer and keyboard drag (Space/Enter, arrows, Esc).
 - Search moves to a Ctrl/Cmd+K command palette that opens the job dialog.
 - The sidebar collapses to icons by default and remembers the user's choice.
