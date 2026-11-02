@@ -119,3 +119,25 @@ body {
 .noir-card:focus-within {
   border-color: var(--color-noir-amber);
 }
+
+:root {
+  --sidebar: #0e0e10;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #f5a524;
+  --sidebar-primary-foreground: #0b0b0b;
+  --sidebar-accent: #1c1c1f;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: #26262b;
+  --sidebar-ring: #f5a524;
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
