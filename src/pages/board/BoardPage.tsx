@@ -12,7 +12,7 @@ type Props = { api?: BoardApi; now?: Date };
 
 export function BoardPage({ api = boardApi, now }: Props) {
   const { t } = useTranslation();
-  const { cards, status } = useBoard(api);
+  const { cards, status, moveError, move } = useBoard(api);
   const [filters, setFilters] = useState<BoardFilters>(EMPTY_FILTERS);
   const visible = useMemo(() => filterCards(cards, filters), [cards, filters]);
   // Metrics follow the filters, so a source or target can be judged on its own.
@@ -26,9 +26,12 @@ export function BoardPage({ api = boardApi, now }: Props) {
         <Toolbar filters={filters} sources={sources} onChange={setFilters} />
       </div>
       <MetricsStrip metrics={metrics} />
+      {moveError && <p role="alert" className="text-sm text-noir-red">{t("board.moveError")}</p>}
       {status === "loading" && <p role="status">{t("board.loading")}</p>}
       {status === "error" && <p role="alert">{t("board.error")}</p>}
-      {status === "ready" && <Board cards={visible} onOpen={() => {}} />}
+      {status === "ready" && (
+        <Board cards={visible} onOpen={() => {}} onMove={(id, stage, outcome) => void move(id, stage, outcome)} />
+      )}
     </div>
   );
 }
