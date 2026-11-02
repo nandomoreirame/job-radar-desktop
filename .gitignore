@@ -12,6 +12,8 @@ dist
 dist-ssr
 coverage
 *.local
+# ts-rs writes here when cargo runs outside src-tauri; src/shared/bindings is the real one.
+src-tauri/bindings
 
 # Editor directories and files
 .vscode/*
