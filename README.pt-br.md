@@ -4,7 +4,7 @@ Rastreador desktop local-first para busca de emprego: board, filtros e candidatu
 
 [English](README.md)
 
-<!-- Screenshot pendente: adicione docs/images/board.png (o board numa janela 2560x1080) e linke aqui. -->
+![Board do job-radar-desktop: seis colunas, da Caixa de entrada a Encerradas, com cards de vagas, filtros, métricas e a sidebar recolhível, sobre o skyline do Terminal Noir](docs/images/board.png)
 
 > **Status: pré-alpha.** O board roda com dados fictícios servidos pelo Rust. Ainda não há banco
 > de dados, crawler nem integração com IA; veja o [Roadmap](#roadmap).

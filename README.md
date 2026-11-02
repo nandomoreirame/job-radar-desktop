@@ -4,7 +4,7 @@ Local-first desktop tracker for a job search: board, filters and AI-assisted app
 
 [Português](README.pt-br.md)
 
-<!-- Screenshot pending: add docs/images/board.png (the board on a 2560x1080 window) and link it here. -->
+![job-radar-desktop board: six columns from Inbox to Closed with job cards, filters, metrics and the collapsible sidebar, over the Terminal Noir skyline](docs/images/board.png)
 
 > **Status: pre-alpha.** The board runs on fictional mock data served by Rust. There is no
 > database, crawler or AI integration yet; see [Roadmap](#roadmap).
