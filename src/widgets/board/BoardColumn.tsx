@@ -23,7 +23,7 @@ export function BoardColumn({ stage, cards, onOpen, renderActions }: Props) {
       render={<section />}
       aria-labelledby={headingId}
       className={cn(
-        'noir-panel flex max-h-full min-h-0 flex-col rounded-xl data-dragging:border-noir-amber',
+        'noir-panel flex max-h-full min-h-0 min-w-[340px] flex-1 basis-0 flex-col rounded-xl data-dragging:border-noir-amber',
         isOffer && 'border-noir-teal/50',
       )}
     >

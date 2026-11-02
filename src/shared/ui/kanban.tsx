@@ -601,8 +601,9 @@ function KanbanBoard(props: KanbanBoardProps) {
     props: mergeProps<'div'>(
       {
         ref,
+        // Local edit: no size-full, so the board can widen past its parent with negative margins.
         className: cn(
-          'flex size-full gap-4',
+          'flex h-full gap-4',
           context.orientation === 'horizontal' ? 'flex-row' : 'flex-col',
           className,
         ),

@@ -45,7 +45,7 @@ export function Board({ cards, onOpen, onMove }: Props) {
           restore();
         }}
       >
-        <KanbanBoard className="-mx-6 grid min-h-0 flex-1 auto-cols-[minmax(340px,1fr)] grid-flow-col items-start gap-3 overflow-x-auto px-6 pb-6">
+        <KanbanBoard className="-mx-6 min-h-0 flex-1 items-start gap-3 overflow-x-auto pb-6 pl-6">
           {STAGES.map(stage => (
             <BoardColumn
               key={stage}
@@ -65,6 +65,9 @@ export function Board({ cards, onOpen, onMove }: Props) {
               )}
             />
           ))}
+          {/* Trailing space inside the scroller: WebKitGTK ignores end padding of an overflow
+              container, so the gap before the right edge is a spacer instead of pr-6. */}
+          <div aria-hidden="true" className="w-3 shrink-0" />
         </KanbanBoard>
         <KanbanOverlay>
           {({ value }) => {
