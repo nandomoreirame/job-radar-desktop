@@ -98,7 +98,7 @@ def scoring_vectors():
     utc = dt.timezone.utc
     profile = (ROOT / "src-tauri" / "tests" / "fixtures" / "perfil.md").read_text(encoding="utf-8")
     skills = expand_synonyms(extract_skills(profile))
-    dates = [None, FixedDatetime(2026, 11, 1, tzinfo=utc), FixedDatetime(2026, 10, 5, tzinfo=utc), FixedDatetime(2026, 9, 1, tzinfo=utc)]
+    dates = [None, FixedDatetime(2026, 11, 1, tzinfo=utc), FixedDatetime(2026, 10, 5, tzinfo=utc), FixedDatetime(2026, 9, 1, tzinfo=utc), FixedDatetime(2026, 9, 27, 15, tzinfo=utc), FixedDatetime(2026, 9, 28, 15, tzinfo=utc), FixedDatetime(2026, 10, 11, 15, tzinfo=utc), FixedDatetime(2026, 10, 12, 15, tzinfo=utc)]
     extra = [
         ("Staff AI Engineer", "Python TypeScript AWS FastAPI Docker SQL Polars Rust React Next.js MCP", "", "remote"),
         ("Engenheiro de Dados Sênior", "Python SQL Polars ETL", "", "hybrid"),
