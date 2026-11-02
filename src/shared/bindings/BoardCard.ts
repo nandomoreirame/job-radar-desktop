@@ -7,7 +7,7 @@ import type { Target } from "./Target";
 import type { TimelineEvent } from "./TimelineEvent";
 import type { WorkModel } from "./WorkModel";
 
-export type BoardCard = { id: string, title: string, company: string, source: string, target: Target, workModel: WorkModel, location: string | null, score: number, stage: Stage, 
+export type BoardCard = { id: string, title: string, company: string, source: string, target: Target | null, workModel: WorkModel | null, location: string | null, score: number | null, stage: Stage, 
 /**
  * Set only when `stage` is `Closed`.
  */
