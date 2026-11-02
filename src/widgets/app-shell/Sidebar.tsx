@@ -60,7 +60,7 @@ export function AppSidebar({ active, onNavigate }: Props) {
       <SidebarFooter>
         <section
           aria-label={t('crawler.title')}
-          className="flex flex-col gap-1 rounded-lg border border-noir-border bg-noir-card/70 p-3 text-xs text-noir-muted group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0"
+          className="flex flex-col gap-1 rounded-lg border border-noir-border bg-noir-card/70 p-3 text-xs text-noir-muted group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0"
         >
           <p className="flex items-center gap-2 text-noir-teal">
             <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-noir-teal" />
@@ -76,7 +76,7 @@ export function AppSidebar({ active, onNavigate }: Props) {
             type="button"
             title={t('crawler.runNow')}
             onClick={() => setNotice(true)}
-            className="mt-2 flex items-center gap-2 rounded-md border border-noir-border px-2 py-1.5 text-left text-noir-text hover:border-noir-amber hover:text-noir-amber focus-visible:outline-2 focus-visible:outline-noir-amber group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:px-1"
+            className="mt-2 flex items-center gap-2 rounded-md border border-noir-border px-2 py-1.5 text-left text-noir-text hover:border-noir-amber hover:text-noir-amber focus-visible:outline-2 focus-visible:outline-noir-amber group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1"
           >
             <Play aria-hidden="true" className="size-3 shrink-0" />
             <span className="group-data-[collapsible=icon]:sr-only">{t('crawler.runNow')}</span>
