@@ -118,19 +118,76 @@ impl Store for MockStore {
     }
 
     fn list_discarded(&self) -> Result<Vec<DiscardedJob>, StoreError> {
-        Ok(Vec::new())
+        let discards = self.discards.lock().map_err(|_| StoreError::Poisoned)?;
+        let cards = self.cards.lock().map_err(|_| StoreError::Poisoned)?;
+        Ok(cards
+            .iter()
+            .filter_map(|card| {
+                discards.get(&card.id).map(|(reason, at)| DiscardedJob {
+                    id: card.id.clone(),
+                    title: card.title.clone(),
+                    company: card.company.clone(),
+                    source: card.source.clone(),
+                    location: card.location.clone(),
+                    score: card.score,
+                    reason: reason.clone(),
+                    discarded_at: at.clone(),
+                    job_url: card.job_url.clone(),
+                    description: String::new(),
+                })
+            })
+            .collect())
     }
-    fn discard_card(&self, _id: &str, _reason: &str, _at: &str) -> Result<(), StoreError> {
-        Err(StoreError::NotFound(_id.into()))
+    fn discard_card(&self, id: &str, reason: &str, at: &str) -> Result<(), StoreError> {
+        if !self
+            .cards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .iter()
+            .any(|card| card.id == id)
+        {
+            return Err(StoreError::NotFound(id.into()));
+        }
+        self.discards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .insert(id.into(), (reason.into(), at.into()));
+        Ok(())
     }
     fn restore_card(&self, id: &str) -> Result<BoardCard, StoreError> {
-        Err(StoreError::NotFound(id.into()))
+        self.discards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .remove(id)
+            .ok_or_else(|| StoreError::NotFound(id.into()))?;
+        self.cards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .iter()
+            .find(|card| card.id == id)
+            .cloned()
+            .ok_or_else(|| StoreError::NotFound(id.into()))
     }
     fn delete_card(&self, id: &str, _at: &str) -> Result<(), StoreError> {
-        Err(StoreError::NotFound(id.into()))
+        self.discards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .remove(id)
+            .ok_or_else(|| StoreError::NotFound(id.into()))?;
+        self.cards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .retain(|card| card.id != id);
+        Ok(())
     }
     fn card_url(&self, id: &str) -> Result<Option<String>, StoreError> {
-        Err(StoreError::NotFound(id.into()))
+        self.cards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .iter()
+            .find(|card| card.id == id)
+            .map(|card| card.job_url.clone())
+            .ok_or_else(|| StoreError::NotFound(id.into()))
     }
 }
 
