@@ -5,7 +5,7 @@ use std::env;
 use tauri::State;
 
 use crate::details::normalize_details;
-use crate::domain::{BoardCard, CardDetails, Outcome, Stage};
+use crate::domain::{BoardCard, CardDetails, DiscardedJob, Outcome, Stage};
 use crate::store::{Store, StoreError};
 
 pub struct AppState {
@@ -88,6 +88,31 @@ pub fn update_card(
     update_card_impl(&state, &id, details)
 }
 
+pub fn list_discarded_impl(state: &AppState) -> Result<Vec<DiscardedJob>, String> {
+    state.store.list_discarded().map_err(report)
+}
+pub fn restore_card_impl(state: &AppState, id: &str) -> Result<BoardCard, String> {
+    check_id(id)?;
+    state.store.restore_card(id).map_err(report)
+}
+pub fn delete_card_impl(state: &AppState, id: &str, today: &str) -> Result<(), String> {
+    check_id(id)?;
+    state.store.delete_card(id, today).map_err(report)
+}
+
+#[tauri::command]
+pub fn list_discarded(state: State<'_, AppState>) -> Result<Vec<DiscardedJob>, String> {
+    list_discarded_impl(&state)
+}
+#[tauri::command]
+pub fn restore_card(state: State<'_, AppState>, id: String) -> Result<BoardCard, String> {
+    restore_card_impl(&state, &id)
+}
+#[tauri::command]
+pub fn delete_card(state: State<'_, AppState>, id: String) -> Result<(), String> {
+    delete_card_impl(&state, &id, &crate::clock::today())
+}
+
 #[tauri::command]
 pub fn list_board(state: State<'_, AppState>) -> Result<Vec<BoardCard>, String> {
     list_board_impl(&state)
@@ -106,7 +131,7 @@ pub fn move_card(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::domain::CardDetails;
+    use crate::domain::{CardDetails, DiscardedJob};
     use crate::mock_data::sample_cards;
     use crate::store::MockStore;
 
@@ -132,6 +157,21 @@ mod tests {
         }
         fn update_card(&self, _: &str, _: CardDetails) -> Result<BoardCard, StoreError> {
             Err(StoreError::Storage("update SQL detail".into()))
+        }
+        fn list_discarded(&self) -> Result<Vec<DiscardedJob>, StoreError> {
+            Err(StoreError::Storage("discard SQL detail".into()))
+        }
+        fn discard_card(&self, _: &str, _: &str, _: &str) -> Result<(), StoreError> {
+            Err(StoreError::Storage("discard SQL detail".into()))
+        }
+        fn restore_card(&self, _: &str) -> Result<BoardCard, StoreError> {
+            Err(StoreError::Storage("restore SQL detail".into()))
+        }
+        fn delete_card(&self, _: &str, _: &str) -> Result<(), StoreError> {
+            Err(StoreError::Storage("delete SQL detail".into()))
+        }
+        fn card_url(&self, _: &str) -> Result<Option<String>, StoreError> {
+            Err(StoreError::Storage("url SQL detail".into()))
         }
     }
 

@@ -151,6 +151,22 @@ pub struct CardDetails {
     pub notes: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export)]
+pub struct DiscardedJob {
+    pub id: String,
+    pub title: String,
+    pub company: String,
+    pub source: String,
+    pub location: Option<String>,
+    pub score: Option<u8>,
+    pub reason: String,
+    pub discarded_at: String,
+    pub job_url: Option<String>,
+    pub description: String,
+}
+
 impl BoardCard {
     pub fn apply(&mut self, details: CardDetails) {
         self.salary = details.salary;

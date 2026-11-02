@@ -1,5 +1,7 @@
 //! SQLite backend. Schema changes are append-only migrations.
-use crate::domain::{Artifacts, BoardCard, CardDetails, Outcome, Salary, Stage, TimelineEvent};
+use crate::domain::{
+    Artifacts, BoardCard, CardDetails, DiscardedJob, Outcome, Salary, Stage, TimelineEvent,
+};
 use crate::store::{Store, StoreError, validate_move};
 use rusqlite::types::Type;
 use rusqlite::{Connection, OptionalExtension, Row, params};
@@ -72,7 +74,11 @@ fn migrate(conn: &mut Connection) -> Result<(), StoreError> {
 }
 
 macro_rules! card_columns { () => { "id, title, company, source, target, work_model, location, score, stage, outcome, process_step, salary_pj, salary_clt, has_cv, has_coverage, has_interview_prep, last_activity, next_action, next_action_date, ai_running, unread, recruiter_name, recruiter_email, recruiter_linkedin, job_url, application_url, notes" }; }
-const LIST_CARDS: &str = concat!("SELECT ", card_columns!(), " FROM cards ORDER BY rowid");
+const LIST_CARDS: &str = concat!(
+    "SELECT ",
+    card_columns!(),
+    " FROM cards WHERE discard_reason IS NULL ORDER BY rowid"
+);
 const GET_CARD: &str = concat!("SELECT ", card_columns!(), " FROM cards WHERE id = ?1");
 #[cfg(test)]
 const INSERT_CARD: &str = concat!(
@@ -280,6 +286,51 @@ impl Store for SqliteStore {
         tx.commit()?;
         Ok(card)
     }
+
+    fn list_discarded(&self) -> Result<Vec<DiscardedJob>, StoreError> {
+        let conn = self.lock()?;
+        Ok(conn.prepare("SELECT id,title,company,source,location,score,discard_reason,discarded_at,job_url,description FROM cards WHERE discard_reason IS NOT NULL ORDER BY discarded_at DESC,rowid")?.query_map([], |row| Ok(DiscardedJob{id:row.get(0)?,title:row.get(1)?,company:row.get(2)?,source:row.get(3)?,location:row.get(4)?,score:row.get(5)?,reason:row.get(6)?,discarded_at:row.get(7)?,job_url:row.get(8)?,description:row.get(9)?}))?.collect::<Result<_,_>>()?)
+    }
+    fn discard_card(&self, id: &str, reason: &str, at: &str) -> Result<(), StoreError> {
+        if self.lock()?.execute("UPDATE cards SET discard_reason=?2,discarded_at=?3 WHERE id=?1 AND discard_reason IS NULL",params![id,reason,at])?==0{return Err(StoreError::NotFound(id.into()))}
+        Ok(())
+    }
+    fn restore_card(&self, id: &str) -> Result<BoardCard, StoreError> {
+        let mut conn = self.lock()?;
+        let tx = conn.transaction()?;
+        if tx.execute("UPDATE cards SET discard_reason=NULL,discarded_at=NULL WHERE id=?1 AND discard_reason IS NOT NULL",params![id])?==0{return Err(StoreError::NotFound(id.into()))}
+        let card = load_card(&tx, id)?;
+        tx.commit()?;
+        Ok(card)
+    }
+    fn delete_card(&self, id: &str, at: &str) -> Result<(), StoreError> {
+        let mut conn = self.lock()?;
+        let tx = conn.transaction()?;
+        let key: Option<Option<String>> = tx
+            .query_row(
+                "SELECT url_key FROM cards WHERE id=?1 AND discard_reason IS NOT NULL",
+                params![id],
+                |row| row.get(0),
+            )
+            .optional()?;
+        let Some(key) = key else {
+            return Err(StoreError::NotFound(id.into()));
+        };
+        tx.execute("INSERT OR REPLACE INTO dismissed_jobs(fingerprint,url_key,dismissed_at) VALUES(?1,?2,?3)",params![id,key,at])?;
+        tx.execute("DELETE FROM cards WHERE id=?1", params![id])?;
+        tx.commit()?;
+        Ok(())
+    }
+    fn card_url(&self, id: &str) -> Result<Option<String>, StoreError> {
+        self.lock()?
+            .query_row(
+                "SELECT job_url FROM cards WHERE id=?1",
+                params![id],
+                |row| row.get(0),
+            )
+            .optional()?
+            .ok_or_else(|| StoreError::NotFound(id.into()))
+    }
 }
 
 #[cfg(test)]
@@ -316,6 +367,32 @@ mod tests {
             .unwrap();
         assert_eq!(keys, 1);
     }
+    #[test]
+    fn deleting_keeps_a_tombstone_and_removes_the_timeline() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        store
+            .seed_if_empty(&crate::mock_data::sample_cards())
+            .unwrap();
+        store.discard_card("c01", "x", "2026-11-02").unwrap();
+        store.delete_card("c01", "2026-11-02").unwrap();
+        let conn = store.lock().unwrap();
+        let tombstones: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM dismissed_jobs WHERE fingerprint = 'c01'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
+        let events: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM timeline_events WHERE card_id = 'c01'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
+        assert_eq!((tombstones, events), (1, 0));
+    }
+
     #[test]
     fn a_card_without_score_round_trips() {
         let store = SqliteStore::open_in_memory().unwrap();

@@ -2,8 +2,11 @@
 //! (default) and Postgres (self-hosted) backends implement it in later plans.
 
 #[cfg(test)]
+use std::collections::HashMap;
+#[cfg(test)]
 use std::sync::Mutex;
 
+use crate::domain::DiscardedJob;
 use crate::domain::{BoardCard, CardDetails, Outcome, Stage};
 
 #[derive(Debug, PartialEq, Eq, thiserror::Error)]
@@ -40,6 +43,11 @@ pub trait Store: Send + Sync {
     ) -> Result<BoardCard, StoreError>;
     /// `details` must already be normalized (see `details::normalize_details`).
     fn update_card(&self, id: &str, details: CardDetails) -> Result<BoardCard, StoreError>;
+    fn list_discarded(&self) -> Result<Vec<DiscardedJob>, StoreError>;
+    fn discard_card(&self, id: &str, reason: &str, at: &str) -> Result<(), StoreError>;
+    fn restore_card(&self, id: &str) -> Result<BoardCard, StoreError>;
+    fn delete_card(&self, id: &str, at: &str) -> Result<(), StoreError>;
+    fn card_url(&self, id: &str) -> Result<Option<String>, StoreError>;
 }
 
 /// Checks the stage/outcome pair before any backend touches its data.
@@ -55,6 +63,7 @@ pub fn validate_move(stage: Stage, outcome: Option<Outcome>) -> Result<(), Store
 #[cfg(test)]
 pub struct MockStore {
     cards: Mutex<Vec<BoardCard>>,
+    discards: Mutex<HashMap<String, (String, String)>>,
 }
 
 #[cfg(test)]
@@ -62,6 +71,7 @@ impl MockStore {
     pub fn new(cards: Vec<BoardCard>) -> Self {
         Self {
             cards: Mutex::new(cards),
+            discards: Mutex::new(HashMap::new()),
         }
     }
 }
@@ -69,7 +79,15 @@ impl MockStore {
 #[cfg(test)]
 impl Store for MockStore {
     fn list_cards(&self) -> Result<Vec<BoardCard>, StoreError> {
-        Ok(self.cards.lock().map_err(|_| StoreError::Poisoned)?.clone())
+        let discards = self.discards.lock().map_err(|_| StoreError::Poisoned)?;
+        Ok(self
+            .cards
+            .lock()
+            .map_err(|_| StoreError::Poisoned)?
+            .iter()
+            .filter(|card| !discards.contains_key(&card.id))
+            .cloned()
+            .collect())
     }
 
     fn move_card(
@@ -97,6 +115,22 @@ impl Store for MockStore {
             .ok_or_else(|| StoreError::NotFound(id.to_owned()))?;
         card.apply(details);
         Ok(card.clone())
+    }
+
+    fn list_discarded(&self) -> Result<Vec<DiscardedJob>, StoreError> {
+        Ok(Vec::new())
+    }
+    fn discard_card(&self, _id: &str, _reason: &str, _at: &str) -> Result<(), StoreError> {
+        Err(StoreError::NotFound(_id.into()))
+    }
+    fn restore_card(&self, id: &str) -> Result<BoardCard, StoreError> {
+        Err(StoreError::NotFound(id.into()))
+    }
+    fn delete_card(&self, id: &str, _at: &str) -> Result<(), StoreError> {
+        Err(StoreError::NotFound(id.into()))
+    }
+    fn card_url(&self, id: &str) -> Result<Option<String>, StoreError> {
+        Err(StoreError::NotFound(id.into()))
     }
 }
 
