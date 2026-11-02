@@ -1,1 +1,121 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-serif: ui-serif, Georgia, serif;
+  --color-noir-bg: #0b0b0b;
+  --color-noir-sidebar: #0e0e10;
+  --color-noir-panel: #111113;
+  --color-noir-card: #16161a;
+  --color-noir-border: #26262b;
+  --color-noir-text: #ededed;
+  --color-noir-muted: #8b8b94;
+  --color-noir-amber: #f5a524;
+  --color-noir-cream: #f7d9a8;
+  --color-noir-teal: #2dd4a7;
+  --color-noir-red: #e5484d;
+}
+
+/* shadcn semantic tokens mapped to the Terminal Noir palette (dark only). */
+:root {
+  color-scheme: dark;
+  --radius: 0.5rem;
+  --background: #0b0b0b;
+  --foreground: #ededed;
+  --card: #16161a;
+  --card-foreground: #ededed;
+  --popover: #16161a;
+  --popover-foreground: #ededed;
+  --primary: #f5a524;
+  --primary-foreground: #0b0b0b;
+  --secondary: #1c1c1f;
+  --secondary-foreground: #ededed;
+  --muted: #1c1c1f;
+  --muted-foreground: #8b8b94;
+  --accent: #1c1c1f;
+  --accent-foreground: #ededed;
+  --destructive: #e5484d;
+  --border: #26262b;
+  --input: #26262b;
+  --ring: #f5a524;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-noir-bg);
+  color: var(--color-noir-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.noir-backdrop {
+  background: var(--color-noir-bg) url("../assets/noir-skyline.png") center bottom / cover no-repeat;
+}
+
+.noir-panel {
+  background: var(--color-noir-panel);
+  border: 1px solid var(--color-noir-border);
+}
+
+/* Glass: translucent towards the bottom so the skyline shows through. */
+:root[data-visual="glass"] .noir-panel {
+  background: linear-gradient(to bottom, rgb(17 17 19 / 0.85), rgb(17 17 19 / 0.35));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Flat: no blur; the skyline only shows in the gaps between panels. */
+:root[data-visual="flat"] .noir-panel {
+  background: rgb(17 17 19 / 0.92);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root[data-visual="glass"] .noir-panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgb(17 17 19 / 0.92);
+  }
+}
+
+.noir-card {
+  background: var(--color-noir-card);
+  border: 1px solid var(--color-noir-border);
+}
+
+.noir-card:hover,
+.noir-card:focus-within {
+  border-color: var(--color-noir-amber);
+}
