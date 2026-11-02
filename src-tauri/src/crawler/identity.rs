@@ -25,8 +25,7 @@ fn strip(title: &str) -> String {
     static SEP: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r"(?s)^(?P<head>.*?)\s*[-|/]\s*(?P<tail>[^-|/]+)$").unwrap());
     let mut text = title.trim().to_owned();
-    loop {
-        let Some(m) = SEP.captures(&text) else { break };
+    while let Some(m) = SEP.captures(&text) {
         let tail = fold(m.name("tail").unwrap().as_str());
         if [
             "remoto",
