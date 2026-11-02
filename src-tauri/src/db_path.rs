@@ -6,20 +6,10 @@ pub const RELEASE_DIR: &str = "dev.nandomoreira.jobradar";
 pub const DEBUG_DIR: &str = "dev.nandomoreira.jobradar-local";
 pub const DB_FILE: &str = "job-radar.db";
 pub const ENV_VAR: &str = "JOB_RADAR_DB";
-pub fn db_path(env_override: Option<&str>, data_dir: &Path, debug: bool) -> PathBuf {
-    match env_override
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-    {
-        Some(path) => PathBuf::from(path),
-        None => data_dir
-            .join(if debug { DEBUG_DIR } else { RELEASE_DIR })
-            .join(DB_FILE),
-    }
-}
-
-pub fn db_path_os(env_override: Option<&OsStr>, data_dir: &Path, debug: bool) -> PathBuf {
-    match env_override.filter(|value| !value.is_empty()) {
+/// A blank override is ignored; any other value is kept byte for byte, Unicode or not.
+pub fn db_path(env_override: Option<&OsStr>, data_dir: &Path, debug: bool) -> PathBuf {
+    let is_blank = |value: &&OsStr| value.to_str().is_some_and(|v| v.trim().is_empty());
+    match env_override.filter(|value| !value.is_empty() && !is_blank(value)) {
         Some(path) => PathBuf::from(path),
         None => data_dir
             .join(if debug { DEBUG_DIR } else { RELEASE_DIR })
@@ -84,12 +74,22 @@ mod tests {
     fn env_override_wins_unless_empty() {
         let data = Path::new("/data");
         assert_eq!(
-            db_path(Some("/tmp/scratch.db"), data, true),
+            db_path(Some(OsStr::new("/tmp/scratch.db")), data, true),
             Path::new("/tmp/scratch.db")
         );
         assert_eq!(
-            db_path(Some("   "), data, false),
+            db_path(Some(OsStr::new("   ")), data, false),
             Path::new("/data/dev.nandomoreira.jobradar/job-radar.db")
+        );
+    }
+    #[cfg(unix)]
+    #[test]
+    fn env_override_keeps_a_non_unicode_path() {
+        use std::os::unix::ffi::OsStrExt;
+        let raw = OsStr::from_bytes(b"/tmp/caf\xe9.db");
+        assert_eq!(
+            db_path(Some(raw), Path::new("/data"), false),
+            Path::new(raw)
         );
     }
     #[test]

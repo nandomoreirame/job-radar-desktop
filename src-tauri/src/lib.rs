@@ -10,6 +10,7 @@ mod store_contract;
 
 use commands::AppState;
 use sqlite_store::SqliteStore;
+use std::ffi::{OsStr, OsString};
 use std::path::Path;
 use tauri::Manager;
 
@@ -30,30 +31,48 @@ pub fn open_store(path: &Path, debug: bool) -> Result<SqliteStore, String> {
     Ok(store)
 }
 
+pub fn open_configured_store(
+    env_override: Option<&OsStr>,
+    data_dir: &Path,
+    debug: bool,
+) -> Result<SqliteStore, String> {
+    open_store(&db_path::db_path(env_override, data_dir, debug), debug)
+}
+
+fn can_show_dialog(var: impl Fn(&str) -> Option<OsString>) -> bool {
+    ["WAYLAND_DISPLAY", "DISPLAY"]
+        .iter()
+        .any(|name| var(name).is_some_and(|value| !value.is_empty()))
+}
+
 fn startup_failed(message: &str) -> ! {
     eprintln!("job-radar-desktop: {message}");
-    rfd::MessageDialog::new()
-        .set_level(rfd::MessageLevel::Error)
-        .set_title("job-radar-desktop")
-        .set_description(message)
-        .set_buttons(rfd::MessageButtons::Ok)
-        .show();
+    // rfd blocks forever when GTK cannot start, so a session with no display only gets stderr.
+    if can_show_dialog(|name| std::env::var_os(name)) {
+        rfd::MessageDialog::new()
+            .set_level(rfd::MessageLevel::Error)
+            .set_title("job-radar-desktop")
+            .set_description(message)
+            .set_buttons(rfd::MessageButtons::Ok)
+            .show();
+    }
     std::process::exit(1);
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let debug = cfg!(debug_assertions);
+    // Open the store before tauri::Builder: once tao owns the GTK main context,
+    // the rfd dialog in startup_failed never runs and the process hangs.
     let data_dir = match dirs::data_dir() {
         Some(path) => path,
         None => startup_failed("Could not determine the user's data directory"),
     };
     let env_override = std::env::var_os(db_path::ENV_VAR);
-    let path = db_path::db_path_os(env_override.as_deref(), &data_dir, debug);
-    let store = match open_store(&path, debug) {
-        Ok(store) => store,
-        Err(message) => startup_failed(&message),
-    };
+    let store =
+        match open_configured_store(env_override.as_deref(), &data_dir, cfg!(debug_assertions)) {
+            Ok(store) => store,
+            Err(message) => startup_failed(&message),
+        };
     let app = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             commands::list_board,
@@ -91,6 +110,29 @@ mod tests {
         drop(debug);
         let again = open_store(&debug_path, true).unwrap();
         assert_eq!(again.list_cards().unwrap()[0].stage, domain::Stage::Triage);
+    }
+    #[test]
+    fn dialog_needs_a_display() {
+        let var = |name: &str| (name == "WAYLAND_DISPLAY").then(|| OsString::from("wayland-1"));
+        assert!(can_show_dialog(var));
+        assert!(!can_show_dialog(|_| None));
+        assert!(!can_show_dialog(|_| Some(OsString::new())));
+    }
+    #[test]
+    fn open_configured_store_honors_the_env_override() {
+        let dir = tempfile::tempdir().unwrap();
+        let chosen = dir.path().join("chosen.db");
+        let store = open_configured_store(Some(chosen.as_os_str()), dir.path(), false).unwrap();
+        assert!(store.list_cards().unwrap().is_empty());
+        assert!(chosen.exists());
+        assert!(!dir.path().join(db_path::RELEASE_DIR).exists());
+        let broken = dir.path().join("broken.db");
+        std::fs::write(&broken, b"this is not a sqlite database at all, just text").unwrap();
+        let Err(message) = open_configured_store(Some(broken.as_os_str()), dir.path(), false)
+        else {
+            panic!("a broken file must not open")
+        };
+        assert!(message.contains("broken.db"));
     }
     #[test]
     fn open_store_reports_the_path_and_cause() {

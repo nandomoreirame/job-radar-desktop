@@ -41,8 +41,15 @@ fn check_id(id: &str) -> Result<(), String> {
     Ok(())
 }
 
+#[cfg(test)]
+thread_local! {
+    static LOGGED: std::cell::RefCell<Vec<String>> = const { std::cell::RefCell::new(Vec::new()) };
+}
+
 fn report(error: StoreError) -> String {
     if let StoreError::Storage(detail) = &error {
+        #[cfg(test)]
+        LOGGED.with_borrow_mut(|logged| logged.push(detail.clone()));
         eprintln!("storage error: {detail}");
     }
     error.to_string()
@@ -109,11 +116,43 @@ mod tests {
         }
     }
 
+    struct FailingStore;
+
+    impl Store for FailingStore {
+        fn list_cards(&self) -> Result<Vec<BoardCard>, StoreError> {
+            Err(StoreError::Storage("list SQL detail".into()))
+        }
+        fn move_card(
+            &self,
+            _: &str,
+            _: Stage,
+            _: Option<Outcome>,
+        ) -> Result<BoardCard, StoreError> {
+            Err(StoreError::Storage("move SQL detail".into()))
+        }
+        fn update_card(&self, _: &str, _: CardDetails) -> Result<BoardCard, StoreError> {
+            Err(StoreError::Storage("update SQL detail".into()))
+        }
+    }
+
     #[test]
-    fn storage_command_errors_hide_database_details() {
+    fn every_command_logs_the_storage_detail_and_hides_it() {
+        let state = AppState {
+            store: Box::new(FailingStore),
+        };
+        let hidden = "storage error".to_string();
+        assert_eq!(list_board_impl(&state).unwrap_err(), hidden);
         assert_eq!(
-            report(StoreError::Storage("SQL detail".into())),
-            "storage error"
+            move_card_impl(&state, "c01", Stage::Triage, None).unwrap_err(),
+            hidden
+        );
+        assert_eq!(
+            update_card_impl(&state, "c01", CardDetails::default()).unwrap_err(),
+            hidden
+        );
+        assert_eq!(
+            LOGGED.with_borrow(Vec::clone),
+            ["list SQL detail", "move SQL detail", "update SQL detail"]
         );
     }
 
