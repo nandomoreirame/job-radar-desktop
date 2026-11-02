@@ -1,94 +1,27 @@
-import { ChevronDown, Mail, Search } from "lucide-react";
+import { Mail, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { TARGETS } from "@/entities/job/model/stages";
+import type { Target } from "@/shared/bindings/Target";
 import { Button } from "@/shared/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu";
+import { Checkbox } from "@/shared/ui/checkbox";
+import { Field, FieldLabel, FieldLegend, FieldSet } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
-import type { BoardFilters } from "../model/filter";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import { clampScore, type BoardFilters } from "../model/filter";
 
-type Props = { filters: BoardFilters; sources: string[]; onChange: (filters: BoardFilters) => void };
-
-const toggle = <T,>(list: T[], value: T): T[] =>
-  list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
-
-export function Toolbar({ filters, sources, onChange }: Props) {
+type Props = { filters: BoardFilters; sources: string[]; onChange: (filters: BoardFilters) => void; onSearch?: () => void };
+export function Toolbar({ filters, sources, onChange, onSearch }: Props) {
   const { t } = useTranslation();
   const summary = (count: number) => (count === 0 ? t("filters.all") : t("filters.selected", { count }));
-
   return (
-    <div role="search" className="flex flex-1 flex-wrap items-center gap-3">
-      <div className="relative w-[420px] max-w-full">
-        <Search aria-hidden="true" className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-noir-muted" />
-        <Input
-          type="search"
-          aria-label={t("filters.search")}
-          placeholder={t("filters.search")}
-          value={filters.query}
-          onChange={(event) => onChange({ ...filters, query: event.target.value })}
-          className="h-9 pl-9"
-        />
-      </div>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger render={<Button variant="outline" className="h-9" />}>
-          {t("filters.source")}: {summary(filters.sources.length)}
-          <ChevronDown aria-hidden="true" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          {sources.map((source) => (
-            <DropdownMenuCheckboxItem
-              key={source}
-              checked={filters.sources.includes(source)}
-              onCheckedChange={() => onChange({ ...filters, sources: toggle(filters.sources, source) })}
-            >
-              {source}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger render={<Button variant="outline" className="h-9" />}>
-          {t("filters.target")}: {summary(filters.targets.length)}
-          <ChevronDown aria-hidden="true" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          {TARGETS.map((target) => (
-            <DropdownMenuCheckboxItem
-              key={target}
-              checked={filters.targets.includes(target)}
-              onCheckedChange={() => onChange({ ...filters, targets: toggle(filters.targets, target) })}
-            >
-              {t(`target.${target}`)}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <label className="flex h-9 items-center gap-2 rounded-md border border-noir-border px-3 text-sm">
-        <span>{t("filters.minScore")}</span>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={5}
-          value={filters.minScore}
-          onChange={(event) => onChange({ ...filters, minScore: Number(event.target.value) })}
-          className="w-24 accent-noir-amber"
-        />
-        <span className="w-6 font-mono">{filters.minScore}</span>
-      </label>
-
-      {/* Gmail sync arrives with the AI CLI runner; disabled until then. */}
-      <Button variant="outline" className="ml-auto h-9" disabled title={t("dialog.comingSoon")}>
-        <Mail aria-hidden="true" />
-        {t("filters.syncGmail")}
-      </Button>
-    </div>
+    <FieldSet className="flex flex-1 flex-row flex-wrap items-end gap-4">
+      <FieldLegend className="sr-only">{t("filters.label")}</FieldLegend>
+      {onSearch && <Button variant="outline" className="h-9 w-64 justify-between text-noir-muted" onClick={onSearch}><span className="flex items-center gap-2"><Search aria-hidden="true" />{t("command.open")}</span><kbd className="font-mono text-xs">{t("command.shortcut")}</kbd></Button>}
+      <Field className="w-48"><FieldLabel htmlFor="filter-source">{t("filters.source")}</FieldLabel><Select multiple value={filters.sources} onValueChange={(value) => onChange({ ...filters, sources: value as string[] })}><SelectTrigger id="filter-source" className="h-9 w-full"><SelectValue>{(value: string[]) => summary(value.length)}</SelectValue></SelectTrigger><SelectContent>{sources.map((source) => <SelectItem key={source} value={source}>{source}</SelectItem>)}</SelectContent></Select></Field>
+      <Field className="w-48"><FieldLabel htmlFor="filter-target">{t("filters.target")}</FieldLabel><Select multiple value={filters.targets} onValueChange={(value) => onChange({ ...filters, targets: value as Target[] })}><SelectTrigger id="filter-target" className="h-9 w-full"><SelectValue>{(value: Target[]) => summary(value.length)}</SelectValue></SelectTrigger><SelectContent>{TARGETS.map((target) => <SelectItem key={target} value={target}>{t(`target.${target}`)}</SelectItem>)}</SelectContent></Select></Field>
+      <Field className="w-28"><FieldLabel htmlFor="filter-score">{t("filters.minScore")}</FieldLabel><Input id="filter-score" type="number" inputMode="numeric" min={0} max={100} step={5} value={filters.minScore} onChange={(event) => onChange({ ...filters, minScore: clampScore(event.target.value) })} className="h-9 font-mono" /></Field>
+      <Field orientation="horizontal" className="h-9 w-auto items-center"><Checkbox id="filter-unread" checked={filters.unreadOnly} onCheckedChange={(checked) => onChange({ ...filters, unreadOnly: checked === true })} /><FieldLabel htmlFor="filter-unread">{t("filters.unreadOnly")}</FieldLabel></Field>
+      <Button variant="outline" className="ml-auto h-9" disabled title={t("dialog.comingSoon")}><Mail aria-hidden="true" />{t("filters.syncGmail")}</Button>
+    </FieldSet>
   );
 }

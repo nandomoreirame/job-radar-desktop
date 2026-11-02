@@ -79,7 +79,9 @@ export function JobDialog({ card, onOpenChange }: Props) {
               <Sparkles aria-hidden="true" />
               {t("dialog.generateCv")}
             </Button>
-            <ResponsiveDialogClose render={<Button variant="ghost" />}>{t("dialog.close")}</ResponsiveDialogClose>
+            <ResponsiveDialogClose className="inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium hover:bg-white/5">
+              {t("dialog.close")}
+            </ResponsiveDialogClose>
           </ResponsiveDialogFooter>
         </ResponsiveDialogContent>
       )}

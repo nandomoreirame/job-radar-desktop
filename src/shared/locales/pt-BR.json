@@ -34,7 +34,6 @@
     "count_other": "{{count}} vagas"
   },
   "filters": {
-    "search": "Buscar vaga, empresa…",
     "source": "Fonte",
     "target": "Alvo",
     "all": "Todas",

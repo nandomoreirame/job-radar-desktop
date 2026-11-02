@@ -34,7 +34,6 @@
     "count_other": "{{count}} jobs"
   },
   "filters": {
-    "search": "Search job, company…",
     "source": "Source",
     "target": "Target",
     "all": "All",

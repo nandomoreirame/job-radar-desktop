@@ -12,13 +12,14 @@ const cards = [
 const now = new Date("2026-11-02T12:00:00Z");
 
 describe("BoardPage", () => {
-  it("filters the board from the search box", async () => {
-    render(<BoardPage api={fakeApi(cards)} now={now} />);
-    await screen.findByRole("heading", { name: /Lead AI Architect/ });
-    await userEvent.type(screen.getByRole("searchbox"), "vertice");
-    expect(screen.getByRole("heading", { name: /Lead AI Architect/ })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: /Tech Lead/ })).not.toBeInTheDocument();
-  });
+  it("filters the board to unread cards", async () => {
+    const list = [makeCard({ id: "u", title: "Unread Job", unread: true }), makeCard({ id: "r", title: "Read Job" })];
+    render(<BoardPage api={fakeApi(list)} now={now} />);
+    await screen.findByRole("heading", { name: /Read Job/ });
+    await userEvent.click(screen.getByRole("checkbox", { name: "Somente não lidas" }));
+    expect(screen.getByRole("heading", { name: /Unread Job/ })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /^Read Job/ })).not.toBeInTheDocument();
+  });;
 
   it("shows the loading state until the api answers", () => {
     const api: BoardApi = { ...fakeApi([]), list: () => new Promise(() => {}) };
@@ -37,7 +38,7 @@ describe("BoardPage", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Abrir detalhes de Lead AI Architect" }));
     const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByRole("heading", { name: "Lead AI Architect" })).toBeInTheDocument();
-    await userEvent.click(within(dialog).getByRole("button", { name: "Fechar" }));
+    await userEvent.click(screen.getByRole("button", { name: "Fechar" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
