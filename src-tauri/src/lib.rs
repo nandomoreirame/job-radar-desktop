@@ -75,6 +75,9 @@ pub fn run() {
             commands::list_board,
             commands::move_card,
             commands::update_card,
+            commands::list_discarded,
+            commands::restore_card,
+            commands::delete_card,
             commands::window_controls
         ])
         .build(tauri::generate_context!());
