@@ -38,7 +38,7 @@ error dialog through `rfd`.
 | `rusqlite` 0.41.1 is the current release and its `bundled` feature compiles SQLite into the binary | `cargo search rusqlite` on 2026-11-02 | yes |
 | SQLite gives `-wal`/`-shm` files the permissions of the main database file | SQLite `unix` VFS (`robust_open` copies the db mode) | assumption (checked in a test) |
 | `rfd` 0.17.2 is current; its `gtk3` feature (no default features) shows message dialogs through GTK instead of the `zenity` binary used by the default `xdg-portal` backend | `cargo info rfd` on 2026-11-02 | yes (feature list); dialog rendering is an assumption checked manually in the startup task |
-| A `setup` hook error surfaces from `tauri::Builder::build`, before the event loop runs | n/a | assumption (checked by the startup task) |
+| Startup opens the database before the Tauri event loop and reports failures through `rfd` | `src-tauri/src/lib.rs:45-70` | yes (startup path is unit-tested; native dialog remains manual) |
 
 ## Requirements
 
@@ -138,15 +138,15 @@ CREATE INDEX timeline_events_card ON timeline_events(card_id, at);
    `Store`, so `MockStore` and `SqliteStore` cannot drift (REQ-002).
 5. **Storage errors hide SQL detail from the UI** - `StoreError::Storage(String)` displays as
    "storage error"; the detail goes to stderr. The webview never sees SQL or file paths.
-6. **Store built in Tauri `setup`** - `app.path().data_dir()` is only available there; the
-   command layer keeps reading `State<AppState>`. The path choice lives in a pure function
-   (`db_path(env_override, data_dir, debug)`) so it is unit-tested without Tauri.
+6. **Store built before the Tauri event loop** - `dirs::data_dir()` resolves the user's data
+   directory before GTK/Tauri startup, so a corrupt database can show the native error dialog and
+   exit instead of blocking inside a `setup` hook. The command layer keeps reading
+   `State<AppState>`.
 7. **Separate dev data directory in code, not in config** - `cfg!(debug_assertions)` picks the
    `-local` directory, so `pnpm tauri dev` can never write fictional cards into the release
    database and no `--config` flag has to be remembered.
-8. **Startup failure dialog through `rfd` (gtk3), after `build()` fails** - No Tauri plugin and
-   no new webview permission; the dialog runs on the main thread once `Builder::build` has
-   returned the setup error, outside the event loop.
+8. **Startup failure dialog through `rfd` (gtk3), before Tauri build** - No Tauri plugin and no
+   new webview permission; the dialog runs before the event loop can claim the GTK main context.
 
 ## Security
 
@@ -200,4 +200,3 @@ Decisions surfaced and resolved during the grilling pass (pre-build stress test)
 | 6 | Timeline on `move_card` | Not written, same as `MockStore` | Parity; timeline writes belong to a later feature |
 | 7 | Error text to the webview | `storage error` only; detail to stderr | No SQL or paths in the UI |
 | 8 | File permissions | Directory `0700`, database `0600` | Salary, recruiter contacts and notes are personal data |
-

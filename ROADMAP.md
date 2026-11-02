@@ -14,7 +14,7 @@ line is wanted but not required for it.
 | --- | ------------------------------------------------------------------------------------------------------------- | ------: | -------------------------------------------------- |
 | 1   | Board prototype: Tauri + React shell, Rust domain, six columns, filters, metrics, i18n                        |      10 | Done                                               |
 | 2   | UI on shadcn Base UI and Dice UI, Kanban, command palette, job edit form with validated `update_card`         |      10 | Done (independent review and manual check pending) |
-| 3   | SQLite store: cards and edits survive a restart                                                               |      10 | Done (independent review pending)                  |
+| 3   | SQLite store: cards and edits survive a restart                                                               |      10 | Done (independent review and manual startup check pending) |
 | 4   | Real jobs in: port the job-radar crawler to Rust (`job-radar crawl`) or import its output                     |      15 | Planned                                            |
 | 5   | Add a job by hand ("+ Adicionar vaga")                                                                        |       5 | Planned                                            |
 | 6   | Settings page: job sources, targets, score cut, visual mode, language                                         |       8 | Planned                                            |

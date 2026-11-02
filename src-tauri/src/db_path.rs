@@ -1,4 +1,5 @@
 //! Database location and private filesystem creation.
+use std::ffi::OsStr;
 use std::io;
 use std::path::{Path, PathBuf};
 pub const RELEASE_DIR: &str = "dev.nandomoreira.jobradar";
@@ -6,7 +7,19 @@ pub const DEBUG_DIR: &str = "dev.nandomoreira.jobradar-local";
 pub const DB_FILE: &str = "job-radar.db";
 pub const ENV_VAR: &str = "JOB_RADAR_DB";
 pub fn db_path(env_override: Option<&str>, data_dir: &Path, debug: bool) -> PathBuf {
-    match env_override.map(str::trim).filter(|v| !v.is_empty()) {
+    match env_override
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        Some(path) => PathBuf::from(path),
+        None => data_dir
+            .join(if debug { DEBUG_DIR } else { RELEASE_DIR })
+            .join(DB_FILE),
+    }
+}
+
+pub fn db_path_os(env_override: Option<&OsStr>, data_dir: &Path, debug: bool) -> PathBuf {
+    match env_override.filter(|value| !value.is_empty()) {
         Some(path) => PathBuf::from(path),
         None => data_dir
             .join(if debug { DEBUG_DIR } else { RELEASE_DIR })

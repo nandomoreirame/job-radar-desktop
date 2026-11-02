@@ -43,6 +43,17 @@ fn startup_failed(message: &str) -> ! {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let debug = cfg!(debug_assertions);
+    let data_dir = match dirs::data_dir() {
+        Some(path) => path,
+        None => startup_failed("Could not determine the user's data directory"),
+    };
+    let env_override = std::env::var_os(db_path::ENV_VAR);
+    let path = db_path::db_path_os(env_override.as_deref(), &data_dir, debug);
+    let store = match open_store(&path, debug) {
+        Ok(store) => store,
+        Err(message) => startup_failed(&message),
+    };
     let app = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             commands::list_board,
@@ -54,17 +65,6 @@ pub fn run() {
     let app = match app {
         Ok(app) => app,
         Err(error) => startup_failed(&error.to_string()),
-    };
-    let debug = cfg!(debug_assertions);
-    let env_override = std::env::var(db_path::ENV_VAR).ok();
-    let data_dir = match app.path().data_dir() {
-        Ok(path) => path,
-        Err(error) => startup_failed(&error.to_string()),
-    };
-    let path = db_path::db_path(env_override.as_deref(), &data_dir, debug);
-    let store = match open_store(&path, debug) {
-        Ok(store) => store,
-        Err(message) => startup_failed(&message),
     };
     app.manage(AppState {
         store: Box::new(store),
