@@ -61,7 +61,7 @@ mod tests {
 
     #[test]
     fn list_board_returns_the_seeded_cards() {
-        assert_eq!(list_board_impl(&state()).unwrap().len(), sample_cards().len());
+        assert_eq!(list_board_impl(&state()).unwrap(), sample_cards());
     }
 
     #[test]
