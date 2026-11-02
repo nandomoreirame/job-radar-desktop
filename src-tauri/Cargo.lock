@@ -1636,6 +1636,7 @@ name = "job-radar-desktop"
 version = "0.1.0"
 dependencies = [
  "dirs",
+ "regex",
  "rfd",
  "rusqlite",
  "serde",
@@ -1645,6 +1646,7 @@ dependencies = [
  "tempfile",
  "thiserror 2.0.21",
  "ts-rs",
+ "url",
 ]
 
 [[package]]

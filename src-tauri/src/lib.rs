@@ -3,6 +3,7 @@ pub mod commands;
 pub mod db_path;
 pub mod details;
 pub mod domain;
+pub mod identity;
 #[cfg(test)]
 pub mod mock_data;
 pub mod sqlite_store;
