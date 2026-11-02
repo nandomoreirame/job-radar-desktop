@@ -26,16 +26,26 @@ pub struct JobDetail {
     pub published_at: Option<Now>,
 }
 
+/// What a source found. `warnings` name what failed along the way, so a half-broken
+/// source does not read as healthy while its jobs are still kept.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct Collected {
+    pub jobs: Vec<Job>,
+    pub warnings: Vec<String>,
+}
+
 /// `keep` decides which listed jobs deserve a detail request, as in `collect.py`.
 pub trait Source {
     fn name(&self) -> &'static str;
     /// Owner of a stored `source` value such as `gupy` or `github:backend-br`.
     fn owns(&self, source: &str) -> bool;
+    /// Stored links can be edited or imported; only the source's own hosts are requested.
+    fn accepts_url(&self, url: &str) -> bool;
     fn collect(
         &self,
         keep: &dyn Fn(&Job) -> bool,
         progress: &dyn Fn(&str),
-    ) -> Result<Vec<Job>, String>;
+    ) -> Result<Collected, String>;
     fn fetch_detail(&self, url: &str) -> DetailOutcome;
 }
 
@@ -45,6 +55,20 @@ fn error_outcome(error: HttpError) -> DetailOutcome {
         HttpError::Status(404 | 410) => DetailOutcome::Closed,
         other => DetailOutcome::Failed(format!("{other:?}")),
     }
+}
+
+/// True for http(s) on exactly `host`, or on any subdomain when `subdomains` is set.
+fn on_host(url: &str, host: &str, subdomains: bool) -> bool {
+    let Ok(parsed) = url::Url::parse(url) else {
+        return false;
+    };
+    let Some(found) = parsed
+        .host_str()
+        .filter(|_| matches!(parsed.scheme(), "http" | "https"))
+    else {
+        return false;
+    };
+    found == host || (subdomains && found.ends_with(&format!(".{host}")))
 }
 
 fn text<'a>(raw: &'a Value, key: &str) -> &'a str {
@@ -221,6 +245,22 @@ mod tests {
             gupy::outcome_of(Ok(b"<html></html>".to_vec())),
             DetailOutcome::Failed(_)
         ));
+    }
+
+    #[test]
+    fn hosts_match_exactly_or_by_subdomain() {
+        assert!(on_host("https://acme.gupy.io/job/1", "gupy.io", true));
+        assert!(!on_host("https://acme.gupy.io/job/1", "gupy.io", false));
+        assert!(on_host("https://gupy.io/", "gupy.io", false));
+        for url in [
+            "https://gupy.io.evil.example/x",
+            "https://evilgupy.io/x",
+            "http://localhost:9/x",
+            "ftp://acme.gupy.io/x",
+            "nada",
+        ] {
+            assert!(!on_host(url, "gupy.io", true), "{url}");
+        }
     }
 
     #[test]

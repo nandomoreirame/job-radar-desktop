@@ -7,7 +7,9 @@ use std::sync::LazyLock;
 use regex::Regex;
 use serde_json::Value;
 
-use super::{DetailOutcome, JobDetail, Source, error_outcome, id_text, parse_iso, text};
+use super::{
+    Collected, DetailOutcome, JobDetail, Source, error_outcome, id_text, on_host, parse_iso, text,
+};
 use crate::clock::Now;
 use crate::crawler::filters::AFFIRMATIVE_TAG;
 use crate::crawler::http::{Client, GetOptions, HttpError, Transport};
@@ -141,7 +143,10 @@ pub fn listing_from_blob(blob: &str) -> Result<(ListingMeta, Vec<Job>), String> 
     };
     let jobs = data["data"]
         .as_array()
-        .map_or_else(Vec::new, |items| items.iter().map(parse_listing).collect());
+        .ok_or("initialData sem data")?
+        .iter()
+        .map(parse_listing)
+        .collect();
     Ok((meta, jobs))
 }
 
@@ -193,8 +198,10 @@ impl<T: Transport> Solides<T> {
         self.client.get(url, options).map(|response| response.body)
     }
 
-    fn list_fresh(&self, progress: &dyn Fn(&str)) -> Result<Vec<Job>, String> {
+    /// The fresh jobs, plus what went wrong after a first page that worked.
+    fn list_fresh(&self, progress: &dyn Fn(&str)) -> Result<(Vec<Job>, Vec<String>), String> {
         let mut found = Vec::new();
+        let mut warnings = Vec::new();
         for page in 1..=MAX_PAGES {
             progress(&format!("solides: página {page}"));
             let url = format!("{BASE}/vagas/area/tecnologia/todas?seniorities=senior&page={page}");
@@ -206,7 +213,10 @@ impl<T: Transport> Solides<T> {
                 Ok(listing) => listing,
                 // Later pages failing keep what the earlier ones found, as in Python.
                 Err(reason) if page == 1 => return Err(reason),
-                Err(_) => break,
+                Err(reason) => {
+                    warnings.push(format!("listagem parou na página {page}: {reason}"));
+                    break;
+                }
             };
             let before = found.len();
             let total = jobs.len();
@@ -220,7 +230,7 @@ impl<T: Transport> Solides<T> {
             }
             self.client.pause(DELAY_BETWEEN_PAGES);
         }
-        Ok(found)
+        Ok((found, warnings))
     }
 }
 
@@ -233,25 +243,46 @@ impl<T: Transport> Source for Solides<T> {
         source == "solides"
     }
 
-    /// A failed detail keeps the job with no description, as in Python: with too few skills
-    /// it is rejected and not stored, so the next crawl tries it again.
+    fn accepts_url(&self, url: &str) -> bool {
+        on_host(url, "vagas.solides.com.br", false)
+    }
+
+    /// Only a job with its description comes out: one without it would be judged on the
+    /// title alone. It stays unstored, so the next crawl tries it again. Every page failing
+    /// means the site changed, which must not read as "no jobs".
     fn collect(
         &self,
         keep: &dyn Fn(&Job) -> bool,
         progress: &dyn Fn(&str),
-    ) -> Result<Vec<Job>, String> {
-        let mut detailed = Vec::new();
-        for mut job in self.list_fresh(progress)? {
+    ) -> Result<Collected, String> {
+        let (listed, mut warnings) = self.list_fresh(progress)?;
+        let mut jobs = Vec::new();
+        let mut failed = 0;
+        let mut last_error = String::new();
+        for mut job in listed {
             if !keep(&job) {
                 continue;
             }
-            if let DetailOutcome::Found(detail) = self.fetch_detail(&job.url) {
-                job.description = detail.description;
+            match self.fetch_detail(&job.url) {
+                DetailOutcome::Found(detail) => {
+                    job.description = detail.description;
+                    jobs.push(job);
+                }
+                DetailOutcome::Closed => {}
+                DetailOutcome::Failed(reason) => {
+                    failed += 1;
+                    last_error = reason;
+                }
             }
-            detailed.push(job);
             self.client.pause(DELAY_BETWEEN_DETAILS);
         }
-        Ok(detailed)
+        if failed > 0 && jobs.is_empty() {
+            return Err(format!("{failed} páginas de vaga falharam: {last_error}"));
+        }
+        if failed > 0 {
+            warnings.push(format!("{failed} páginas de vaga falharam: {last_error}"));
+        }
+        Ok(Collected { jobs, warnings })
     }
 
     fn fetch_detail(&self, url: &str) -> DetailOutcome {
@@ -318,15 +349,86 @@ mod tests {
     }
 
     #[test]
-    fn a_later_page_failure_keeps_what_was_found() {
+    fn a_later_page_failure_keeps_what_was_found_and_says_so() {
         let mut listing: Value =
             serde_json::from_str(include_str!("../../../tests/fixtures/solides_listing.json"))
                 .unwrap();
         listing["totalPages"] = 3.into();
-        let scripted =
-            Scripted::default().page(&page_url(1), 200, &page_html(&listing.to_string()));
+        let posting = include_str!("../../../tests/fixtures/solides_jobposting.html");
+        let scripted = Scripted::default()
+            .page(&page_url(1), 200, &page_html(&listing.to_string()))
+            .page(&format!("{BASE}/vaga/926052"), 200, posting)
+            .page(&format!("{BASE}/vaga/926088"), 200, posting)
+            .page(&format!("{BASE}/vaga/926340"), 200, posting);
         let solides = Solides::new(Rc::new(Client::new(&scripted)), crate::clock::fixed_now());
-        assert_eq!(solides.collect(&|_| true, &|_| {}).unwrap().len(), 3);
+        let found = solides.collect(&|_| true, &|_| {}).unwrap();
+        assert_eq!(found.jobs.len(), 3);
+        assert_eq!(found.warnings.len(), 1);
+        assert!(
+            found.warnings[0].contains("página 2"),
+            "{:?}",
+            found.warnings
+        );
+    }
+
+    #[test]
+    fn a_renamed_job_list_is_an_error() {
+        assert!(listing_from_blob(r#""initialData":{"totalPages":3,"items":[{"id":1}]}"#).is_err());
+        let (_, jobs) = listing_from_blob(r#""initialData":{"totalPages":3,"data":[]}"#).unwrap();
+        assert!(jobs.is_empty());
+    }
+
+    fn with_details(detail_status: u16, detail_body: &str) -> Result<Collected, String> {
+        let listing = include_str!("../../../tests/fixtures/solides_listing.json");
+        let mut listing: Value = serde_json::from_str(listing).unwrap();
+        listing["totalPages"] = 1.into();
+        let mut scripted =
+            Scripted::default().page(&page_url(1), 200, &page_html(&listing.to_string()));
+        for id in ["926052", "926088", "926340"] {
+            scripted = scripted.page(&format!("{BASE}/vaga/{id}"), detail_status, detail_body);
+        }
+        Solides::new(Rc::new(Client::new(&scripted)), crate::clock::fixed_now())
+            .collect(&|_| true, &|_| {})
+    }
+
+    #[test]
+    fn every_detail_page_failing_is_a_source_error() {
+        let error = with_details(200, "<html>sem JSON-LD</html>").unwrap_err();
+        assert!(error.contains("3 páginas"), "{error}");
+    }
+
+    #[test]
+    fn a_job_whose_page_is_gone_is_left_out_without_an_error() {
+        let found = with_details(404, "").unwrap();
+        assert_eq!(found, Collected::default());
+    }
+
+    #[test]
+    fn some_detail_pages_failing_keep_the_good_jobs_and_say_so() {
+        let listing = include_str!("../../../tests/fixtures/solides_listing.json");
+        let mut listing: Value = serde_json::from_str(listing).unwrap();
+        listing["totalPages"] = 1.into();
+        let posting = include_str!("../../../tests/fixtures/solides_jobposting.html");
+        let scripted = Scripted::default()
+            .page(&page_url(1), 200, &page_html(&listing.to_string()))
+            .page(&format!("{BASE}/vaga/926052"), 200, posting)
+            .page(&format!("{BASE}/vaga/926088"), 200, "<html></html>")
+            .page(&format!("{BASE}/vaga/926340"), 200, posting);
+        let found = Solides::new(Rc::new(Client::new(&scripted)), crate::clock::fixed_now())
+            .collect(&|_| true, &|_| {})
+            .unwrap();
+        assert_eq!(found.jobs.len(), 2);
+        assert!(found.jobs.iter().all(|job| !job.description.is_empty()));
+        assert_eq!(found.warnings.len(), 1);
+    }
+
+    #[test]
+    fn accepts_only_its_own_host() {
+        let scripted = Scripted::default();
+        let solides = Solides::new(Rc::new(Client::new(&scripted)), crate::clock::fixed_now());
+        assert!(solides.accepts_url("https://vagas.solides.com.br/vaga/1"));
+        assert!(!solides.accepts_url("https://acme.solides.com.br/vaga/1"));
+        assert!(!solides.accepts_url("http://localhost:9/x"));
     }
 
     #[test]
@@ -354,11 +456,16 @@ mod tests {
             .page(&page_url(2), 200, &page)
             .page(&format!("{BASE}/vaga/926052"), 200, posting);
         let solides = Solides::new(Rc::new(Client::new(&scripted)), crate::clock::fixed_now());
-        let jobs = solides
+        let found = solides
             .collect(&|job| job.external_id == "926052", &|_| {})
             .unwrap();
-        assert_eq!(jobs.len(), 2);
-        assert!(jobs[0].description.contains("Desenvolvedor de Hardware"));
+        assert_eq!(found.jobs.len(), 2);
+        assert!(
+            found.jobs[0]
+                .description
+                .contains("Desenvolvedor de Hardware")
+        );
+        assert!(found.warnings.is_empty());
         let requested = scripted.pages_requested();
         assert_eq!(
             requested
@@ -386,7 +493,10 @@ mod tests {
         let scripted =
             Scripted::default().page(&page_url(1), 200, &page_html(&listing.to_string()));
         let solides = Solides::new(Rc::new(Client::new(&scripted)), crate::clock::fixed_now());
-        assert_eq!(solides.collect(&|_| true, &|_| {}).unwrap(), vec![]);
+        assert_eq!(
+            solides.collect(&|_| true, &|_| {}).unwrap(),
+            Collected::default()
+        );
         assert_eq!(scripted.pages_requested().len(), 1);
     }
 

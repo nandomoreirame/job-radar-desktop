@@ -11,7 +11,7 @@ use crate::crawler::filters::{
 };
 use crate::crawler::job::Job;
 use crate::crawler::scoring::score_job;
-use crate::crawler::sources::{DetailOutcome, JobDetail, Source};
+use crate::crawler::sources::{Collected, DetailOutcome, JobDetail, Source};
 use crate::domain::{Stage, WorkModel};
 use crate::identity::{target_from_title, url_key};
 use crate::import::{
@@ -161,9 +161,12 @@ fn collect_new_jobs(
     for source in sources {
         let entry = stats.sources.entry(source.name().to_owned()).or_default();
         match source.collect(&keep, progress) {
-            Ok(jobs) => {
+            Ok(Collected { jobs, warnings }) => {
                 entry.found = jobs.len();
                 stats.found += jobs.len();
+                if !warnings.is_empty() {
+                    entry.error = Some(warnings.join("; "));
+                }
                 for job in jobs {
                     let next = groups.len();
                     let at = *group_of.entry(job.fingerprint()).or_insert(next);
@@ -317,7 +320,13 @@ fn rescore(
     for card in &pending {
         if !card.description.is_empty() {
             apply(store, card, &job_of(card), stats, settings, String::new());
-        } else if let Some(at) = sources.iter().position(|source| source.owns(&card.source)) {
+        } else if let Some(at) = sources.iter().position(|source| {
+            source.owns(&card.source)
+                && card
+                    .job_url
+                    .as_deref()
+                    .is_none_or(|url| source.accepts_url(url))
+        }) {
             by_source[at].push(card);
         } else {
             stats.rescore_skipped += 1;
@@ -389,6 +398,7 @@ mod tests {
     struct FakeSource {
         name: &'static str,
         jobs: Result<Vec<Job>, String>,
+        warnings: Vec<String>,
         details: HashMap<String, DetailOutcome>,
         fetched: RefCell<Vec<String>>,
     }
@@ -397,6 +407,7 @@ mod tests {
             Self {
                 name,
                 jobs: Ok(jobs),
+                warnings: Vec::new(),
                 details: HashMap::new(),
                 fetched: RefCell::new(Vec::new()),
             }
@@ -409,12 +420,18 @@ mod tests {
         fn owns(&self, source: &str) -> bool {
             source == self.name
         }
+        fn accepts_url(&self, url: &str) -> bool {
+            !url.contains("localhost")
+        }
         fn collect(
             &self,
             _keep: &dyn Fn(&Job) -> bool,
             _progress: &dyn Fn(&str),
-        ) -> Result<Vec<Job>, String> {
-            self.jobs.clone()
+        ) -> Result<Collected, String> {
+            self.jobs.clone().map(|jobs| Collected {
+                jobs,
+                warnings: self.warnings.clone(),
+            })
         }
         fn fetch_detail(&self, url: &str) -> DetailOutcome {
             self.fetched.borrow_mut().push(url.to_owned());
@@ -559,6 +576,44 @@ mod tests {
         let stats = run_crawl(&store, &[&source as &dyn Source], &setup(), &|_| {});
         assert_eq!((stats.rejected, stats.inbox, stats.discarded), (1, 0, 0));
         assert!(store.list_discarded().unwrap().is_empty());
+    }
+
+    #[test]
+    fn a_link_outside_the_source_is_never_requested() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        imported(
+            &store,
+            "aaaaaaaaaaaaaaaa",
+            "gupy",
+            "http://localhost:9/x",
+            "",
+        );
+        let source = FakeSource::new("gupy", vec![]);
+        let stats = run_crawl(&store, &[&source as &dyn Source], &setup(), &|_| {});
+        assert!(source.fetched.borrow().is_empty());
+        assert_eq!(stats.rescore_skipped, 1);
+        assert_eq!(store.list_cards().unwrap()[0].score, None);
+    }
+
+    #[test]
+    fn a_partial_failure_keeps_the_jobs_and_marks_the_source() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        let mut source = FakeSource::new(
+            "gupy",
+            vec![job(
+                "Engenheiro de IA Sênior",
+                "Beta",
+                "https://a.example/1",
+                STRONG,
+            )],
+        );
+        source.warnings = vec!["2 de 15 buscas falharam".into()];
+        let stats = run_crawl(&store, &[&source as &dyn Source], &setup(), &|_| {});
+        assert_eq!(stats.inbox, 1);
+        assert_eq!(
+            stats.sources["gupy"].error.as_deref(),
+            Some("2 de 15 buscas falharam")
+        );
     }
 
     #[test]

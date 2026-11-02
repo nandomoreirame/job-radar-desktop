@@ -114,7 +114,7 @@ mod tests {
     use super::*;
     use crate::crawler::config::CrawlerConfig;
     use crate::crawler::job::Job;
-    use crate::crawler::sources::DetailOutcome;
+    use crate::crawler::sources::{Collected, DetailOutcome};
     use std::sync::Mutex;
 
     #[test]
@@ -171,7 +171,10 @@ mod tests {
         fn owns(&self, source: &str) -> bool {
             source == "gupy"
         }
-        fn collect(&self, _: &dyn Fn(&Job) -> bool, _: &dyn Fn(&str)) -> Result<Vec<Job>, String> {
+        fn accepts_url(&self, _: &str) -> bool {
+            true
+        }
+        fn collect(&self, _: &dyn Fn(&Job) -> bool, _: &dyn Fn(&str)) -> Result<Collected, String> {
             Err("fora do ar".into())
         }
         fn fetch_detail(&self, _: &str) -> DetailOutcome {

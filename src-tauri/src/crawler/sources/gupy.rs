@@ -7,7 +7,9 @@ use percent_encoding::{AsciiSet, NON_ALPHANUMERIC, utf8_percent_encode};
 use regex::Regex;
 use serde_json::Value;
 
-use super::{DetailOutcome, JobDetail, Source, error_outcome, id_text, parse_iso, text};
+use super::{
+    Collected, DetailOutcome, JobDetail, Source, error_outcome, id_text, on_host, parse_iso, text,
+};
 use crate::crawler::http::{Client, GetOptions, HttpError, Transport};
 use crate::crawler::job::{Job, clean_html};
 
@@ -94,7 +96,9 @@ pub fn parse_search(html: &str) -> Result<Vec<Job>, String> {
     let listing = &data["props"]["pageProps"]["initialJobList"];
     let items = match listing {
         Value::Array(items) => items,
-        Value::Object(_) => listing["data"].as_array().map_or(&[][..], Vec::as_slice),
+        Value::Object(_) => listing["data"]
+            .as_array()
+            .ok_or("initialJobList sem data")?,
         _ => return Err("__NEXT_DATA__ sem initialJobList".to_owned()),
     };
     Ok(items
@@ -176,16 +180,20 @@ impl<T: Transport> Source for Gupy<T> {
         source == "gupy"
     }
 
+    fn accepts_url(&self, url: &str) -> bool {
+        on_host(url, "gupy.io", true)
+    }
+
     /// The search already brings the description, so `keep` saves no request here.
     /// A failed term leaves the others alone; the source fails only when all of them do.
     fn collect(
         &self,
         _keep: &dyn Fn(&Job) -> bool,
         progress: &dyn Fn(&str),
-    ) -> Result<Vec<Job>, String> {
+    ) -> Result<Collected, String> {
         let mut jobs = Vec::new();
         let mut last_error = None;
-        let mut any_ok = false;
+        let mut failed = 0;
         for term in TERMS {
             progress(&format!("gupy: {term}"));
             // The term goes in the PATH: with "?term=" the portal answers 200 with an empty search.
@@ -195,16 +203,26 @@ impl<T: Transport> Source for Gupy<T> {
                 .map_err(|error| format!("{error:?}"))
                 .and_then(|body| parse_search(&String::from_utf8_lossy(&body)));
             match page {
-                Ok(found) => {
-                    any_ok = true;
-                    jobs.extend(found.into_iter().take(PER_TERM));
+                Ok(found) => jobs.extend(found.into_iter().take(PER_TERM)),
+                Err(reason) => {
+                    failed += 1;
+                    last_error = Some(reason);
                 }
-                Err(reason) => last_error = Some(reason),
             }
         }
-        match (any_ok, last_error) {
-            (false, Some(reason)) => Err(reason),
-            _ => Ok(jobs),
+        match last_error {
+            Some(reason) if failed == TERMS.len() => Err(reason),
+            Some(reason) => Ok(Collected {
+                jobs,
+                warnings: vec![format!(
+                    "{failed} de {} buscas falharam: {reason}",
+                    TERMS.len()
+                )],
+            }),
+            None => Ok(Collected {
+                jobs,
+                warnings: Vec::new(),
+            }),
         }
     }
 
@@ -268,9 +286,30 @@ mod tests {
             page,
         );
         let gupy = Gupy::new(Rc::new(Client::new(&scripted)));
-        let jobs = gupy.collect(&|_| true, &|_| {}).unwrap();
-        assert_eq!(jobs.len(), PER_TERM);
+        let found = gupy.collect(&|_| true, &|_| {}).unwrap();
+        assert_eq!(found.jobs.len(), PER_TERM);
         assert_eq!(scripted.pages_requested().len(), TERMS.len());
+        // The other 14 terms answered 404, which must show even with jobs in hand.
+        assert_eq!(found.warnings, ["14 de 15 buscas falharam: Status(404)"]);
+    }
+
+    #[test]
+    fn a_renamed_job_list_is_an_error_and_an_empty_one_is_not() {
+        let html = |list: &str| {
+            format!(
+                r#"<script id="__NEXT_DATA__">{{"props":{{"pageProps":{{"initialJobList":{list}}}}}}}</script>"#
+            )
+        };
+        assert!(parse_search(&html(r#"{"items":[{"id":1}]}"#)).is_err());
+        assert_eq!(parse_search(&html(r#"{"data":[]}"#)), Ok(vec![]));
+    }
+
+    #[test]
+    fn accepts_only_gupy_links() {
+        let scripted = Scripted::default();
+        let gupy = Gupy::new(Rc::new(Client::new(&scripted)));
+        assert!(gupy.accepts_url("https://acme.gupy.io/job/1"));
+        assert!(!gupy.accepts_url("http://localhost:9/x"));
     }
 
     #[test]
