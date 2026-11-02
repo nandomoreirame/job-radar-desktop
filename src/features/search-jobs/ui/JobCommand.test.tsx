@@ -24,6 +24,19 @@ describe('JobCommand', () => {
     await userEvent.type(screen.getByRole('combobox'), 'c0');
     expect(screen.queryAllByRole('option')).toHaveLength(0);
   });
+  it('keeps two identical jobs distinct', async () => {
+    const twins = [
+      makeCard({ id: 't1', title: 'Twin Role', company: 'Same Co' }),
+      makeCard({ id: 't2', title: 'Twin Role', company: 'Same Co' }),
+    ];
+    const onPick = vi.fn();
+    render(<JobCommand cards={twins} open onOpenChange={() => {}} onPick={onPick} />);
+    await userEvent.type(screen.getByRole('combobox'), 'twin');
+    const options = screen.getAllByRole('option');
+    expect(options).toHaveLength(2);
+    await userEvent.click(options[1]);
+    expect(onPick).toHaveBeenCalledWith(twins[1]);
+  });
   it('shows the empty state', async () => {
     render(<JobCommand cards={cards} open onOpenChange={() => {}} onPick={() => {}} />);
     await userEvent.type(screen.getByRole('combobox'), 'zzz');
