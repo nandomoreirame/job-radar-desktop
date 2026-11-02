@@ -34,3 +34,6 @@ ROADMAP milestone 3: a SQLite `Store` so cards and edits survive a restart, repl
   missing WAL permission assertion, startup setup panic path, unsafe update error mapping, stale
   formatter coverage, and related proof/documentation gaps. Rust now passes 59 tests, clippy and
   fmt; the independent reviewer chain remains unavailable.
+- 2026-11-02: A follow-up startup review found the GTK dialog could block after Tauri build;
+  startup now resolves the data directory and opens SQLite before constructing Tauri. Non-Unicode
+  JOB_RADAR_DB paths are preserved, the spec/roadmap were corrected, and the proof set is green.

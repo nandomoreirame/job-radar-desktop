@@ -41,6 +41,6 @@
 
 ## Revisão da correção
 
-Os oito achados da rodada anterior foram corrigidos e revalidados localmente. A revisão independente foi tentada novamente pela cadeia agy -> Codex -> Grok; todos retornaram exit 3 por auth/quota/rate-limit/network. Não há corroboração cross-model.
+Os cinco achados remanescentes foram tratados: o banco agora abre antes do Tauri/GTK, o caminho não Unicode é preservado, os documentos refletem a arquitetura final e os testes de permissões e erros foram reforçados. A cadeia independente agy -> Codex -> Grok foi tentada novamente; todos retornaram exit 3 por auth/quota/rate-limit/network. Não há corroboração cross-model.
 
 Validação manual pendente: `pnpm tauri dev`, persistência após reinício, permissões do banco e diálogo nativo para base corrompida.
