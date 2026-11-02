@@ -51,7 +51,15 @@ export function BoardPage({ api = boardApi, now }: Props) {
           {t('board.error')}
         </p>
       )}
-      {status === 'ready' && cards.length === 0 && <div className="px-6"><h2 className="text-lg font-semibold">{t('board.emptyTitle')}</h2><p className="text-sm text-noir-muted">{t('board.emptyBody')}</p><code className="mt-2 block font-mono text-xs">job-radar-desktop import --seen seen.db --candidates candidates.json</code></div>}
+      {status === 'ready' && cards.length === 0 && (
+        <div className="px-6">
+          <h2 className="text-lg font-semibold">{t('board.emptyTitle')}</h2>
+          <p className="text-sm text-noir-muted">{t('board.emptyBody')}</p>
+          <code className="mt-2 block font-mono text-xs">
+            job-radar-desktop import --seen seen.db --candidates candidates.json
+          </code>
+        </div>
+      )}
       {status === 'ready' && cards.length > 0 && (
         <Board
           cards={visible}
