@@ -1,12 +1,12 @@
 //! IPC surface. Command bodies live in `*_impl` functions so tests call them
 //! without a running Tauri app; the wrappers only unpack `State`.
 
-use tauri::State;
 use std::env;
+use tauri::State;
 
 use crate::details::normalize_details;
 use crate::domain::{BoardCard, CardDetails, Outcome, Stage};
-use crate::store::Store;
+use crate::store::{Store, StoreError};
 
 pub struct AppState {
     pub store: Box<dyn Store>,
@@ -17,9 +17,15 @@ pub const MAX_ID_LEN: usize = 64;
 
 pub fn is_tiling_wm(vars: impl IntoIterator<Item = (String, String)>) -> bool {
     vars.into_iter().any(|(key, value)| {
-        matches!(key.as_str(), "NIRI_SOCKET" | "HYPRLAND_INSTANCE_SIGNATURE" | "SWAYSOCK" | "I3SOCK") && !value.is_empty()
+        matches!(
+            key.as_str(),
+            "NIRI_SOCKET" | "HYPRLAND_INSTANCE_SIGNATURE" | "SWAYSOCK" | "I3SOCK"
+        ) && !value.is_empty()
             || matches!(key.as_str(), "XDG_CURRENT_DESKTOP" | "XDG_SESSION_DESKTOP")
-                && value.to_ascii_lowercase().split(':').any(|desktop| matches!(desktop, "niri" | "hyprland" | "sway" | "i3" | "river"))
+                && value
+                    .to_ascii_lowercase()
+                    .split(':')
+                    .any(|desktop| matches!(desktop, "niri" | "hyprland" | "sway" | "i3" | "river"))
     })
 }
 
@@ -35,8 +41,15 @@ fn check_id(id: &str) -> Result<(), String> {
     Ok(())
 }
 
+fn report(error: StoreError) -> String {
+    if let StoreError::Storage(detail) = &error {
+        eprintln!("storage error: {detail}");
+    }
+    error.to_string()
+}
+
 pub fn list_board_impl(state: &AppState) -> Result<Vec<BoardCard>, String> {
-    state.store.list_cards().map_err(|e| e.to_string())
+    state.store.list_cards().map_err(report)
 }
 
 pub fn move_card_impl(
@@ -46,17 +59,28 @@ pub fn move_card_impl(
     outcome: Option<Outcome>,
 ) -> Result<BoardCard, String> {
     check_id(id)?;
-    state.store.move_card(id, stage, outcome).map_err(|e| e.to_string())
+    state.store.move_card(id, stage, outcome).map_err(report)
 }
 
-pub fn update_card_impl(state: &AppState, id: &str, details: CardDetails) -> Result<BoardCard, String> {
+pub fn update_card_impl(
+    state: &AppState,
+    id: &str,
+    details: CardDetails,
+) -> Result<BoardCard, String> {
     check_id(id)?;
     let details = normalize_details(details)?;
-    state.store.update_card(id, details).map_err(|e| e.to_string())
+    state
+        .store
+        .update_card(id, details)
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-pub fn update_card(state: State<'_, AppState>, id: String, details: CardDetails) -> Result<BoardCard, String> {
+pub fn update_card(
+    state: State<'_, AppState>,
+    id: String,
+    details: CardDetails,
+) -> Result<BoardCard, String> {
     update_card_impl(&state, &id, details)
 }
 
@@ -83,33 +107,59 @@ mod tests {
     use crate::store::MockStore;
 
     fn state() -> AppState {
-        AppState { store: Box::new(MockStore::new(sample_cards())) }
+        AppState {
+            store: Box::new(MockStore::new(sample_cards())),
+        }
     }
 
     #[test]
     fn update_card_persists_valid_details() {
         let state = state();
-        let details = CardDetails { notes: "  anotar  ".into(), ..CardDetails::default() };
-        assert_eq!(update_card_impl(&state, "c01", details).unwrap().notes, "anotar");
+        let details = CardDetails {
+            notes: "  anotar  ".into(),
+            ..CardDetails::default()
+        };
+        assert_eq!(
+            update_card_impl(&state, "c01", details).unwrap().notes,
+            "anotar"
+        );
     }
 
     #[test]
     fn update_card_reports_the_invalid_field() {
-        let details = CardDetails { job_url: Some("javascript:alert(1)".into()), ..CardDetails::default() };
-        assert_eq!(update_card_impl(&state(), "c01", details), Err("jobUrl: invalid_url".to_string()));
+        let details = CardDetails {
+            job_url: Some("javascript:alert(1)".into()),
+            ..CardDetails::default()
+        };
+        assert_eq!(
+            update_card_impl(&state(), "c01", details),
+            Err("jobUrl: invalid_url".to_string())
+        );
     }
 
     #[test]
     fn update_card_rejects_an_empty_id() {
-        assert_eq!(update_card_impl(&state(), "", CardDetails::default()), Err("invalid card id".to_string()));
+        assert_eq!(
+            update_card_impl(&state(), "", CardDetails::default()),
+            Err("invalid card id".to_string())
+        );
     }
 
     #[test]
     fn detects_tiling_window_managers() {
-        for (key, value) in [("NIRI_SOCKET", "/tmp/niri"), ("HYPRLAND_INSTANCE_SIGNATURE", "x"), ("SWAYSOCK", "x"), ("I3SOCK", "x"), ("XDG_CURRENT_DESKTOP", "river")] {
+        for (key, value) in [
+            ("NIRI_SOCKET", "/tmp/niri"),
+            ("HYPRLAND_INSTANCE_SIGNATURE", "x"),
+            ("SWAYSOCK", "x"),
+            ("I3SOCK", "x"),
+            ("XDG_CURRENT_DESKTOP", "river"),
+        ] {
             assert!(is_tiling_wm([(key.to_string(), value.to_string())]));
         }
-        assert!(!is_tiling_wm([(String::from("XDG_CURRENT_DESKTOP"), String::from("gnome"))]));
+        assert!(!is_tiling_wm([(
+            String::from("XDG_CURRENT_DESKTOP"),
+            String::from("gnome")
+        )]));
     }
 
     #[test]
@@ -122,7 +172,10 @@ mod tests {
         let state = state();
         move_card_impl(&state, "c02", Stage::Triage, None).unwrap();
         let cards = list_board_impl(&state).unwrap();
-        assert_eq!(cards.iter().find(|c| c.id == "c02").unwrap().stage, Stage::Triage);
+        assert_eq!(
+            cards.iter().find(|c| c.id == "c02").unwrap().stage,
+            Stage::Triage
+        );
     }
 
     #[test]

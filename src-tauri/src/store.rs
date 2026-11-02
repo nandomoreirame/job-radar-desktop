@@ -15,6 +15,18 @@ pub enum StoreError {
     UnexpectedOutcome,
     #[error("store lock poisoned")]
     Poisoned,
+    /// Database detail is logged server-side but never displayed in the webview.
+    #[error("storage error")]
+    Storage(String),
+}
+
+impl StoreError {
+    pub fn detail(&self) -> String {
+        match self {
+            Self::Storage(detail) => detail.clone(),
+            other => other.to_string(),
+        }
+    }
 }
 
 pub trait Store: Send + Sync {
@@ -45,7 +57,9 @@ pub struct MockStore {
 
 impl MockStore {
     pub fn new(cards: Vec<BoardCard>) -> Self {
-        Self { cards: Mutex::new(cards) }
+        Self {
+            cards: Mutex::new(cards),
+        }
     }
 }
 
@@ -93,6 +107,17 @@ mod tests {
     }
 
     #[test]
+    fn storage_errors_hide_the_detail() {
+        let error = StoreError::Storage("no such table: cards".into());
+        assert_eq!(error.to_string(), "storage error");
+        assert_eq!(error.detail(), "no such table: cards");
+        assert_eq!(
+            StoreError::NotFound("c01".into()).detail(),
+            "card not found: c01"
+        );
+    }
+
+    #[test]
     fn updating_applies_the_details_for_the_session() {
         let store = store();
         let details = CardDetails {
@@ -103,7 +128,15 @@ mod tests {
         let updated = store.update_card("c01", details).unwrap();
         assert_eq!(updated.notes, "Ligar na sexta");
         let listed = store.list_cards().unwrap();
-        assert_eq!(listed.iter().find(|c| c.id == "c01").unwrap().recruiter_name.as_deref(), Some("Ana"));
+        assert_eq!(
+            listed
+                .iter()
+                .find(|c| c.id == "c01")
+                .unwrap()
+                .recruiter_name
+                .as_deref(),
+            Some("Ana")
+        );
     }
 
     #[test]
@@ -125,7 +158,10 @@ mod tests {
         let moved = store.move_card("c01", Stage::Triage, None).unwrap();
         assert_eq!(moved.stage, Stage::Triage);
         let listed = store.list_cards().unwrap();
-        assert_eq!(listed.iter().find(|c| c.id == "c01").unwrap().stage, Stage::Triage);
+        assert_eq!(
+            listed.iter().find(|c| c.id == "c01").unwrap().stage,
+            Stage::Triage
+        );
     }
 
     #[test]
@@ -155,7 +191,9 @@ mod tests {
     #[test]
     fn moving_out_of_closed_clears_the_outcome() {
         let store = store();
-        store.move_card("c01", Stage::Closed, Some(Outcome::Discarded)).unwrap();
+        store
+            .move_card("c01", Stage::Closed, Some(Outcome::Discarded))
+            .unwrap();
         let reopened = store.move_card("c01", Stage::Triage, None).unwrap();
         assert_eq!(reopened.outcome, None);
     }
