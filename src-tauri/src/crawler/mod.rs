@@ -6,3 +6,4 @@ pub mod job;
 pub mod profile;
 pub mod robots;
 pub mod scoring;
+pub mod sources;

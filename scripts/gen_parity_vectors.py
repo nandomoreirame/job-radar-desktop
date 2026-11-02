@@ -137,6 +137,24 @@ def robots_vectors():
          "paths": [[p, allowed(b, PRODUCT_TOKEN, p)] for p in paths]} for b in bodies]}
 
 
+from job_radar.sources import gupy as py_gupy, solides as py_solides
+
+def job_dict(j):
+    return {"source": j.source, "external_id": j.external_id, "title": j.title, "company": j.company, "url": j.url,
+            "description": j.description, "location": j.location, "hint": j.work_mode_hint, "tags": j.tags,
+            "published_at": j.published_at.isoformat() if j.published_at else None, "fingerprint": j.fingerprint}
+
+def source_vectors():
+    fixtures = ROOT / "src-tauri" / "tests" / "fixtures"
+    search = (fixtures / "gupy_search.html").read_text(encoding="utf-8")
+    listing = (fixtures / "solides_listing.json").read_text(encoding="utf-8")
+    posting = (fixtures / "solides_jobposting.html").read_text(encoding="utf-8")
+    meta, solides = py_solides.listing_from_page('"initialData":' + listing)
+    return {"gupy": [job_dict(py_gupy.parse_job(i)) for i in py_gupy.listing_from_page(search)],
+            "solides_meta": meta, "solides": [job_dict(j) for j in solides],
+            "solides_posting": py_solides.clean_html(py_solides.parse_jobposting(posting))}
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     identity = {
@@ -149,6 +167,7 @@ def main():
     (OUT / "robots.json").write_text(json.dumps(robots_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     (OUT / "scoring.json").write_text(json.dumps(scoring_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     (OUT / "filters.json").write_text(json.dumps(filter_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    (OUT / "sources.json").write_text(json.dumps(source_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 if __name__ == "__main__":
     main()

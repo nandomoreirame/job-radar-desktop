@@ -18,3 +18,4 @@ plan-complete
 - 2026-11-02: spec approved by the user (hard rejects only counted; rescored jobs below the cut stay; opener and crawler.json in scope).
 - 2026-11-02: plan saved (10 tasks); validate_plan.py OK. Not implemented.
 - 2026-11-02: /rpi-implement --agentic by Claude (Grok, Codex and agy unavailable, exit 3). Task 1 redone: full parity vectors (160 fingerprints, 15 URLs), faithful port of title_key/company_key, url_key now keeps an explicit root path and maps any scheme to https like Python.
+- 2026-11-02: Task 6 live check of one Gupy job page: `props.pageProps.job` has `workplaceType` ("remote"), `addressCity`, `addressStateShortName`, `addressCountry` (strings, city and state may be empty), `publishedAt` (ISO with Z) and also `relevantExperiences`, which holds real requirements such as the contract type. Adaptation: `parse_detail` joins `relevantExperiences` too, on top of the plan's three fields, and falls back to `addressCountry` for the location.

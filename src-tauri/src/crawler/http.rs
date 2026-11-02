@@ -94,6 +94,11 @@ impl<T: Transport> Client<T> {
         }
     }
 
+    /// A source's own pause, such as Solides' delay between pages.
+    pub fn pause(&self, seconds: f64) {
+        self.transport.sleep(seconds);
+    }
+
     fn policy(&self, url: &url::Url) -> HostPolicy {
         let key = host_key(url);
         if let Some(policy) = self.hosts.borrow().get(&key) {
