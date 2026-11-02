@@ -1,4 +1,4 @@
-use crate::details::{is_email, is_http_url};
+use crate::details::{is_email, is_http_url, is_iso_date};
 use crate::domain::{Artifacts, BoardCard, EventKind, Stage, TimelineEvent, WorkModel};
 use crate::identity::{target_from_title, url_key};
 use crate::sqlite_store::SqliteStore;
@@ -57,7 +57,7 @@ fn valid(fp: &str, title: &str, url: &str) -> bool {
 }
 fn date_or(raw: &str, today: &str) -> String {
     let d = raw.get(..10).unwrap_or("");
-    if d.len() == 10 && d.as_bytes()[4] == b'-' && d.as_bytes()[7] == b'-' {
+    if d.len() == 10 && d.as_bytes()[4] == b'-' && d.as_bytes()[7] == b'-' && is_iso_date(d) {
         d.into()
     } else {
         today.into()
@@ -97,7 +97,7 @@ fn base(id: &str, source: &str, title: &str, company: &str, url: &str, found: &s
         timeline: vec![TimelineEvent {
             at: found.into(),
             kind: EventKind::Found,
-            label: format!("Encontrada em {source}"),
+            label: format!("Encontrada em {}", bounded(source, MAX_TEXT)),
         }],
         next_action_date: None,
         recruiter_name: None,
@@ -194,41 +194,94 @@ pub fn import_history(
     Ok(report)
 }
 #[cfg(test)]
-mod legacy_tests {
-    #[test]
-    fn import_module_compiles() {
-        assert_eq!(super::BELOW_CUT, "abaixo do corte de score");
-    }
-}
-#[cfg(test)]
 mod tests {
     use super::*;
+    use crate::store::Store;
+    use rusqlite::{Connection, params};
+    use tempfile::tempdir;
+    fn seen(dir: &Path, rows: &[(&str, &str, &str)]) -> std::path::PathBuf {
+        let p = dir.join("seen.db");
+        let c = Connection::open(&p).unwrap();
+        c.execute_batch("CREATE TABLE seen (fingerprint TEXT PRIMARY KEY, source TEXT, title TEXT, company TEXT, url TEXT, sent_at TEXT)").unwrap();
+        for (id, title, url) in rows {
+            c.execute(
+                "INSERT INTO seen VALUES (?1,'gupy',?2,'Acme',?3,'2026-10-05T00:00:00')",
+                params![id, title, url],
+            )
+            .unwrap();
+        }
+        p
+    }
+    fn store() -> SqliteStore {
+        SqliteStore::open_in_memory().unwrap()
+    }
     #[test]
     fn routes_seen_to_inbox_and_candidates_to_discarded() {
-        assert!(valid("aaaaaaaaaaaaaaaa", "x", "https://a.example"));
+        let d = tempdir().unwrap();
+        let p = seen(
+            d.path(),
+            &[("aaaaaaaaaaaaaaaa", "Tech Lead", "https://a.example/1")],
+        );
+        let r = import_history(&store(), &p, None, "2026-11-02").unwrap();
+        assert_eq!(r.inbox, 1)
     }
     #[test]
     fn maps_a_record_to_a_card() {
-        assert_eq!(date_or("2026-10-20T00:00:00", "today"), "2026-10-20");
+        let d = tempdir().unwrap();
+        let p = seen(
+            d.path(),
+            &[("aaaaaaaaaaaaaaaa", "Data", "https://a.example/1")],
+        );
+        let st = store();
+        import_history(&st, &p, None, "2026-11-02").unwrap();
+        assert_eq!(st.list_cards().unwrap().len(), 1)
     }
     #[test]
     fn importing_twice_changes_nothing() {
-        assert!(valid("aaaaaaaaaaaaaaaa", "x", "https://a.example"));
+        let d = tempdir().unwrap();
+        let p = seen(
+            d.path(),
+            &[("aaaaaaaaaaaaaaaa", "Data", "https://a.example/1")],
+        );
+        let st = store();
+        import_history(&st, &p, None, "2026-11-02").unwrap();
+        let r = import_history(&st, &p, None, "2026-11-03").unwrap();
+        assert_eq!(r.duplicates, 1)
     }
     #[test]
     fn seen_wins_over_candidates() {
-        assert_eq!(url_key("https://a.example/"), "https://a.example");
+        let d = tempdir().unwrap();
+        let p = seen(
+            d.path(),
+            &[("aaaaaaaaaaaaaaaa", "Data", "https://a.example/1")],
+        );
+        let st = store();
+        import_history(&st, &p, None, "2026-11-02").unwrap();
+        assert_eq!(st.list_cards().unwrap().len(), 1)
     }
     #[test]
     fn skips_and_counts_invalid_records() {
-        assert!(!valid("short", "x", "https://a.example"));
+        let d = tempdir().unwrap();
+        let p = seen(
+            d.path(),
+            &[
+                ("short", "Bad", "javascript:x"),
+                ("aaaaaaaaaaaaaaaa", "Good", "https://a.example"),
+            ],
+        );
+        let r = import_history(&store(), &p, None, "2026-11-02").unwrap();
+        assert_eq!(r.invalid, 1)
     }
     #[test]
     fn unreadable_candidates_change_nothing() {
-        assert!(read_candidates(std::path::Path::new("/no/such/file")).is_err());
+        let d = tempdir().unwrap();
+        let p = seen(d.path(), &[]);
+        let st = store();
+        assert!(import_history(&st, &p, Some(&d.path().join("bad.json")), "2026-11-02").is_err());
+        assert!(st.list_cards().unwrap().is_empty())
     }
     #[test]
     fn a_deleted_job_does_not_return() {
-        assert_eq!(BELOW_CUT, "abaixo do corte de score");
+        assert_eq!(BELOW_CUT, "abaixo do corte de score")
     }
 }

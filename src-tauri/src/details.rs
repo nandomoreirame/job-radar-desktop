@@ -76,7 +76,7 @@ fn date(field: &str, value: Option<String>) -> Result<Option<String>, String> {
     Ok(value)
 }
 
-fn is_iso_date(value: &str) -> bool {
+pub(crate) fn is_iso_date(value: &str) -> bool {
     let parts: Vec<&str> = value.split('-').collect();
     let [y, m, d] = parts.as_slice() else {
         return false;
