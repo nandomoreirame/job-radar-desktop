@@ -10,7 +10,7 @@ plan_path: docs/plans/2026-11-02-board-ui-migration.md
 
 ## Current Phase
 
-plan-complete
+implement
 
 ## Context
 
@@ -22,3 +22,12 @@ filters and a collapsible icon sidebar.
 
 - 2026-11-02: requirements set in conversation (component links, palette, inline filters, collapsed sidebar); spec written.
 - 2026-11-02: plan saved (10 tasks, 4 batches); validate_plan.py OK.
+- 2026-11-02: Tasks 1-10 implemented sequentially with TDD and one commit per task:
+  Base UI and Dice UI primitives, migration locales, Terminal Noir statuses, Kanban state and
+  drag handle, ResponsiveDialog, inline filters, command palette, remembered collapsed sidebar,
+  and the palette-open axe gate.
+- 2026-11-02: Full web suite green (93 tests), coverage green at 93.14/88.05/90.13/96.42 after
+  excluding generated shadcn/Dice UI registry files, typecheck, lint, build, Rust 29 tests and
+  clippy all pass. Generated Kanban emitted five hook warnings but no lint errors.
+- 2026-11-02: Manual Niri validation remains pending: pointer and keyboard drag, close/cancel,
+  command palette Enter, Ctrl+B persistence and Terminal Noir status colors.
