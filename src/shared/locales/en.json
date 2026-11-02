@@ -15,7 +15,8 @@
     "resumes": "My resumes",
     "prep": "Preparation",
     "settings": "Settings",
-    "pending": "{{count}} pending"
+    "pending": "{{count}} pending",
+    "discarded": "Discarded"
   },
   "crawler": {
     "active": "Crawler active",
@@ -37,7 +38,9 @@
     "empty": "No jobs here.",
     "count_one": "{{count}} job",
     "count_other": "{{count}} jobs",
-    "addJob": "+ Add job"
+    "addJob": "+ Add job",
+    "emptyTitle": "No jobs yet",
+    "emptyBody": "Import the crawler's history from the terminal:"
   },
   "filters": {
     "source": "Source",
@@ -169,5 +172,18 @@
   },
   "sidebar": {
     "toggle": "Toggle sidebar"
+  },
+  "discarded": {
+    "title": "Discarded jobs",
+    "search": "Search discarded",
+    "empty": "No discarded jobs.",
+    "description": "Show description",
+    "restore": "Move to Inbox",
+    "delete": "Delete",
+    "confirmTitle": "Delete this job?",
+    "confirmBody": "{{title}} leaves this list and never returns in a search. This cannot be undone.",
+    "cancel": "Cancel",
+    "confirmDelete": "Delete for good",
+    "actionError": "The action could not be completed."
   }
 }

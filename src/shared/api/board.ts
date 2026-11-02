@@ -3,6 +3,7 @@ import type { BoardCard } from "@/shared/bindings/BoardCard";
 import type { CardDetails } from "@/shared/bindings/CardDetails";
 import type { Outcome } from "@/shared/bindings/Outcome";
 import type { Stage } from "@/shared/bindings/Stage";
+import type { DiscardedJob } from "@/shared/bindings/DiscardedJob";
 
 export type BoardApi = {
   list(): Promise<BoardCard[]>;
@@ -11,6 +12,8 @@ export type BoardApi = {
   update(id: string, details: CardDetails): Promise<BoardCard>;
   openLink(id: string): Promise<void>;
 };
+export type DiscardedApi = { list(): Promise<DiscardedJob[]>; restore(id: string): Promise<BoardCard>; remove(id: string): Promise<void>; openLink(id: string): Promise<void> };
+export const discardedApi: DiscardedApi = { list: () => invoke<DiscardedJob[]>("list_discarded"), restore: id => invoke<BoardCard>("restore_card", { id }), remove: id => invoke<void>("delete_card", { id }), openLink: id => invoke<void>("open_job_url", { id }) };
 
 /** Thin wrappers over the Rust commands in `src-tauri/src/commands.rs`. */
 export const boardApi: BoardApi = {

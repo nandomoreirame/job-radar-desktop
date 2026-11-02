@@ -15,7 +15,8 @@
     "resumes": "Meus currículos",
     "prep": "Preparação",
     "settings": "Configuração",
-    "pending": "{{count}} pendentes"
+    "pending": "{{count}} pendentes",
+    "discarded": "Descartadas"
   },
   "crawler": {
     "active": "Crawler ativo",
@@ -37,7 +38,9 @@
     "empty": "Nenhuma vaga aqui.",
     "count_one": "{{count}} vaga",
     "count_other": "{{count}} vagas",
-    "addJob": "+ Adicionar vaga"
+    "addJob": "+ Adicionar vaga",
+    "emptyTitle": "Nenhuma vaga ainda",
+    "emptyBody": "Importe o histórico do crawler pelo terminal:"
   },
   "filters": {
     "source": "Fonte",
@@ -169,5 +172,18 @@
   },
   "sidebar": {
     "toggle": "Alternar barra lateral"
+  },
+  "discarded": {
+    "title": "Vagas descartadas",
+    "search": "Buscar descartadas",
+    "empty": "Nenhuma vaga descartada.",
+    "description": "Ver descrição",
+    "restore": "Mover para a Caixa de entrada",
+    "delete": "Excluir",
+    "confirmTitle": "Excluir esta vaga?",
+    "confirmBody": "{{title}} sai daqui e não volta em nenhuma busca. Não dá para desfazer.",
+    "cancel": "Cancelar",
+    "confirmDelete": "Excluir definitivamente",
+    "actionError": "Não foi possível concluir a ação."
   }
 }

@@ -1,4 +1,4 @@
-import { FileText, LayoutGrid, NotebookPen, Play, Settings, UserRound, type LucideIcon } from 'lucide-react';
+import { Archive, FileText, LayoutGrid, NotebookPen, Play, Settings, UserRound, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PageId } from '@/shared/config/navigation';
@@ -16,6 +16,7 @@ import {
 type NavItem = { id: PageId; Icon: LucideIcon; pending?: number };
 const NAV: NavItem[] = [
   { id: 'board', Icon: LayoutGrid },
+  { id: 'discarded', Icon: Archive },
   { id: 'profile', Icon: UserRound },
   { id: 'resumes', Icon: FileText, pending: 3 },
   { id: 'prep', Icon: NotebookPen, pending: 2 },
