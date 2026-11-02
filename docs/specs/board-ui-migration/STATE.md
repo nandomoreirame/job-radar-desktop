@@ -31,3 +31,7 @@ filters and a collapsible icon sidebar.
   clippy all pass. Generated Kanban emitted five hook warnings but no lint errors.
 - 2026-11-02: Manual Niri validation remains pending: pointer and keyboard drag, close/cancel,
   command palette Enter, Ctrl+B persistence and Terminal Noir status colors.
+- 2026-11-02: Independent review was attempted through agy, Codex and Grok; all returned exit 3
+  for auth/quota/rate-limit. `docs/reviews/board-ui-migration.md` records a zero-finding
+  self-assessment, not independent review. Keep this phase open until an external reviewer and
+  the manual Niri checks are available.
