@@ -117,6 +117,26 @@ def scoring_vectors():
     return {"skills": sorted(skills), "extracted": sorted(extract_skills(profile)), "jobs": rows}
 
 
+from job_radar.robots import PRODUCT_TOKEN, allowed, crawl_delay_from_body, is_robots_body
+
+def robots_vectors():
+    bodies = [
+        "User-agent: *\nDisallow: /private\nAllow: /private/ok\nCrawl-delay: 2\n",
+        "User-agent: job-radar\nDisallow: /\n\nUser-agent: *\nAllow: /\n",
+        "User-agent: *\nDisallow: /*.pdf$\nDisallow: /a*b\n",
+        "User-agent: *\nDisallow:\n",
+        "# only comments\n",
+        "<html>not robots</html>",
+        "User-agent: job\nDisallow: /a\n\nUser-agent: *\nDisallow: /\nCrawl-delay: x\n",
+        "User-agent: *\n\nDisallow: /foo%20bar\nAllow: /private\nDisallow: /private\n",
+        "",
+    ]
+    paths = ["/", "/private", "/private/ok", "/private/x", "/doc.pdf", "/doc.pdf?x=1", "/axxb", "/a", "/foo bar", "/caf\u00e9"]
+    return {"product": PRODUCT_TOKEN, "cases": [
+        {"body": b, "is_robots": is_robots_body(b), "delay": crawl_delay_from_body(b, PRODUCT_TOKEN),
+         "paths": [[p, allowed(b, PRODUCT_TOKEN, p)] for p in paths]} for b in bodies]}
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     identity = {
@@ -126,6 +146,7 @@ def main():
         "urls": [[u, url_key(u)] for u in URLS],
     }
     (OUT / "identity.json").write_text(json.dumps(identity, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    (OUT / "robots.json").write_text(json.dumps(robots_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     (OUT / "scoring.json").write_text(json.dumps(scoring_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     (OUT / "filters.json").write_text(json.dumps(filter_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 

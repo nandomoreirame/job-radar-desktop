@@ -1,0 +1,428 @@
+{
+ "product": "job-radar",
+ "cases": [
+  {
+   "body": "User-agent: *\nDisallow: /private\nAllow: /private/ok\nCrawl-delay: 2\n",
+   "is_robots": true,
+   "delay": 2.0,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     false
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     false
+    ],
+    [
+     "/doc.pdf",
+     true
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     true
+    ],
+    [
+     "/a",
+     true
+    ],
+    [
+     "/foo bar",
+     true
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  },
+  {
+   "body": "User-agent: job-radar\nDisallow: /\n\nUser-agent: *\nAllow: /\n",
+   "is_robots": true,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     false
+    ],
+    [
+     "/private",
+     false
+    ],
+    [
+     "/private/ok",
+     false
+    ],
+    [
+     "/private/x",
+     false
+    ],
+    [
+     "/doc.pdf",
+     false
+    ],
+    [
+     "/doc.pdf?x=1",
+     false
+    ],
+    [
+     "/axxb",
+     false
+    ],
+    [
+     "/a",
+     false
+    ],
+    [
+     "/foo bar",
+     false
+    ],
+    [
+     "/café",
+     false
+    ]
+   ]
+  },
+  {
+   "body": "User-agent: *\nDisallow: /*.pdf$\nDisallow: /a*b\n",
+   "is_robots": true,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     true
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     true
+    ],
+    [
+     "/doc.pdf",
+     false
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     false
+    ],
+    [
+     "/a",
+     true
+    ],
+    [
+     "/foo bar",
+     true
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  },
+  {
+   "body": "User-agent: *\nDisallow:\n",
+   "is_robots": true,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     true
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     true
+    ],
+    [
+     "/doc.pdf",
+     true
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     true
+    ],
+    [
+     "/a",
+     true
+    ],
+    [
+     "/foo bar",
+     true
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  },
+  {
+   "body": "# only comments\n",
+   "is_robots": false,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     true
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     true
+    ],
+    [
+     "/doc.pdf",
+     true
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     true
+    ],
+    [
+     "/a",
+     true
+    ],
+    [
+     "/foo bar",
+     true
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  },
+  {
+   "body": "<html>not robots</html>",
+   "is_robots": false,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     true
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     true
+    ],
+    [
+     "/doc.pdf",
+     true
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     true
+    ],
+    [
+     "/a",
+     true
+    ],
+    [
+     "/foo bar",
+     true
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  },
+  {
+   "body": "User-agent: job\nDisallow: /a\n\nUser-agent: *\nDisallow: /\nCrawl-delay: x\n",
+   "is_robots": true,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     true
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     true
+    ],
+    [
+     "/doc.pdf",
+     true
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     false
+    ],
+    [
+     "/a",
+     false
+    ],
+    [
+     "/foo bar",
+     true
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  },
+  {
+   "body": "User-agent: *\n\nDisallow: /foo%20bar\nAllow: /private\nDisallow: /private\n",
+   "is_robots": true,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     true
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     true
+    ],
+    [
+     "/doc.pdf",
+     true
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     true
+    ],
+    [
+     "/a",
+     true
+    ],
+    [
+     "/foo bar",
+     false
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  },
+  {
+   "body": "",
+   "is_robots": true,
+   "delay": null,
+   "paths": [
+    [
+     "/",
+     true
+    ],
+    [
+     "/private",
+     true
+    ],
+    [
+     "/private/ok",
+     true
+    ],
+    [
+     "/private/x",
+     true
+    ],
+    [
+     "/doc.pdf",
+     true
+    ],
+    [
+     "/doc.pdf?x=1",
+     true
+    ],
+    [
+     "/axxb",
+     true
+    ],
+    [
+     "/a",
+     true
+    ],
+    [
+     "/foo bar",
+     true
+    ],
+    [
+     "/café",
+     true
+    ]
+   ]
+  }
+ ]
+}
