@@ -44,7 +44,7 @@ pnpm install
 pnpm tauri dev
 ```
 
-A frameless, maximized window opens. A development build starts with fictional jobs; a release build starts empty.
+A frameless, maximized window opens with an empty board; see Usage to load jobs.
 
 On Wayland, if the window stays blank, run `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnpm tauri dev`
 (a WebKitGTK renderer issue).
@@ -57,9 +57,12 @@ On Wayland, if the window stays blank, run `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnp
 | Move a job | Drag the card, or open its "..." menu and pick a column |
 | Close a job | Drop it on Closed and choose the outcome, or use "Close as" in its menu |
 | Filter | Source, target and minimum score in the toolbar |
+| Load a crawler's history | `job-radar-desktop import --seen seen.db --candidates candidates.json` (safe to repeat) |
+| Review discarded jobs | Open Discarded in the sidebar, then move a job to the Inbox or delete it for good |
 | Switch the visual style | Set `VITE_VISUAL_MODE=flat` (solid panels) or `glass` (default, translucent panels) |
 
 Everything is saved in SQLite at `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (development builds use `dev.nandomoreira.jobradar-local`). Set `JOB_RADAR_DB` to use another file. Imported jobs have no score until the crawler reads their page.
+An imported job shows "No score" until the crawler reads its page; a minimum score never hides it.
 
 ## Development
 
@@ -100,6 +103,7 @@ MVP progress and every planned milestone live in [ROADMAP.md](ROADMAP.md). The m
 - **Import reads local files only,** read-only, and treats their content as untrusted.
 - **IPC input is validated.** Card ids are bounded (1 to 64 characters) and stage/outcome pairs
   are checked in Rust before any data changes.
+- **Import reads local files only,** read-only, and treats their content as untrusted.
 - **Local data only.** Jobs live in a SQLite file in your data directory, created readable only by you (0600); the browser storage keeps only the visual mode.
 
 Planned features change this surface: running AI CLIs and reading Gmail will be opt-in, with

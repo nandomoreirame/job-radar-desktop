@@ -45,7 +45,7 @@ pnpm install
 pnpm tauri dev
 ```
 
-Abre uma janela sem bordas e maximizada. O build de desenvolvimento começa com vagas fictícias; o de release começa vazio.
+Abre uma janela sem bordas e maximizada, com o board vazio; veja Uso para carregar vagas.
 
 No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnpm tauri dev`
 (um problema do renderer do WebKitGTK).
@@ -63,6 +63,7 @@ No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 
 | Trocar o estilo visual | Defina `VITE_VISUAL_MODE=flat` (painéis sólidos) ou `glass` (padrão, painéis translúcidos) |
 
 Tudo fica salvo em SQLite em `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (o build de desenvolvimento usa `dev.nandomoreira.jobradar-local`). Use `JOB_RADAR_DB` para apontar outro arquivo. Vagas importadas ficam sem score até o crawler ler a página.
+Uma vaga importada mostra "Sem nota" até o crawler ler a página dela; o score mínimo nunca a esconde.
 
 ## Desenvolvimento
 
