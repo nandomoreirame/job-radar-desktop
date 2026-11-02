@@ -30,14 +30,12 @@ impl SqliteStore {
     }
     fn init(mut conn: Connection) -> Result<Self, StoreError> {
         conn.pragma_update(None, "foreign_keys", true)?;
-        if conn
-            .pragma_query_value(None, "journal_mode", |row| row.get::<_, String>(0))
-            .unwrap_or_default()
-            != "memory"
-        {
-            let _ = conn.pragma_update_and_check(None, "journal_mode", "WAL", |row| {
+        let journal_mode: String =
+            conn.pragma_query_value(None, "journal_mode", |row| row.get(0))?;
+        if journal_mode != "memory" {
+            conn.pragma_update_and_check(None, "journal_mode", "WAL", |row| {
                 row.get::<_, String>(0)
-            });
+            })?;
         }
         conn.busy_timeout(Duration::from_secs(5))?;
         migrate(&mut conn)?;
