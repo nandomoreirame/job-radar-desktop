@@ -2,12 +2,13 @@
 use crate::domain::{
     Artifacts, BoardCard, CardDetails, DiscardedJob, Outcome, Salary, Stage, TimelineEvent,
 };
+use crate::import::{ImportReport, NewJob};
 use crate::store::{Store, StoreError, validate_move};
 use rusqlite::types::Type;
 use rusqlite::{Connection, OptionalExtension, Row, params};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::sync::{Mutex, MutexGuard};
 use std::time::Duration;
@@ -27,6 +28,67 @@ pub struct SqliteStore {
     conn: Mutex<Connection>,
 }
 impl SqliteStore {
+    pub fn insert_new_jobs(
+        &self,
+        jobs: Vec<NewJob>,
+        report: &mut ImportReport,
+    ) -> Result<(), StoreError> {
+        let mut conn = self.lock()?;
+        let tx = conn.transaction()?;
+        let mut ids = HashSet::new();
+        let mut urls = HashSet::new();
+        for row in tx
+            .prepare("SELECT id,url_key FROM cards")?
+            .query_map([], |r| {
+                Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
+            })?
+        {
+            let (id, url) = row?;
+            ids.insert(id);
+            if let Some(url) = url {
+                urls.insert(url);
+            }
+        }
+        let mut dismissed = HashSet::new();
+        let mut dismissed_urls = HashSet::new();
+        for row in tx
+            .prepare("SELECT fingerprint,url_key FROM dismissed_jobs")?
+            .query_map([], |r| {
+                Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
+            })?
+        {
+            let (id, url) = row?;
+            dismissed.insert(id);
+            if let Some(url) = url {
+                dismissed_urls.insert(url);
+            }
+        }
+        for job in jobs {
+            let key = (!job.url_key.is_empty()).then_some(job.url_key.as_str());
+            if dismissed.contains(&job.card.id) || key.is_some_and(|v| dismissed_urls.contains(v)) {
+                report.dismissed += 1;
+                continue;
+            }
+            if ids.contains(&job.card.id) || key.is_some_and(|v| urls.contains(v)) {
+                report.duplicates += 1;
+                continue;
+            }
+            insert_card(&tx, &job.card)?;
+            let (reason, at) = job.discard.unzip();
+            tx.execute("UPDATE cards SET url_key=?2,description=?3,discard_reason=?4,discarded_at=?5 WHERE id=?1",params![job.card.id,key,job.description,reason,at])?;
+            ids.insert(job.card.id);
+            if let Some(v) = key {
+                urls.insert(v.to_owned());
+            }
+            if reason.is_some() {
+                report.discarded += 1
+            } else {
+                report.inbox += 1
+            }
+        }
+        tx.commit()?;
+        Ok(())
+    }
     pub fn open(path: &Path) -> Result<Self, StoreError> {
         Self::init(Connection::open(path)?)
     }
@@ -80,7 +142,6 @@ const LIST_CARDS: &str = concat!(
     " FROM cards WHERE discard_reason IS NULL ORDER BY rowid"
 );
 const GET_CARD: &str = concat!("SELECT ", card_columns!(), " FROM cards WHERE id = ?1");
-#[cfg(test)]
 const INSERT_CARD: &str = concat!(
     "INSERT INTO cards (",
     card_columns!(),
@@ -90,7 +151,6 @@ const LIST_EVENTS: &str =
     "SELECT card_id, at, kind, label FROM timeline_events ORDER BY card_id, at, id";
 const CARD_EVENTS: &str =
     "SELECT card_id, at, kind, label FROM timeline_events WHERE card_id = ?1 ORDER BY at, id";
-#[cfg(test)]
 const INSERT_EVENT: &str =
     "INSERT INTO timeline_events (card_id, at, kind, label) VALUES (?1, ?2, ?3, ?4)";
 fn to_text<T: Serialize>(value: &T) -> Result<String, StoreError> {
@@ -158,7 +218,6 @@ fn event_from_row(row: &Row<'_>) -> rusqlite::Result<(String, TimelineEvent)> {
         },
     ))
 }
-#[cfg(test)]
 fn insert_card(conn: &Connection, card: &BoardCard) -> Result<(), StoreError> {
     let salary = card.salary.as_ref();
     conn.prepare_cached(INSERT_CARD)?.execute(params![

@@ -61,6 +61,13 @@ fn url(field: &str, value: Option<String>) -> Result<Option<String>, String> {
     Ok(value)
 }
 
+pub fn is_http_url(value: &str) -> bool {
+    url("", Some(value.to_owned())).is_ok_and(|v| v.is_some())
+}
+pub fn is_email(value: &str) -> bool {
+    email("", Some(value.to_owned())).is_ok_and(|v| v.is_some())
+}
+
 fn date(field: &str, value: Option<String>) -> Result<Option<String>, String> {
     let value = text(field, value, MAX_TEXT_LEN)?;
     if value.as_deref().is_some_and(|v| !is_iso_date(v)) {
