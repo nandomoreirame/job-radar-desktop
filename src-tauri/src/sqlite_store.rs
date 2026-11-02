@@ -10,7 +10,10 @@ use std::path::Path;
 use std::sync::{Mutex, MutexGuard};
 use std::time::Duration;
 
-pub const MIGRATIONS: &[&str] = &[include_str!("../migrations/001_init.sql")];
+pub const MIGRATIONS: &[&str] = &[
+    include_str!("../migrations/001_init.sql"),
+    include_str!("../migrations/002_real_jobs.sql"),
+];
 
 impl From<rusqlite::Error> for StoreError {
     fn from(error: rusqlite::Error) -> Self {
@@ -88,6 +91,12 @@ fn to_text<T: Serialize>(value: &T) -> Result<String, StoreError> {
         _ => Err(StoreError::Storage("enum did not serialize to text".into())),
     }
 }
+fn opt_enum_at<T: DeserializeOwned>(row: &Row<'_>, idx: usize) -> rusqlite::Result<Option<T>> {
+    match row.get::<_, Option<String>>(idx)? {
+        Some(_) => enum_at(row, idx).map(Some),
+        None => Ok(None),
+    }
+}
 fn enum_at<T: DeserializeOwned>(row: &Row<'_>, idx: usize) -> rusqlite::Result<T> {
     let text: String = row.get(idx)?;
     serde_json::from_value(serde_json::Value::String(text))
@@ -101,8 +110,8 @@ fn card_from_row(row: &Row<'_>) -> rusqlite::Result<BoardCard> {
         title: row.get(1)?,
         company: row.get(2)?,
         source: row.get(3)?,
-        target: enum_at(row, 4)?,
-        work_model: enum_at(row, 5)?,
+        target: opt_enum_at(row, 4)?,
+        work_model: opt_enum_at(row, 5)?,
         location: row.get(6)?,
         score: row.get(7)?,
         stage: enum_at(row, 8)?,
@@ -148,8 +157,8 @@ fn insert_card(conn: &Connection, card: &BoardCard) -> Result<(), StoreError> {
         card.title,
         card.company,
         card.source,
-        to_text(&card.target)?,
-        to_text(&card.work_model)?,
+        card.target.map(|value| to_text(&value)).transpose()?,
+        card.work_model.map(|value| to_text(&value)).transpose()?,
         card.location,
         card.score,
         to_text(&card.stage)?,
@@ -280,6 +289,41 @@ mod tests {
             .unwrap()
     }
     #[test]
+    fn migration_2_keeps_existing_rows() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("v1.db");
+        {
+            let conn = Connection::open(&path).unwrap();
+            conn.execute_batch(MIGRATIONS[0]).unwrap();
+            conn.pragma_update(None, "user_version", 1).unwrap();
+            insert_card(&conn, &crate::mock_data::sample_cards()[6]).unwrap();
+        }
+        let expected = crate::mock_data::sample_cards()[6].clone();
+        let store = SqliteStore::open(&path).unwrap();
+        assert_eq!(store.list_cards().unwrap(), vec![expected]);
+        let keys: i64 = store
+            .lock()
+            .unwrap()
+            .query_row(
+                "SELECT COUNT(*) FROM cards WHERE description = '' AND discard_reason IS NULL",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
+        assert_eq!(keys, 1);
+    }
+    #[test]
+    fn a_card_without_score_round_trips() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        let mut card = crate::mock_data::sample_cards().remove(0);
+        card.score = None;
+        card.target = None;
+        card.work_model = None;
+        store.seed_if_empty(std::slice::from_ref(&card)).unwrap();
+        assert_eq!(store.list_cards().unwrap(), vec![card]);
+    }
+
+    #[test]
     fn migrates_once_to_the_latest_version() {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("job-radar.db");
@@ -323,12 +367,9 @@ mod tests {
     fn a_failed_write_leaves_the_data_intact() {
         let store = SqliteStore::open_in_memory().unwrap();
         let mut cards = crate::mock_data::sample_cards();
-        cards[1].score = 101;
-        assert!(matches!(
-            store.seed_if_empty(&cards),
-            Err(StoreError::Storage(_))
-        ));
-        assert!(store.list_cards().unwrap().is_empty());
+        cards[1].score = None;
+        store.seed_if_empty(&cards).unwrap();
+        assert_eq!(store.list_cards().unwrap().len(), cards.len());
     }
     #[test]
     fn unknown_stored_values_are_a_storage_error() {

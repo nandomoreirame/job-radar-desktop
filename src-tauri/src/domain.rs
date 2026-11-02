@@ -106,10 +106,10 @@ pub struct BoardCard {
     pub title: String,
     pub company: String,
     pub source: String,
-    pub target: Target,
-    pub work_model: WorkModel,
+    pub target: Option<Target>,
+    pub work_model: Option<WorkModel>,
     pub location: Option<String>,
-    pub score: u8,
+    pub score: Option<u8>,
     pub stage: Stage,
     /// Set only when `stage` is `Closed`.
     pub outcome: Option<Outcome>,
