@@ -57,4 +57,14 @@ describe("BoardPage", () => {
     await userEvent.click(await screen.findByRole("menuitem", { name: "Triagem" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível mover a vaga.");
   });
+  it("opens a job from the command palette", async () => {
+    render(<BoardPage api={fakeApi(cards)} now={now} />);
+    await screen.findByRole("heading", { name: /Lead AI Architect/ });
+    await userEvent.keyboard("{Control>}k{/Control}");
+    await userEvent.type(await screen.findByRole("combobox"), "vertice");
+    await userEvent.click(screen.getByRole("option", { name: /Lead AI Architect/ }));
+    const dialog = await screen.findByRole("dialog", { name: "Lead AI Architect" });
+    expect(within(dialog).getByRole("button", { name: "Gerar CV customizado" })).toBeDisabled();
+  });
+
 });
