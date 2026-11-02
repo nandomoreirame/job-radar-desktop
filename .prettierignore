@@ -3,6 +3,9 @@ src/shared/bindings/
 dist/
 coverage/
 src-tauri/target/
+docs/plans/2026-11-02-sqlite-store.md
+docs/specs/sqlite-store/
+docs/reviews/sqlite-store.proofs.md
 
 # Existing files were authored before the formatter gate.
 docs/plans/2026-11-02-board-prototype.md
