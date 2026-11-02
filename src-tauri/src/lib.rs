@@ -1,6 +1,7 @@
 pub mod cli;
 pub mod clock;
 pub mod commands;
+pub mod crawler;
 pub mod db_path;
 pub mod details;
 pub mod domain;

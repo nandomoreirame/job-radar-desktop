@@ -25,6 +25,9 @@ rfd = { version = "0.17", default-features = false, features = ["gtk3"] }
 dirs = "7"
 regex = "1"
 url = "2"
+unicode-normalization = "0.1"
+caseless = "0.2"
+sha2 = "0.10"
 
 [dev-dependencies]
 tempfile = "3"

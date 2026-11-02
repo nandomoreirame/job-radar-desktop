@@ -1,0 +1,249 @@
+{
+ "titles": [
+  [
+   "Backend Sr",
+   "backend sr"
+  ],
+  [
+   "Sr Backend",
+   "backend sr"
+  ],
+  [
+   "Engenheiro de Software Sênior - Remoto",
+   "de engenheiro senior software"
+  ],
+  [
+   "Tech Lead | Remote",
+   "lead tech"
+  ],
+  [
+   "Coração de Dados / São Paulo",
+   "coracao dados de"
+  ],
+  [
+   "Staff AI Engineer (Remote)",
+   "ai engineer staff"
+  ],
+  [
+   "",
+   ""
+  ]
+ ],
+ "companies": [
+  [
+   "",
+   ""
+  ],
+  [
+   "Acme",
+   "acme"
+  ],
+  [
+   "ACME Ltda",
+   "acme"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "acme"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "cafe cia"
+  ]
+ ],
+ "fingerprints": [
+  [
+   "",
+   "Backend Sr",
+   "1eb668a46395efd2"
+  ],
+  [
+   "",
+   "Sr Backend",
+   "1eb668a46395efd2"
+  ],
+  [
+   "",
+   "Engenheiro de Software Sênior - Remoto",
+   "13dfc1a77412b3b2"
+  ],
+  [
+   "",
+   "Tech Lead | Remote",
+   "1f7e4805bcb6c04e"
+  ],
+  [
+   "",
+   "Coração de Dados / São Paulo",
+   "ec07867805adca14"
+  ],
+  [
+   "",
+   "Staff AI Engineer (Remote)",
+   "685b30e11526d7f4"
+  ],
+  [
+   "",
+   "",
+   "e3b0c44298fc1c14"
+  ],
+  [
+   "Acme",
+   "Backend Sr",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Acme",
+   "Sr Backend",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Acme",
+   "Engenheiro de Software Sênior - Remoto",
+   "2134ac4f0c7e3902"
+  ],
+  [
+   "Acme",
+   "Tech Lead | Remote",
+   "4b24b183517f2bd6"
+  ],
+  [
+   "Acme",
+   "Coração de Dados / São Paulo",
+   "9e05de062835355b"
+  ],
+  [
+   "Acme",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "Acme",
+   "",
+   "500695bd82847fd9"
+  ],
+  [
+   "ACME Ltda",
+   "Backend Sr",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "ACME Ltda",
+   "Sr Backend",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "ACME Ltda",
+   "Engenheiro de Software Sênior - Remoto",
+   "2134ac4f0c7e3902"
+  ],
+  [
+   "ACME Ltda",
+   "Tech Lead | Remote",
+   "4b24b183517f2bd6"
+  ],
+  [
+   "ACME Ltda",
+   "Coração de Dados / São Paulo",
+   "9e05de062835355b"
+  ],
+  [
+   "ACME Ltda",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "ACME Ltda",
+   "",
+   "500695bd82847fd9"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Backend Sr",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Sr Backend",
+   "e969cf4ead0be75f"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Engenheiro de Software Sênior - Remoto",
+   "2134ac4f0c7e3902"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Tech Lead | Remote",
+   "4b24b183517f2bd6"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Coração de Dados / São Paulo",
+   "9e05de062835355b"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "Staff AI Engineer (Remote)",
+   "e766a7ee3d8d8dbd"
+  ],
+  [
+   "Grupo Acme S.A.",
+   "",
+   "500695bd82847fd9"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Backend Sr",
+   "38ebcf68f6fd13ef"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Sr Backend",
+   "38ebcf68f6fd13ef"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Engenheiro de Software Sênior - Remoto",
+   "b368fa579e7e055f"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Tech Lead | Remote",
+   "c347df12d291ea9d"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Coração de Dados / São Paulo",
+   "d9b56fec7ef1b894"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "Staff AI Engineer (Remote)",
+   "08872f08b6e57641"
+  ],
+  [
+   "Café & Cia LTDA ME",
+   "",
+   "4b619a9980c2bf9a"
+  ]
+ ],
+ "urls": [
+  [
+   "http://WWW.Example.com/jobs/1/",
+   "https://example.com/jobs/1"
+  ],
+  [
+   "https://example.com/a?utm_source=x&b=2&a=1#frag",
+   "https://example.com/a?a=1&b=2"
+  ],
+  [
+   "https://example.com:8080/a?gclid=1",
+   "https://example.com:8080/a"
+  ],
+  [
+   "not a url",
+   ""
+  ]
+ ]
+}
