@@ -35,3 +35,12 @@ filters and a collapsible icon sidebar.
   for auth/quota/rate-limit. `docs/reviews/board-ui-migration.md` records a zero-finding
   self-assessment, not independent review. Keep this phase open until an external reviewer and
   the manual Niri checks are available.
+- 2026-11-02: round 4 review (Claude panel) left 6 findings. Claude fixed them in 529adab..785c4c8:
+  kanban resync on every store update (High), palette twin-jobs test (the Medium finding did not
+  reproduce: cmdk 1.1 keeps equal values distinct), columns fit content (local edit in the
+  generated KanbanColumn: w-full instead of size-full), scrollbar flush with the window edges,
+  inline filter labels, no dialog backdrop blur. tier1, tier2 (coverage), Rust tests and
+  check_proofs.py pass (117 web tests).
+- 2026-11-02: independent review of the Claude round is pending: agy, Codex and Grok all exited 3,
+  and the Claude panel cannot review its own round. The round-4 review file still lists the 6
+  findings until an independent reviewer rewrites it. Manual Niri validation still pending.
