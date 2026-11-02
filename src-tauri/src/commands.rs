@@ -4,7 +4,8 @@
 use tauri::State;
 use std::env;
 
-use crate::domain::{BoardCard, Outcome, Stage};
+use crate::details::normalize_details;
+use crate::domain::{BoardCard, CardDetails, Outcome, Stage};
 use crate::store::Store;
 
 pub struct AppState {
@@ -48,6 +49,17 @@ pub fn move_card_impl(
     state.store.move_card(id, stage, outcome).map_err(|e| e.to_string())
 }
 
+pub fn update_card_impl(state: &AppState, id: &str, details: CardDetails) -> Result<BoardCard, String> {
+    check_id(id)?;
+    let details = normalize_details(details)?;
+    state.store.update_card(id, details).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn update_card(state: State<'_, AppState>, id: String, details: CardDetails) -> Result<BoardCard, String> {
+    update_card_impl(&state, &id, details)
+}
+
 #[tauri::command]
 pub fn list_board(state: State<'_, AppState>) -> Result<Vec<BoardCard>, String> {
     list_board_impl(&state)
@@ -66,11 +78,30 @@ pub fn move_card(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::domain::CardDetails;
     use crate::mock_data::sample_cards;
     use crate::store::MockStore;
 
     fn state() -> AppState {
         AppState { store: Box::new(MockStore::new(sample_cards())) }
+    }
+
+    #[test]
+    fn update_card_persists_valid_details() {
+        let state = state();
+        let details = CardDetails { notes: "  anotar  ".into(), ..CardDetails::default() };
+        assert_eq!(update_card_impl(&state, "c01", details).unwrap().notes, "anotar");
+    }
+
+    #[test]
+    fn update_card_reports_the_invalid_field() {
+        let details = CardDetails { job_url: Some("javascript:alert(1)".into()), ..CardDetails::default() };
+        assert_eq!(update_card_impl(&state(), "c01", details), Err("jobUrl: invalid_url".to_string()));
+    }
+
+    #[test]
+    fn update_card_rejects_an_empty_id() {
+        assert_eq!(update_card_impl(&state(), "", CardDetails::default()), Err("invalid card id".to_string()));
     }
 
     #[test]

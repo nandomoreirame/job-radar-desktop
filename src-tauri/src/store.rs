@@ -3,7 +3,7 @@
 
 use std::sync::Mutex;
 
-use crate::domain::{BoardCard, Outcome, Stage};
+use crate::domain::{BoardCard, CardDetails, Outcome, Stage};
 
 #[derive(Debug, PartialEq, Eq, thiserror::Error)]
 pub enum StoreError {
@@ -25,6 +25,8 @@ pub trait Store: Send + Sync {
         stage: Stage,
         outcome: Option<Outcome>,
     ) -> Result<BoardCard, StoreError>;
+    /// `details` must already be normalized (see `details::normalize_details`).
+    fn update_card(&self, id: &str, details: CardDetails) -> Result<BoardCard, StoreError>;
 }
 
 /// Checks the stage/outcome pair before any backend touches its data.
@@ -68,15 +70,48 @@ impl Store for MockStore {
         card.outcome = outcome;
         Ok(card.clone())
     }
+
+    fn update_card(&self, id: &str, details: CardDetails) -> Result<BoardCard, StoreError> {
+        let mut cards = self.cards.lock().map_err(|_| StoreError::Poisoned)?;
+        let card = cards
+            .iter_mut()
+            .find(|c| c.id == id)
+            .ok_or_else(|| StoreError::NotFound(id.to_owned()))?;
+        card.apply(details);
+        Ok(card.clone())
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::domain::CardDetails;
     use crate::mock_data::sample_cards;
 
     fn store() -> MockStore {
         MockStore::new(sample_cards())
+    }
+
+    #[test]
+    fn updating_applies_the_details_for_the_session() {
+        let store = store();
+        let details = CardDetails {
+            notes: "Ligar na sexta".into(),
+            recruiter_name: Some("Ana".into()),
+            ..CardDetails::default()
+        };
+        let updated = store.update_card("c01", details).unwrap();
+        assert_eq!(updated.notes, "Ligar na sexta");
+        let listed = store.list_cards().unwrap();
+        assert_eq!(listed.iter().find(|c| c.id == "c01").unwrap().recruiter_name.as_deref(), Some("Ana"));
+    }
+
+    #[test]
+    fn updating_an_unknown_card_is_not_found() {
+        assert_eq!(
+            store().update_card("nope", CardDetails::default()),
+            Err(StoreError::NotFound("nope".into()))
+        );
     }
 
     #[test]

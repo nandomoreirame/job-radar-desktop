@@ -19,4 +19,12 @@ processStep: string | null, salary: Salary | null, artifacts: Artifacts, lastAct
 /**
  * Name of the AI CLI working on this card, if any.
  */
-aiRunning: string | null, unread: boolean, timeline: Array<TimelineEvent>, };
+aiRunning: string | null, unread: boolean, timeline: Array<TimelineEvent>, 
+/**
+ * Date of `next_action`, ISO `YYYY-MM-DD`.
+ */
+nextActionDate: string | null, recruiterName: string | null, recruiterEmail: string | null, recruiterLinkedin: string | null, jobUrl: string | null, applicationUrl: string | null, 
+/**
+ * The user's own notes about this application.
+ */
+notes: string, };

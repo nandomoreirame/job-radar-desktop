@@ -34,6 +34,13 @@ fn card(
         ai_running: None,
         unread: false,
         timeline: Vec::new(),
+        next_action_date: None,
+        recruiter_name: None,
+        recruiter_email: None,
+        recruiter_linkedin: None,
+        job_url: None,
+        application_url: None,
+        notes: String::new(),
     }
 }
 

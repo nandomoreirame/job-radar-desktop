@@ -21,6 +21,13 @@ export function makeCard(overrides: Partial<BoardCard> = {}): BoardCard {
     aiRunning: null,
     unread: false,
     timeline: [],
+    nextActionDate: null,
+    recruiterName: null,
+    recruiterEmail: null,
+    recruiterLinkedin: null,
+    jobUrl: null,
+    applicationUrl: null,
+    notes: '',
     ...overrides,
   };
 }

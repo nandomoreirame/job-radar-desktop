@@ -123,6 +123,47 @@ pub struct BoardCard {
     pub ai_running: Option<String>,
     pub unread: bool,
     pub timeline: Vec<TimelineEvent>,
+    /// Date of `next_action`, ISO `YYYY-MM-DD`.
+    pub next_action_date: Option<String>,
+    pub recruiter_name: Option<String>,
+    pub recruiter_email: Option<String>,
+    pub recruiter_linkedin: Option<String>,
+    pub job_url: Option<String>,
+    pub application_url: Option<String>,
+    /// The user's own notes about this application.
+    pub notes: String,
+}
+
+/// The fields of a card the user edits (the job itself comes from the crawler).
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export)]
+pub struct CardDetails {
+    pub salary: Option<Salary>,
+    pub process_step: Option<String>,
+    pub next_action: Option<String>,
+    pub next_action_date: Option<String>,
+    pub recruiter_name: Option<String>,
+    pub recruiter_email: Option<String>,
+    pub recruiter_linkedin: Option<String>,
+    pub job_url: Option<String>,
+    pub application_url: Option<String>,
+    pub notes: String,
+}
+
+impl BoardCard {
+    pub fn apply(&mut self, details: CardDetails) {
+        self.salary = details.salary;
+        self.process_step = details.process_step;
+        self.next_action = details.next_action;
+        self.next_action_date = details.next_action_date;
+        self.recruiter_name = details.recruiter_name;
+        self.recruiter_email = details.recruiter_email;
+        self.recruiter_linkedin = details.recruiter_linkedin;
+        self.job_url = details.job_url;
+        self.application_url = details.application_url;
+        self.notes = details.notes;
+    }
 }
 
 #[cfg(test)]
