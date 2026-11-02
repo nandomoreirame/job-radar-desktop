@@ -24,4 +24,25 @@ describe("locales", () => {
   it("translate to English", () => {
     expect(i18n.getFixedT("en")("stage.inbox")).toBe("Inbox");
   });
+
+  it("carry the migration strings in both languages", () => {
+    const needed = [
+      "card.drag",
+      "dnd.instructions",
+      "command.title",
+      "command.description",
+      "command.placeholder",
+      "command.empty",
+      "command.group",
+      "command.open",
+      "command.shortcut",
+      "filters.label",
+      "filters.unreadOnly",
+      "sidebar.toggle",
+    ];
+    for (const lng of ["pt-BR", "en"]) {
+      const t = i18n.getFixedT(lng);
+      for (const key of needed) expect(t(key), `${lng}:${key}`).not.toBe(key);
+    }
+  });
 });

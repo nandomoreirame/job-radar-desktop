@@ -1,6 +1,13 @@
 {
-  "app": { "name": "job-radar", "signature": "terminal noir" },
-  "titlebar": { "minimize": "Minimizar", "maximize": "Maximizar", "close": "Fechar" },
+  "app": {
+    "name": "job-radar",
+    "signature": "terminal noir"
+  },
+  "titlebar": {
+    "minimize": "Minimizar",
+    "maximize": "Maximizar",
+    "close": "Fechar"
+  },
   "nav": {
     "label": "Navegação principal",
     "board": "Board",
@@ -14,7 +21,9 @@
     "active": "Crawler ativo",
     "lastRun": "Última varredura: hoje {{time}} · {{total}} vagas · {{fresh}} novas"
   },
-  "placeholder": { "body": "Esta tela chega nos próximos planos." },
+  "placeholder": {
+    "body": "Esta tela chega nos próximos planos."
+  },
   "board": {
     "title": "Board",
     "loading": "Carregando vagas…",
@@ -32,7 +41,9 @@
     "selected_one": "{{count}} selecionado",
     "selected_other": "{{count}} selecionados",
     "minScore": "Score mín.",
-    "syncGmail": "Sincronizar Gmail"
+    "syncGmail": "Sincronizar Gmail",
+    "label": "Filtros",
+    "unreadOnly": "Somente não lidas"
   },
   "metrics": {
     "appliedWeek": "Candidaturas na semana",
@@ -56,8 +67,17 @@
     "discarded": "Descartada",
     "no_response": "Sem resposta"
   },
-  "target": { "ai_llm": "AI/LLM", "full_stack": "Full Stack", "tech_lead": "Tech Lead", "data": "Dados" },
-  "workModel": { "remote": "Remoto", "hybrid": "Híbrido", "onsite": "Presencial" },
+  "target": {
+    "ai_llm": "AI/LLM",
+    "full_stack": "Full Stack",
+    "tech_lead": "Tech Lead",
+    "data": "Dados"
+  },
+  "workModel": {
+    "remote": "Remoto",
+    "hybrid": "Híbrido",
+    "onsite": "Presencial"
+  },
   "card": {
     "scoreLabel": "Score",
     "unread": "Não lida",
@@ -71,9 +91,14 @@
       "interviewPrep": "Preparação de entrevista",
       "done": "pronto",
       "missing": "pendente"
-    }
+    },
+    "drag": "Arrastar {{title}}"
   },
-  "salary": { "pj": "PJ", "clt": "CLT", "value": "R$ {{value}}k" },
+  "salary": {
+    "pj": "PJ",
+    "clt": "CLT",
+    "value": "R$ {{value}}k"
+  },
   "move": {
     "to": "Mover para",
     "closeAs": "Encerrar como",
@@ -84,7 +109,8 @@
     "picked": "{{title}} selecionada.",
     "over": "{{title}} sobre {{column}}.",
     "dropped": "{{title}} solta em {{column}}.",
-    "cancelled": "Movimento de {{title}} cancelado."
+    "cancelled": "Movimento de {{title}} cancelado.",
+    "instructions": "Para pegar uma vaga, pressione espaço ou Enter. Use as setas para movê-la e pressione espaço ou Enter de novo para soltar, ou Esc para cancelar."
   },
   "dialog": {
     "salary": "Salário negociado",
@@ -94,5 +120,17 @@
     "generateCv": "Gerar CV customizado",
     "comingSoon": "Em breve",
     "close": "Fechar"
+  },
+  "command": {
+    "title": "Buscar vaga",
+    "description": "Busque por cargo ou empresa e abra os detalhes.",
+    "placeholder": "Cargo ou empresa…",
+    "empty": "Nenhuma vaga encontrada.",
+    "group": "Vagas",
+    "open": "Buscar vaga",
+    "shortcut": "Ctrl K"
+  },
+  "sidebar": {
+    "toggle": "Alternar barra lateral"
   }
 }

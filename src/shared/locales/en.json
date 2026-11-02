@@ -1,6 +1,13 @@
 {
-  "app": { "name": "job-radar", "signature": "terminal noir" },
-  "titlebar": { "minimize": "Minimize", "maximize": "Maximize", "close": "Close" },
+  "app": {
+    "name": "job-radar",
+    "signature": "terminal noir"
+  },
+  "titlebar": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close"
+  },
   "nav": {
     "label": "Main navigation",
     "board": "Board",
@@ -14,7 +21,9 @@
     "active": "Crawler active",
     "lastRun": "Last run: today {{time}} · {{total}} jobs · {{fresh}} new"
   },
-  "placeholder": { "body": "This screen arrives in upcoming plans." },
+  "placeholder": {
+    "body": "This screen arrives in upcoming plans."
+  },
   "board": {
     "title": "Board",
     "loading": "Loading jobs…",
@@ -32,7 +41,9 @@
     "selected_one": "{{count}} selected",
     "selected_other": "{{count}} selected",
     "minScore": "Min. score",
-    "syncGmail": "Sync Gmail"
+    "syncGmail": "Sync Gmail",
+    "label": "Filters",
+    "unreadOnly": "Unread only"
   },
   "metrics": {
     "appliedWeek": "Applications this week",
@@ -56,8 +67,17 @@
     "discarded": "Discarded",
     "no_response": "No response"
   },
-  "target": { "ai_llm": "AI/LLM", "full_stack": "Full Stack", "tech_lead": "Tech Lead", "data": "Data" },
-  "workModel": { "remote": "Remote", "hybrid": "Hybrid", "onsite": "On-site" },
+  "target": {
+    "ai_llm": "AI/LLM",
+    "full_stack": "Full Stack",
+    "tech_lead": "Tech Lead",
+    "data": "Data"
+  },
+  "workModel": {
+    "remote": "Remote",
+    "hybrid": "Hybrid",
+    "onsite": "On-site"
+  },
   "card": {
     "scoreLabel": "Score",
     "unread": "Unread",
@@ -71,9 +91,14 @@
       "interviewPrep": "Interview prep",
       "done": "done",
       "missing": "missing"
-    }
+    },
+    "drag": "Drag {{title}}"
   },
-  "salary": { "pj": "PJ", "clt": "CLT", "value": "R$ {{value}}k" },
+  "salary": {
+    "pj": "PJ",
+    "clt": "CLT",
+    "value": "R$ {{value}}k"
+  },
   "move": {
     "to": "Move to",
     "closeAs": "Close as",
@@ -84,7 +109,8 @@
     "picked": "Picked up {{title}}.",
     "over": "{{title}} is over {{column}}.",
     "dropped": "{{title}} dropped on {{column}}.",
-    "cancelled": "Moving {{title}} was cancelled."
+    "cancelled": "Moving {{title}} was cancelled.",
+    "instructions": "To pick up a job, press space or Enter. Use the arrow keys to move it, press space or Enter again to drop it, or Escape to cancel."
   },
   "dialog": {
     "salary": "Negotiated salary",
@@ -94,5 +120,17 @@
     "generateCv": "Generate tailored CV",
     "comingSoon": "Coming soon",
     "close": "Close"
+  },
+  "command": {
+    "title": "Search jobs",
+    "description": "Search by title or company and open the details.",
+    "placeholder": "Title or company…",
+    "empty": "No jobs found.",
+    "group": "Jobs",
+    "open": "Search jobs",
+    "shortcut": "Ctrl K"
+  },
+  "sidebar": {
+    "toggle": "Toggle sidebar"
   }
 }

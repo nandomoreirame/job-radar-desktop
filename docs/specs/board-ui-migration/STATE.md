@@ -1,6 +1,6 @@
 ---
 feature: board-ui-migration
-phase: plan-complete
+phase: implement
 started_at: 2026-11-02
 spec_path: docs/specs/board-ui-migration/SPEC.md
 plan_path: docs/plans/2026-11-02-board-ui-migration.md
