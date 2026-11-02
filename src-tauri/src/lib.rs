@@ -1,3 +1,4 @@
+pub mod cli;
 pub mod clock;
 pub mod commands;
 pub mod db_path;
@@ -60,6 +61,15 @@ fn startup_failed(message: &str) -> ! {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let args: Vec<OsString> = std::env::args_os().skip(1).collect();
+    match cli::parse(&args) {
+        Ok(None) => {}
+        Ok(Some(import_args)) => std::process::exit(run_import(&import_args)),
+        Err(usage) => {
+            eprintln!("{usage}");
+            std::process::exit(1);
+        }
+    }
     // Open the store before tauri::Builder: once tao owns the GTK main context,
     // the rfd dialog in startup_failed never runs and the process hangs.
     let data_dir = match dirs::data_dir() {
@@ -91,6 +101,34 @@ pub fn run() {
         store: Box::new(store),
     });
     app.run(|_, _| {});
+}
+
+fn run_import(args: &cli::ImportArgs) -> i32 {
+    let result = dirs::data_dir()
+        .ok_or_else(|| "Could not determine the user's data directory".to_owned())
+        .and_then(|data_dir| {
+            let store = open_configured_store(
+                std::env::var_os(db_path::ENV_VAR).as_deref(),
+                &data_dir,
+                cfg!(debug_assertions),
+            )?;
+            import::import_history(
+                &store,
+                &args.seen,
+                args.candidates.as_deref(),
+                &clock::today(),
+            )
+        });
+    match result {
+        Ok(report) => {
+            println!("{}", cli::format_report(&report));
+            0
+        }
+        Err(error) => {
+            eprintln!("job-radar-desktop: {error}");
+            1
+        }
+    }
 }
 
 #[cfg(test)]
