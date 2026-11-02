@@ -1,23 +1,17 @@
-import { FileText, ListChecks, Loader2, MessagesSquare } from "lucide-react";
+import { FileText, ListChecks, MessagesSquare } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { BoardCard } from "@/shared/bindings/BoardCard";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
-import { scoreTone } from "../model/format";
+import { Status, StatusIndicator, StatusLabel } from "@/shared/ui/status";
+import { outcomeVariant, scoreTone } from "../model/format";
 import { SalaryLine } from "./SalaryLine";
 
 const SCORE_TONE = {
   high: "border-noir-teal/60 text-noir-teal",
   good: "border-noir-amber/60 text-noir-amber",
   low: "border-noir-border text-noir-muted",
-} as const;
-
-const OUTCOME_TONE = {
-  hired: "bg-noir-teal/15 text-noir-teal",
-  rejected: "bg-noir-red/15 text-noir-red",
-  discarded: "bg-white/5 text-noir-muted",
-  no_response: "bg-white/5 text-noir-muted",
 } as const;
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
@@ -72,7 +66,9 @@ export function JobCard({ card, onOpen, actions }: Props) {
       </div>
 
       {card.outcome && (
-        <Badge className={cn("w-fit", OUTCOME_TONE[card.outcome])}>{t(`outcome.${card.outcome}`)}</Badge>
+        <Status variant={outcomeVariant(card.outcome)}>
+          <StatusLabel>{t(`outcome.${card.outcome}`)}</StatusLabel>
+        </Status>
       )}
 
       <div className="flex flex-wrap items-center gap-1.5">
@@ -83,22 +79,19 @@ export function JobCard({ card, onOpen, actions }: Props) {
         <span className="text-xs text-noir-muted">{t(`workModel.${card.workModel}`)}</span>
         {card.location && <span className="text-xs text-noir-muted">· {card.location}</span>}
         {card.processStep && (
-          <Badge variant="outline" className="border-noir-amber/60 font-mono uppercase text-noir-amber">
-            {card.processStep}
-          </Badge>
+          <Status variant="warning" className="font-mono uppercase">
+            <StatusLabel>{card.processStep}</StatusLabel>
+          </Status>
         )}
       </div>
 
       <SalaryLine salary={card.salary} />
 
       {card.aiRunning ? (
-        <p
-          role="status"
-          className="flex items-center gap-2 rounded-md border border-noir-amber/40 bg-noir-amber/10 px-2 py-1.5 text-xs text-noir-amber"
-        >
-          <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
-          {t("card.aiRunning", { cli: capitalize(card.aiRunning) })}
-        </p>
+        <Status role="status" variant="info" className="w-full">
+          <StatusIndicator />
+          <StatusLabel>{t("card.aiRunning", { cli: capitalize(card.aiRunning) })}</StatusLabel>
+        </Status>
       ) : (
         <ul aria-label={t("card.artifacts.label")} className="flex gap-2">
           {artifacts.map(({ key, done, Icon }) => (
@@ -114,7 +107,7 @@ export function JobCard({ card, onOpen, actions }: Props) {
       )}
 
       {note && <p className="text-xs text-noir-muted">{note}</p>}
-      {actions && <div className="relative z-10 self-end">{actions}</div>}
+      {actions && <div className="relative z-10 flex items-center gap-1 self-end">{actions}</div>}
     </article>
   );
 }

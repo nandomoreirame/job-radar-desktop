@@ -8,11 +8,11 @@ import { cn } from "@/shared/lib/utils";
 const statusVariants = cva("inline-flex w-fit shrink-0 items-center gap-1.5 overflow-hidden rounded-4xl border px-2.5 py-1 text-xs font-medium whitespace-nowrap transition-colors", {
   variants: {
     variant: {
-      default: "border-transparent bg-muted text-muted-foreground **:data-[slot=status-indicator]:bg-muted-foreground",
-      success: "border-green-500/20 bg-green-500/10 text-green-600 **:data-[slot=status-indicator]:bg-green-600 dark:text-green-400 **:data-[slot=status-indicator]:dark:bg-green-400",
-      error: "border-destructive/20 bg-destructive/10 text-destructive **:data-[slot=status-indicator]:bg-destructive",
-      warning: "border-orange-500/20 bg-orange-500/10 text-orange-600 **:data-[slot=status-indicator]:bg-orange-600 dark:text-orange-400 **:data-[slot=status-indicator]:dark:bg-orange-400",
-      info: "border-blue-500/20 bg-blue-500/10 text-blue-600 **:data-[slot=status-indicator]:bg-blue-600 dark:text-blue-400 **:data-[slot=status-indicator]:dark:bg-blue-400",
+      default: "border-transparent bg-white/5 text-noir-muted **:data-[slot=status-indicator]:bg-noir-muted",
+      success: "border-noir-teal/30 bg-noir-teal/10 text-noir-teal **:data-[slot=status-indicator]:bg-noir-teal",
+      error: "border-noir-red/30 bg-noir-red/10 text-noir-red **:data-[slot=status-indicator]:bg-noir-red",
+      warning: "border-noir-amber/40 bg-noir-amber/10 text-noir-amber **:data-[slot=status-indicator]:bg-noir-amber",
+      info: "border-noir-cream/30 bg-noir-cream/10 text-noir-cream **:data-[slot=status-indicator]:bg-noir-cream",
     },
   },
   defaultVariants: {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatThousands, hasNegotiatedSalary, scoreTone } from "./format";
+import { formatThousands, hasNegotiatedSalary, outcomeVariant, scoreTone } from "./format";
 
 describe("formatThousands", () => {
   it("rounds monthly pay to thousands", () => {
@@ -21,5 +21,14 @@ describe("hasNegotiatedSalary", () => {
     expect(hasNegotiatedSalary(null)).toBe(false);
     expect(hasNegotiatedSalary({ pj: null, clt: null })).toBe(false);
     expect(hasNegotiatedSalary({ pj: null, clt: 18_000 })).toBe(true);
+  });
+});
+
+describe("outcomeVariant", () => {
+  it("maps each outcome to a status variant", () => {
+    expect(outcomeVariant("hired")).toBe("success");
+    expect(outcomeVariant("rejected")).toBe("error");
+    expect(outcomeVariant("discarded")).toBe("default");
+    expect(outcomeVariant("no_response")).toBe("default");
   });
 });
