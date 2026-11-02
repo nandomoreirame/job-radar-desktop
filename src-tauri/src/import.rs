@@ -146,7 +146,8 @@ pub fn import_history(
     let mut report = ImportReport::default();
     let mut jobs = Vec::new();
     for row in seen {
-        if !valid(&row.fingerprint, &row.title, &row.url) {
+        let url = row.url.trim();
+        if !valid(&row.fingerprint, &row.title, url) {
             report.invalid += 1;
             continue;
         }
@@ -155,12 +156,12 @@ pub fn import_history(
             &row.source,
             &row.title,
             &row.company,
-            &row.url,
+            url,
             &date_or(&row.sent_at, today),
         );
         jobs.push(NewJob {
             card,
-            url_key: url_key(&row.url),
+            url_key: url_key(url),
             description: String::new(),
             discard: None,
         })
@@ -173,7 +174,8 @@ pub fn import_history(
                 continue;
             }
         };
-        if !valid(&item.fingerprint, &item.title, &item.url) {
+        let url = item.url.trim();
+        if !valid(&item.fingerprint, &item.title, url) {
             report.invalid += 1;
             continue;
         }
@@ -182,7 +184,7 @@ pub fn import_history(
             &item.source,
             &item.title,
             &item.company,
-            &item.url,
+            url,
             &date_or(item.published_at.as_deref().unwrap_or(""), today),
         );
         card.work_model = work(item.work_mode_hint.as_deref());
@@ -190,7 +192,7 @@ pub fn import_history(
         card.recruiter_email = Some(item.contact_email.trim().to_owned()).filter(|v| is_email(v));
         jobs.push(NewJob {
             card,
-            url_key: url_key(&item.url),
+            url_key: url_key(url),
             description: bounded(&item.description, MAX_DESCRIPTION),
             discard: Some((BELOW_CUT.into(), today.into())),
         })
@@ -203,101 +205,244 @@ pub fn import_history(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::domain::{Stage, Target, WorkModel};
     use crate::store::Store;
     use rusqlite::{Connection, params};
-    use tempfile::tempdir;
-    fn seen(dir: &Path, rows: &[(&str, &str, &str)]) -> std::path::PathBuf {
-        let p = dir.join("seen.db");
-        let c = Connection::open(&p).unwrap();
-        c.execute_batch("CREATE TABLE seen (fingerprint TEXT PRIMARY KEY, source TEXT, title TEXT, company TEXT, url TEXT, sent_at TEXT)").unwrap();
-        for (id, title, url) in rows {
-            c.execute(
-                "INSERT INTO seen VALUES (?1,'gupy',?2,'Acme',?3,'2026-10-05T00:00:00')",
-                params![id, title, url],
+    use std::path::{Path, PathBuf};
+
+    const FP1: &str = "aaaaaaaaaaaaaaaa";
+    const FP2: &str = "bbbbbbbbbbbbbbbb";
+    const FP3: &str = "cccccccccccccccc";
+
+    fn seen_db(dir: &Path, rows: &[(&str, &str, &str)]) -> PathBuf {
+        let path = dir.join("seen.db");
+        let conn = Connection::open(&path).unwrap();
+        conn.execute_batch(
+            "CREATE TABLE seen (fingerprint TEXT PRIMARY KEY, source TEXT, title TEXT, company TEXT, url TEXT, sent_at TEXT, url_key TEXT, simhash TEXT)",
+        )
+        .unwrap();
+        for (fp, title, url) in rows {
+            conn.execute(
+                "INSERT INTO seen (fingerprint, source, title, company, url, sent_at) VALUES (?1, 'gupy', ?2, 'Acme', ?3, '2026-10-05T10:00:00.123')",
+                params![fp, title, url],
             )
             .unwrap();
         }
-        p
+        path
     }
-    fn candidate(fp: &str) -> serde_json::Value {
-        serde_json::json!({"fingerprint":fp,"source":"greenhouse","title":"Data Engineer","company":"Beta","url":"https://a.example/2","description":"Python e AWS","location":"Remoto","work_mode_hint":"remote","published_at":"2026-10-20T08:00:00+00:00","contact_email":"rh@beta.example"})
+
+    fn candidates(dir: &Path, items: serde_json::Value) -> PathBuf {
+        let path = dir.join("candidates.json");
+        std::fs::write(&path, items.to_string()).unwrap();
+        path
     }
-    fn candidates(dir: &Path, values: serde_json::Value) -> std::path::PathBuf {
-        let p = dir.join("candidates.json");
-        std::fs::write(&p, values.to_string()).unwrap();
-        p
+
+    fn candidate(fp: &str, url: &str) -> serde_json::Value {
+        serde_json::json!({
+            "fingerprint": fp, "source": "greenhouse", "title": "Data Engineer", "company": "Beta",
+            "url": url, "description": "Python e AWS", "location": "Remoto",
+            "work_mode_hint": "remote", "published_at": "2026-10-20T08:00:00+00:00",
+            "contact_email": "rh@beta.example", "contact_phone": "", "tags": [], "other_locations": [], "external_id": "1"
+        })
     }
-    fn store() -> SqliteStore {
-        SqliteStore::open_in_memory().unwrap()
+
+    fn store() -> crate::sqlite_store::SqliteStore {
+        crate::sqlite_store::SqliteStore::open_in_memory().unwrap()
     }
+
     #[test]
     fn routes_seen_to_inbox_and_candidates_to_discarded() {
-        let d = tempdir().unwrap();
-        let p = seen(
-            d.path(),
-            &[("aaaaaaaaaaaaaaaa", "Tech Lead", "https://a.example/1")],
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[(FP1, "Tech Lead", "https://a.example/1")]);
+        let cand = candidates(
+            dir.path(),
+            serde_json::json!([candidate(FP2, "https://a.example/2")]),
         );
-        let c = candidates(d.path(), serde_json::json!([candidate("bbbbbbbbbbbbbbbb")]));
-        let r = import_history(&store(), &p, Some(&c), "2026-11-02").unwrap();
-        assert_eq!((r.inbox, r.discarded), (1, 1))
+        let store = store();
+        let report = import_history(&store, &seen, Some(&cand), "2026-11-02").unwrap();
+        assert_eq!(
+            (
+                report.inbox,
+                report.discarded,
+                report.duplicates,
+                report.dismissed,
+                report.invalid
+            ),
+            (1, 1, 0, 0, 0)
+        );
+        let cards = store.list_cards().unwrap();
+        assert_eq!(
+            (cards[0].id.as_str(), cards[0].stage, cards[0].unread),
+            (FP1, Stage::Inbox, true)
+        );
+        let discarded = store.list_discarded().unwrap();
+        assert_eq!(
+            (discarded[0].id.as_str(), discarded[0].reason.as_str()),
+            (FP2, BELOW_CUT)
+        );
     }
+
     #[test]
     fn maps_a_record_to_a_card() {
-        let d = tempdir().unwrap();
-        let p = seen(
-            d.path(),
-            &[("aaaaaaaaaaaaaaaa", "Data", "https://a.example/1")],
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(
+            dir.path(),
+            &[(FP1, "Engenheiro de IA", "https://a.example/1")],
         );
-        let st = store();
-        import_history(&st, &p, None, "2026-11-02").unwrap();
-        assert_eq!(st.list_cards().unwrap().len(), 1)
+        let cand = candidates(
+            dir.path(),
+            serde_json::json!([candidate(FP2, "https://a.example/2")]),
+        );
+        let store = store();
+        import_history(&store, &seen, Some(&cand), "2026-11-02").unwrap();
+        let card = store.list_cards().unwrap().remove(0);
+        assert_eq!(card.score, None);
+        assert_eq!(card.target, Some(Target::AiLlm));
+        assert_eq!(card.work_model, None);
+        assert_eq!(card.job_url.as_deref(), Some("https://a.example/1"));
+        assert_eq!(card.timeline[0].at, "2026-10-05");
+        let job = store.restore_card(FP2).unwrap();
+        assert_eq!(job.work_model, Some(WorkModel::Remote));
+        assert_eq!(job.recruiter_email.as_deref(), Some("rh@beta.example"));
+        assert_eq!(job.location.as_deref(), Some("Remoto"));
+        assert_eq!(job.timeline[0].at, "2026-10-20");
     }
+
     #[test]
     fn importing_twice_changes_nothing() {
-        let d = tempdir().unwrap();
-        let p = seen(
-            d.path(),
-            &[("aaaaaaaaaaaaaaaa", "Data", "https://a.example/1")],
-        );
-        let st = store();
-        import_history(&st, &p, None, "2026-11-02").unwrap();
-        let r = import_history(&st, &p, None, "2026-11-03").unwrap();
-        assert_eq!(r.duplicates, 1)
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[(FP1, "Tech Lead", "https://a.example/1")]);
+        let store = store();
+        import_history(&store, &seen, None, "2026-11-02").unwrap();
+        store.move_card(FP1, Stage::Triage, None).unwrap();
+        let details = crate::domain::CardDetails {
+            notes: "minha nota".into(),
+            ..Default::default()
+        };
+        store.update_card(FP1, details).unwrap();
+        let before = store.list_cards().unwrap();
+        let report = import_history(&store, &seen, None, "2026-11-03").unwrap();
+        assert_eq!((report.inbox, report.duplicates), (0, 1));
+        assert_eq!(store.list_cards().unwrap(), before);
     }
+
     #[test]
     fn seen_wins_over_candidates() {
-        let d = tempdir().unwrap();
-        let p = seen(
-            d.path(),
-            &[("aaaaaaaaaaaaaaaa", "Data", "https://a.example/1")],
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[(FP1, "Tech Lead", "https://a.example/1")]);
+        let cand = candidates(
+            dir.path(),
+            serde_json::json!([
+                candidate(FP1, "https://a.example/other"),
+                candidate(FP2, "http://www.a.example/1/")
+            ]),
         );
-        let st = store();
-        import_history(&st, &p, None, "2026-11-02").unwrap();
-        assert_eq!(st.list_cards().unwrap().len(), 1)
-    }
-    #[test]
-    fn skips_and_counts_invalid_records() {
-        let d = tempdir().unwrap();
-        let p = seen(
-            d.path(),
-            &[
-                ("short", "Bad", "javascript:x"),
-                ("aaaaaaaaaaaaaaaa", "Good", "https://a.example"),
-            ],
+        let store = store();
+        let report = import_history(&store, &seen, Some(&cand), "2026-11-02").unwrap();
+        assert_eq!(
+            (report.inbox, report.discarded, report.duplicates),
+            (1, 0, 2)
         );
-        let r = import_history(&store(), &p, None, "2026-11-02").unwrap();
-        assert_eq!(r.invalid, 1)
+        assert!(store.list_discarded().unwrap().is_empty());
     }
-    #[test]
-    fn unreadable_candidates_change_nothing() {
-        let d = tempdir().unwrap();
-        let p = seen(d.path(), &[]);
-        let st = store();
-        assert!(import_history(&st, &p, Some(&d.path().join("bad.json")), "2026-11-02").is_err());
-        assert!(st.list_cards().unwrap().is_empty())
-    }
+
     #[test]
     fn a_deleted_job_does_not_return() {
-        assert_eq!(BELOW_CUT, "abaixo do corte de score")
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[(FP3, "Outra", "https://a.example/3")]);
+        let cand = candidates(
+            dir.path(),
+            serde_json::json!([candidate(FP2, "https://a.example/2")]),
+        );
+        let store = store();
+        import_history(&store, &seen, Some(&cand), "2026-11-02").unwrap();
+        store.delete_card(FP2, "2026-11-02").unwrap();
+        let renamed = candidates(
+            dir.path(),
+            serde_json::json!([candidate(FP1, "https://a.example/2")]),
+        );
+        let same_id = import_history(&store, &seen, Some(&cand), "2026-11-03").unwrap();
+        let same_url = import_history(&store, &seen, Some(&renamed), "2026-11-03").unwrap();
+        assert_eq!((same_id.discarded, same_id.dismissed), (0, 1));
+        assert_eq!((same_url.discarded, same_url.dismissed), (0, 1));
+    }
+
+    #[test]
+    fn skips_and_counts_invalid_records() {
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(
+            dir.path(),
+            &[
+                (FP1, "Boa", "https://a.example/1"),
+                (FP2, "Script", "javascript:alert(1)"),
+                ("short", "Fingerprint ruim", "https://a.example/3"),
+                (FP3, "  ", "https://a.example/4"),
+            ],
+        );
+        let store = store();
+        let report = import_history(&store, &seen, None, "2026-11-02").unwrap();
+        assert_eq!((report.inbox, report.invalid), (1, 3));
+    }
+
+    #[test]
+    fn bounds_text_and_drops_an_invalid_email() {
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[]);
+        let mut item = candidate(FP2, "https://a.example/2");
+        item["title"] = serde_json::json!("x".repeat(500));
+        item["contact_email"] = serde_json::json!("not an email");
+        let cand = candidates(dir.path(), serde_json::json!([item]));
+        let store = store();
+        import_history(&store, &seen, Some(&cand), "2026-11-02").unwrap();
+        let job = store.restore_card(FP2).unwrap();
+        assert_eq!(job.title.chars().count(), 200);
+        assert_eq!(job.recruiter_email, None);
+    }
+
+    #[test]
+    fn unreadable_candidates_change_nothing() {
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[(FP1, "Tech Lead", "https://a.example/1")]);
+        let bad = dir.path().join("bad.json");
+        std::fs::write(&bad, "{ not json").unwrap();
+        let store = store();
+        assert!(import_history(&store, &seen, Some(&bad), "2026-11-02").is_err());
+        assert!(
+            import_history(&store, &dir.path().join("missing.db"), None, "2026-11-02").is_err()
+        );
+        assert!(store.list_cards().unwrap().is_empty());
+    }
+
+    #[test]
+    fn a_malformed_candidate_is_skipped_and_counted() {
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[]);
+        let mut broken = candidate(FP3, "https://a.example/3");
+        broken["company"] = serde_json::Value::Null;
+        let cand = candidates(
+            dir.path(),
+            serde_json::json!([broken, candidate(FP2, "https://a.example/2")]),
+        );
+        let report = import_history(&store(), &seen, Some(&cand), "2026-11-02").unwrap();
+        assert_eq!((report.discarded, report.invalid), (1, 1));
+    }
+
+    #[test]
+    fn stores_the_url_without_surrounding_spaces() {
+        let dir = tempfile::tempdir().unwrap();
+        let seen = seen_db(dir.path(), &[(FP1, "Tech Lead", "  https://a.example/1  ")]);
+        let store = store();
+        import_history(&store, &seen, None, "2026-11-02").unwrap();
+        assert_eq!(
+            store.list_cards().unwrap()[0].job_url.as_deref(),
+            Some("https://a.example/1")
+        );
+    }
+
+    #[test]
+    fn an_impossible_date_falls_back_to_today() {
+        assert_eq!(date_or("2026-13-99T00:00:00", "2026-11-02"), "2026-11-02");
+        assert_eq!(date_or("abcd-ef-ghXX", "2026-11-02"), "2026-11-02");
+        assert_eq!(date_or("2028-02-29T10:00:00", "2026-11-02"), "2028-02-29");
     }
 }

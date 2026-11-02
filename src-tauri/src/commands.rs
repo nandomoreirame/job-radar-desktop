@@ -227,26 +227,43 @@ mod tests {
     #[test]
     fn opens_only_a_stored_http_url() {
         let state = state();
-        update_card_impl(
-            &state,
-            "c01",
-            CardDetails {
-                job_url: Some("https://a.example/1".into()),
-                ..Default::default()
-            },
-        )
-        .unwrap();
+        let details = CardDetails {
+            job_url: Some("https://a.example/1".into()),
+            ..CardDetails::default()
+        };
+        update_card_impl(&state, "c01", details).unwrap();
         let opened = std::cell::RefCell::new(Vec::new());
-        open_job_url_impl(&state, "c01", |url| {
+        let open = |url: &str| {
             opened.borrow_mut().push(url.to_owned());
             Ok(())
-        })
-        .unwrap();
-        assert_eq!(opened.borrow().as_slice(), ["https://a.example/1"]);
+        };
+        open_job_url_impl(&state, "c01", open).unwrap();
+        assert_eq!(*opened.borrow(), ["https://a.example/1"]);
+
+        let cleared = state
+            .store
+            .update_card("c01", CardDetails::default())
+            .unwrap();
+        assert_eq!(cleared.job_url, None);
         assert_eq!(
-            open_job_url_impl(&state, "", |_| Ok(())),
-            Err("invalid card id".into())
+            open_job_url_impl(&state, "c01", open),
+            Err("no_url".to_string())
         );
+        // A value that bypassed validation must not reach the OS.
+        let bad = CardDetails {
+            job_url: Some("javascript:alert(1)".into()),
+            ..CardDetails::default()
+        };
+        state.store.update_card("c01", bad).unwrap();
+        assert_eq!(
+            open_job_url_impl(&state, "c01", open),
+            Err("invalid_url".to_string())
+        );
+        assert_eq!(
+            open_job_url_impl(&state, "", open),
+            Err("invalid card id".to_string())
+        );
+        assert_eq!(opened.borrow().len(), 1);
     }
 
     #[test]

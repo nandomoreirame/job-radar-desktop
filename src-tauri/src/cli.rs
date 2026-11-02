@@ -38,14 +38,29 @@ pub fn format_report(r: &ImportReport) -> String {
     )
 }
 #[cfg(test)]
-mod legacy_tests {
+mod tests {
     use super::*;
-    fn args(v: &[&str]) -> Vec<OsString> {
-        v.iter().map(OsString::from).collect()
+
+    fn args(values: &[&str]) -> Vec<OsString> {
+        values.iter().map(OsString::from).collect()
     }
+
     #[test]
-    fn parses() {
+    fn parses_the_import_command() {
         assert_eq!(parse(&args(&[])), Ok(None));
+        assert_eq!(
+            parse(&args(&[
+                "import",
+                "--seen",
+                "a.db",
+                "--candidates",
+                "b.json"
+            ])),
+            Ok(Some(ImportArgs {
+                seen: "a.db".into(),
+                candidates: Some("b.json".into())
+            }))
+        );
         assert_eq!(
             parse(&args(&["import", "--seen", "a.db"])),
             Ok(Some(ImportArgs {
@@ -53,11 +68,19 @@ mod legacy_tests {
                 candidates: None
             }))
         );
-        assert!(parse(&args(&["import"])).is_err())
+        for bad in [
+            &["import"][..],
+            &["import", "--seen"],
+            &["import", "--nope", "x"],
+            &["other"],
+        ] {
+            assert!(parse(&args(bad)).is_err(), "{bad:?}");
+        }
     }
+
     #[test]
-    fn report() {
-        let r = ImportReport {
+    fn reports_every_count() {
+        let report = ImportReport {
             inbox: 1,
             discarded: 2,
             duplicates: 3,
@@ -65,16 +88,8 @@ mod legacy_tests {
             invalid: 5,
         };
         assert_eq!(
-            format_report(&r),
+            format_report(&report),
             "inbox: 1\ndiscarded: 2\nduplicates: 3\ndismissed: 4\ninvalid: 5"
-        )
-    }
-}
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn parses_the_import_command() {
-        assert!(parse(&["import".into(), "--seen".into(), "a.db".into()]).is_ok());
+        );
     }
 }
