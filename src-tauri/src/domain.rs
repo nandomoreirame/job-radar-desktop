@@ -182,6 +182,16 @@ impl BoardCard {
     }
 }
 
+/// The last crawl, for the sidebar. `stats` is the JSON written by the pipeline.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export)]
+pub struct CrawlRun {
+    pub started_at: String,
+    pub finished_at: Option<String>,
+    pub stats: String,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

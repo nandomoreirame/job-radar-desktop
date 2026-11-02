@@ -1,6 +1,7 @@
 //! SQLite backend. Schema changes are append-only migrations.
 use crate::domain::{
-    Artifacts, BoardCard, CardDetails, DiscardedJob, Outcome, Salary, Stage, TimelineEvent,
+    Artifacts, BoardCard, CardDetails, CrawlRun, DiscardedJob, Outcome, Salary, Stage, Target,
+    TimelineEvent, WorkModel,
 };
 use crate::import::{ImportReport, NewJob};
 use crate::store::{Store, StoreError, validate_move};
@@ -16,6 +17,7 @@ use std::time::Duration;
 pub const MIGRATIONS: &[&str] = &[
     include_str!("../migrations/001_init.sql"),
     include_str!("../migrations/002_real_jobs.sql"),
+    include_str!("../migrations/003_crawl_runs.sql"),
 ];
 
 impl From<rusqlite::Error> for StoreError {
@@ -35,34 +37,8 @@ impl SqliteStore {
     ) -> Result<(), StoreError> {
         let mut conn = self.lock()?;
         let tx = conn.transaction()?;
-        let mut ids = HashSet::new();
-        let mut urls = HashSet::new();
-        for row in tx
-            .prepare("SELECT id,url_key FROM cards")?
-            .query_map([], |r| {
-                Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
-            })?
-        {
-            let (id, url) = row?;
-            ids.insert(id);
-            if let Some(url) = url {
-                urls.insert(url);
-            }
-        }
-        let mut dismissed = HashSet::new();
-        let mut dismissed_urls = HashSet::new();
-        for row in tx
-            .prepare("SELECT fingerprint,url_key FROM dismissed_jobs")?
-            .query_map([], |r| {
-                Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
-            })?
-        {
-            let (id, url) = row?;
-            dismissed.insert(id);
-            if let Some(url) = url {
-                dismissed_urls.insert(url);
-            }
-        }
+        let (mut ids, mut urls) = read_keys(&tx, CARD_KEYS)?;
+        let (dismissed, dismissed_urls) = read_keys(&tx, DISMISSED_KEYS)?;
         for job in jobs {
             let key = (!job.url_key.is_empty()).then_some(job.url_key.as_str());
             if dismissed.contains(&job.card.id) || key.is_some_and(|v| dismissed_urls.contains(v)) {
@@ -273,6 +249,74 @@ fn load_card(conn: &Connection, id: &str) -> Result<BoardCard, StoreError> {
         .collect::<Result<_, _>>()?;
     Ok(card)
 }
+pub struct ScoreUpdate {
+    pub score: u8,
+    pub target: Option<Target>,
+    pub work_model: Option<WorkModel>,
+    pub location: Option<String>,
+    pub description: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct UnscoredCard {
+    pub id: String,
+    pub source: String,
+    pub title: String,
+    pub company: String,
+    pub job_url: Option<String>,
+    pub description: String,
+    pub location: Option<String>,
+    pub stage: Stage,
+    pub work_model: Option<WorkModel>,
+}
+
+/// Everything already seen, by fingerprint and by URL key, deleted jobs included.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct KnownKeys {
+    pub ids: HashSet<String>,
+    pub urls: HashSet<String>,
+}
+
+const CARD_KEYS: &str = "SELECT id,url_key FROM cards";
+const DISMISSED_KEYS: &str = "SELECT fingerprint,url_key FROM dismissed_jobs";
+/// `COALESCE` keeps stored values: a null update never erases data.
+const APPLY_SCORE: &str = "UPDATE cards SET score = ?2, target = COALESCE(target, ?3), work_model = COALESCE(work_model, ?4), \
+    location = COALESCE(location, ?5), description = CASE WHEN ?6 = '' THEN description ELSE ?6 END WHERE id = ?1";
+const UNSCORED_CARDS: &str = "SELECT id,source,title,company,job_url,description,location,stage,work_model FROM cards \
+    WHERE score IS NULL AND discard_reason IS NULL ORDER BY rowid";
+const UNSCORED_DISCARDED: &str = "SELECT id,source,title,company,job_url,description,location,stage,work_model FROM cards \
+    WHERE score IS NULL AND discard_reason IS NOT NULL AND description != '' ORDER BY rowid";
+
+fn read_keys(
+    conn: &Connection,
+    sql: &str,
+) -> Result<(HashSet<String>, HashSet<String>), StoreError> {
+    let mut ids = HashSet::new();
+    let mut urls = HashSet::new();
+    for row in conn.prepare(sql)?.query_map([], |r| {
+        Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
+    })? {
+        let (id, url) = row?;
+        ids.insert(id);
+        urls.extend(url);
+    }
+    Ok((ids, urls))
+}
+
+fn unscored_from_row(row: &Row<'_>) -> rusqlite::Result<UnscoredCard> {
+    Ok(UnscoredCard {
+        id: row.get(0)?,
+        source: row.get(1)?,
+        title: row.get(2)?,
+        company: row.get(3)?,
+        job_url: row.get(4)?,
+        description: row.get(5)?,
+        location: row.get(6)?,
+        stage: enum_at(row, 7)?,
+        work_model: opt_enum_at(row, 8)?,
+    })
+}
+
 #[cfg(test)]
 impl SqliteStore {
     pub fn seed_if_empty(&self, cards: &[BoardCard]) -> Result<bool, StoreError> {
@@ -287,6 +331,85 @@ impl SqliteStore {
         }
         tx.commit()?;
         Ok(true)
+    }
+}
+
+impl SqliteStore {
+    pub fn apply_score(&self, id: &str, update: &ScoreUpdate) -> Result<(), StoreError> {
+        let changed = self.lock()?.execute(
+            APPLY_SCORE,
+            params![
+                id,
+                update.score,
+                update.target.map(|value| to_text(&value)).transpose()?,
+                update.work_model.map(|value| to_text(&value)).transpose()?,
+                update.location,
+                update.description,
+            ],
+        )?;
+        if changed == 0 {
+            return Err(StoreError::NotFound(id.to_owned()));
+        }
+        Ok(())
+    }
+
+    fn unscored(&self, sql: &str) -> Result<Vec<UnscoredCard>, StoreError> {
+        Ok(self
+            .lock()?
+            .prepare(sql)?
+            .query_map([], unscored_from_row)?
+            .collect::<Result<_, _>>()?)
+    }
+
+    pub fn unscored_cards(&self) -> Result<Vec<UnscoredCard>, StoreError> {
+        self.unscored(UNSCORED_CARDS)
+    }
+
+    pub fn unscored_discarded(&self) -> Result<Vec<UnscoredCard>, StoreError> {
+        self.unscored(UNSCORED_DISCARDED)
+    }
+
+    pub fn start_run(&self, at: &str) -> Result<i64, StoreError> {
+        let conn = self.lock()?;
+        conn.execute("INSERT INTO crawl_runs(started_at) VALUES(?1)", params![at])?;
+        Ok(conn.last_insert_rowid())
+    }
+
+    pub fn finish_run(&self, id: i64, at: &str, stats: &str) -> Result<(), StoreError> {
+        let changed = self.lock()?.execute(
+            "UPDATE crawl_runs SET finished_at=?2,stats=?3 WHERE id=?1",
+            params![id, at, stats],
+        )?;
+        if changed == 0 {
+            return Err(StoreError::NotFound(id.to_string()));
+        }
+        Ok(())
+    }
+
+    pub fn last_run(&self) -> Result<Option<CrawlRun>, StoreError> {
+        Ok(self
+            .lock()?
+            .query_row(
+                "SELECT started_at,finished_at,stats FROM crawl_runs ORDER BY id DESC LIMIT 1",
+                [],
+                |row| {
+                    Ok(CrawlRun {
+                        started_at: row.get(0)?,
+                        finished_at: row.get(1)?,
+                        stats: row.get(2)?,
+                    })
+                },
+            )
+            .optional()?)
+    }
+
+    pub fn known_keys(&self) -> Result<KnownKeys, StoreError> {
+        let conn = self.lock()?;
+        let (mut ids, mut urls) = read_keys(&conn, CARD_KEYS)?;
+        let (dismissed, dismissed_urls) = read_keys(&conn, DISMISSED_KEYS)?;
+        ids.extend(dismissed);
+        urls.extend(dismissed_urls);
+        Ok(KnownKeys { ids, urls })
     }
 }
 impl Store for SqliteStore {
@@ -396,6 +519,142 @@ impl Store for SqliteStore {
 mod tests {
     use super::*;
     use rusqlite::Connection;
+    #[test]
+    fn the_last_run_survives_a_reopen() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("x.db");
+        {
+            let store = SqliteStore::open(&path).unwrap();
+            assert_eq!(store.last_run().unwrap(), None);
+            let id = store.start_run("2026-11-02T10:00:00-03:00").unwrap();
+            assert!(store.last_run().unwrap().unwrap().finished_at.is_none());
+            store
+                .finish_run(id, "2026-11-02T10:01:00-03:00", r#"{"found":3}"#)
+                .unwrap();
+        }
+        let run = SqliteStore::open(&path)
+            .unwrap()
+            .last_run()
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            run.finished_at.as_deref(),
+            Some("2026-11-02T10:01:00-03:00")
+        );
+        assert_eq!(run.stats, r#"{"found":3}"#);
+    }
+
+    #[test]
+    fn applying_a_score_keeps_user_fields() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        let mut card = crate::mock_data::sample_cards().remove(0);
+        card.score = None;
+        card.notes = "minha nota".into();
+        card.work_model = None;
+        card.location = None;
+        store.seed_if_empty(std::slice::from_ref(&card)).unwrap();
+        store.move_card(&card.id, Stage::Triage, None).unwrap();
+        let scoring = ScoreUpdate {
+            score: 85,
+            target: None,
+            work_model: Some(crate::domain::WorkModel::Hybrid),
+            location: Some("Recife".into()),
+            description: "texto".into(),
+        };
+        store.apply_score(&card.id, &scoring).unwrap();
+        let stored = store.list_cards().unwrap().remove(0);
+        assert_eq!(
+            (stored.score, stored.stage, stored.notes.as_str()),
+            (Some(85), Stage::Triage, "minha nota")
+        );
+        assert_eq!(stored.work_model, Some(crate::domain::WorkModel::Hybrid));
+        assert_eq!(stored.location.as_deref(), Some("Recife"));
+        // Target already known stays; a null update never erases data.
+        assert_eq!(stored.target, card.target);
+        // A second update fills nothing already stored, and an empty text keeps the old one.
+        let again = ScoreUpdate {
+            score: 40,
+            target: None,
+            work_model: Some(crate::domain::WorkModel::Onsite),
+            location: Some("Natal".into()),
+            description: String::new(),
+        };
+        store.apply_score(&card.id, &again).unwrap();
+        let stored = store.list_cards().unwrap().remove(0);
+        assert_eq!(stored.score, Some(40));
+        assert_eq!(stored.work_model, Some(crate::domain::WorkModel::Hybrid));
+        assert_eq!(stored.location.as_deref(), Some("Recife"));
+        let pending = store.unscored_cards().unwrap();
+        assert!(pending.is_empty());
+        store.discard_card(&card.id, "x", "2026-11-02").unwrap();
+        assert_eq!(store.list_discarded().unwrap()[0].description, "texto");
+        store.restore_card(&card.id).unwrap();
+        assert_eq!(
+            store.apply_score("missing", &again),
+            Err(StoreError::NotFound("missing".into()))
+        );
+    }
+
+    #[test]
+    fn lists_only_cards_needing_a_score() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        let mut cards = crate::mock_data::sample_cards();
+        cards[0].score = None;
+        store.seed_if_empty(&cards).unwrap();
+        store.discard_card(&cards[1].id, "x", "2026-11-02").unwrap();
+        let pending = store.unscored_cards().unwrap();
+        assert_eq!(pending.len(), 1);
+        assert_eq!(pending[0].id, cards[0].id);
+    }
+
+    fn new_job(id: &str, url: &str, description: &str, discard: bool) -> NewJob {
+        let mut card = crate::mock_data::sample_cards().remove(0);
+        card.id = id.into();
+        card.score = None;
+        NewJob {
+            card,
+            url_key: url.into(),
+            description: description.into(),
+            discard: discard.then(|| ("x".to_owned(), "2026-11-02".to_owned())),
+        }
+    }
+
+    #[test]
+    fn lists_discarded_jobs_with_text_to_score() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        let jobs = vec![
+            new_job("aaaaaaaaaaaaaaaa", "https://a.example/1", "texto", true),
+            new_job("bbbbbbbbbbbbbbbb", "https://a.example/2", "", true),
+            new_job("cccccccccccccccc", "https://a.example/3", "texto", false),
+        ];
+        store
+            .insert_new_jobs(jobs, &mut crate::import::ImportReport::default())
+            .unwrap();
+        let pending = store.unscored_discarded().unwrap();
+        assert_eq!(pending.len(), 1);
+        assert_eq!(pending[0].id, "aaaaaaaaaaaaaaaa");
+        assert_eq!(pending[0].description, "texto");
+    }
+
+    #[test]
+    fn known_keys_cover_cards_and_deleted_jobs() {
+        let store = SqliteStore::open_in_memory().unwrap();
+        let jobs = vec![
+            new_job("aaaaaaaaaaaaaaaa", "https://a.example/1", "", false),
+            new_job("bbbbbbbbbbbbbbbb", "https://a.example/2", "", true),
+        ];
+        store
+            .insert_new_jobs(jobs, &mut crate::import::ImportReport::default())
+            .unwrap();
+        store.delete_card("bbbbbbbbbbbbbbbb", "2026-11-02").unwrap();
+        let known = store.known_keys().unwrap();
+        assert!(known.ids.contains("aaaaaaaaaaaaaaaa") && known.ids.contains("bbbbbbbbbbbbbbbb"));
+        assert!(
+            known.urls.contains("https://a.example/1")
+                && known.urls.contains("https://a.example/2")
+        );
+    }
+
     fn user_version(path: &Path) -> i64 {
         Connection::open(path)
             .unwrap()
