@@ -1,0 +1,98 @@
+{
+  "app": { "name": "job-radar", "signature": "terminal noir" },
+  "titlebar": { "minimize": "Minimizar", "maximize": "Maximizar", "close": "Fechar" },
+  "nav": {
+    "label": "Navegação principal",
+    "board": "Board",
+    "profile": "Meu perfil",
+    "resumes": "Meus currículos",
+    "prep": "Preparação",
+    "settings": "Configuração",
+    "pending": "{{count}} pendentes"
+  },
+  "crawler": {
+    "active": "Crawler ativo",
+    "lastRun": "Última varredura: hoje {{time}} · {{total}} vagas · {{fresh}} novas"
+  },
+  "placeholder": { "body": "Esta tela chega nos próximos planos." },
+  "board": {
+    "title": "Board",
+    "loading": "Carregando vagas…",
+    "error": "Não foi possível carregar as vagas.",
+    "moveError": "Não foi possível mover a vaga.",
+    "empty": "Nenhuma vaga aqui.",
+    "count_one": "{{count}} vaga",
+    "count_other": "{{count}} vagas"
+  },
+  "filters": {
+    "search": "Buscar vaga, empresa…",
+    "source": "Fonte",
+    "target": "Alvo",
+    "all": "Todas",
+    "selected_one": "{{count}} selecionado",
+    "selected_other": "{{count}} selecionados",
+    "minScore": "Score mín.",
+    "syncGmail": "Sincronizar Gmail"
+  },
+  "metrics": {
+    "appliedWeek": "Candidaturas na semana",
+    "responseRate": "Taxa de resposta",
+    "interviews": "Em processo",
+    "avgResponse": "Tempo médio até resposta",
+    "days": "{{value}}d",
+    "none": "—"
+  },
+  "stage": {
+    "inbox": "Caixa de entrada",
+    "triage": "Triagem",
+    "applied": "Candidatado",
+    "in_process": "Em processo",
+    "offer": "Oferta",
+    "closed": "Encerradas"
+  },
+  "outcome": {
+    "hired": "Contratado",
+    "rejected": "Recusada",
+    "discarded": "Descartada",
+    "no_response": "Sem resposta"
+  },
+  "target": { "ai_llm": "AI/LLM", "full_stack": "Full Stack", "tech_lead": "Tech Lead", "data": "Dados" },
+  "workModel": { "remote": "Remoto", "hybrid": "Híbrido", "onsite": "Presencial" },
+  "card": {
+    "scoreLabel": "Score",
+    "unread": "Não lida",
+    "aiRunning": "{{cli}} trabalhando…",
+    "open": "Abrir detalhes de {{title}}",
+    "menu": "Ações de {{title}}",
+    "artifacts": {
+      "label": "Artefatos",
+      "cv": "CV customizado",
+      "coverage": "Revisão de cobertura",
+      "interviewPrep": "Preparação de entrevista",
+      "done": "pronto",
+      "missing": "pendente"
+    }
+  },
+  "salary": { "pj": "PJ", "clt": "CLT", "value": "R$ {{value}}k" },
+  "move": {
+    "to": "Mover para",
+    "closeAs": "Encerrar como",
+    "pickOutcome": "Como esta vaga foi encerrada?",
+    "cancel": "Cancelar"
+  },
+  "dnd": {
+    "picked": "{{title}} selecionada.",
+    "over": "{{title}} sobre {{column}}.",
+    "dropped": "{{title}} solta em {{column}}.",
+    "cancelled": "Movimento de {{title}} cancelado."
+  },
+  "dialog": {
+    "salary": "Salário negociado",
+    "noSalary": "Ainda sem negociação.",
+    "artifacts": "Artefatos",
+    "timeline": "Linha do tempo",
+    "generateCv": "Gerar CV customizado",
+    "comingSoon": "Em breve",
+    "close": "Fechar"
+  }
+}

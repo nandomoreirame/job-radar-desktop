@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "@fontsource-variable/inter";
 import "@fontsource/jetbrains-mono";
 import "@/shared/styles/theme.css";
+import "@/app/i18n";
 import { App } from "@/app/App";
 import { applyVisualMode, readStoredVisualMode, resolveVisualMode } from "@/shared/lib/visual-mode";
 

@@ -1,0 +1,98 @@
+{
+  "app": { "name": "job-radar", "signature": "terminal noir" },
+  "titlebar": { "minimize": "Minimize", "maximize": "Maximize", "close": "Close" },
+  "nav": {
+    "label": "Main navigation",
+    "board": "Board",
+    "profile": "My profile",
+    "resumes": "My resumes",
+    "prep": "Preparation",
+    "settings": "Settings",
+    "pending": "{{count}} pending"
+  },
+  "crawler": {
+    "active": "Crawler active",
+    "lastRun": "Last run: today {{time}} · {{total}} jobs · {{fresh}} new"
+  },
+  "placeholder": { "body": "This screen arrives in upcoming plans." },
+  "board": {
+    "title": "Board",
+    "loading": "Loading jobs…",
+    "error": "Could not load the jobs.",
+    "moveError": "Could not move the job.",
+    "empty": "No jobs here.",
+    "count_one": "{{count}} job",
+    "count_other": "{{count}} jobs"
+  },
+  "filters": {
+    "search": "Search job, company…",
+    "source": "Source",
+    "target": "Target",
+    "all": "All",
+    "selected_one": "{{count}} selected",
+    "selected_other": "{{count}} selected",
+    "minScore": "Min. score",
+    "syncGmail": "Sync Gmail"
+  },
+  "metrics": {
+    "appliedWeek": "Applications this week",
+    "responseRate": "Response rate",
+    "interviews": "In process",
+    "avgResponse": "Average time to response",
+    "days": "{{value}}d",
+    "none": "—"
+  },
+  "stage": {
+    "inbox": "Inbox",
+    "triage": "Triage",
+    "applied": "Applied",
+    "in_process": "In process",
+    "offer": "Offer",
+    "closed": "Closed"
+  },
+  "outcome": {
+    "hired": "Hired",
+    "rejected": "Rejected",
+    "discarded": "Discarded",
+    "no_response": "No response"
+  },
+  "target": { "ai_llm": "AI/LLM", "full_stack": "Full Stack", "tech_lead": "Tech Lead", "data": "Data" },
+  "workModel": { "remote": "Remote", "hybrid": "Hybrid", "onsite": "On-site" },
+  "card": {
+    "scoreLabel": "Score",
+    "unread": "Unread",
+    "aiRunning": "{{cli}} working…",
+    "open": "Open details of {{title}}",
+    "menu": "Actions for {{title}}",
+    "artifacts": {
+      "label": "Artifacts",
+      "cv": "Tailored CV",
+      "coverage": "Coverage review",
+      "interviewPrep": "Interview prep",
+      "done": "done",
+      "missing": "missing"
+    }
+  },
+  "salary": { "pj": "PJ", "clt": "CLT", "value": "R$ {{value}}k" },
+  "move": {
+    "to": "Move to",
+    "closeAs": "Close as",
+    "pickOutcome": "How did this job close?",
+    "cancel": "Cancel"
+  },
+  "dnd": {
+    "picked": "Picked up {{title}}.",
+    "over": "{{title}} is over {{column}}.",
+    "dropped": "{{title}} dropped on {{column}}.",
+    "cancelled": "Moving {{title}} was cancelled."
+  },
+  "dialog": {
+    "salary": "Negotiated salary",
+    "noSalary": "Not negotiated yet.",
+    "artifacts": "Artifacts",
+    "timeline": "Timeline",
+    "generateCv": "Generate tailored CV",
+    "comingSoon": "Coming soon",
+    "close": "Close"
+  }
+}
