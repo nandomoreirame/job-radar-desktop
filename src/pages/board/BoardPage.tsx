@@ -28,8 +28,8 @@ export function BoardPage({ api = boardApi, now }: Props) {
   useHotkey('k', openPalette);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
-      <div className="flex flex-wrap items-end gap-4">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 px-6 pt-6">
+      <div className="flex flex-wrap items-center gap-4">
         <h1 className="h-9 text-2xl font-semibold leading-9">{t('board.title')}</h1>
         <Toolbar filters={filters} sources={sources} onChange={setFilters} onSearch={openPalette} />
       </div>

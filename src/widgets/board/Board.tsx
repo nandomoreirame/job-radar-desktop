@@ -45,7 +45,7 @@ export function Board({ cards, onOpen, onMove }: Props) {
           restore();
         }}
       >
-        <KanbanBoard className="-mx-6 grid min-h-0 flex-1 auto-cols-[minmax(340px,1fr)] grid-flow-col items-start gap-3 overflow-x-auto px-6 pb-2">
+        <KanbanBoard className="-mx-6 grid min-h-0 flex-1 auto-cols-[minmax(340px,1fr)] grid-flow-col items-start gap-3 overflow-x-auto px-6 pb-6">
           {STAGES.map(stage => (
             <BoardColumn
               key={stage}

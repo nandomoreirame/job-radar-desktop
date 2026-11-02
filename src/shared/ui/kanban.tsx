@@ -723,8 +723,9 @@ function KanbanColumn(props: KanbanColumnProps) {
         id,
         ref: composedRef,
         style: composedStyle,
+        // Local edit: w-full instead of size-full, so a column follows its content height.
         className: cn(
-          'flex size-full flex-col gap-1.5 rounded-lg border bg-muted p-2.5 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:bg-card',
+          'flex w-full flex-col gap-1.5 rounded-lg border bg-muted p-2.5 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:bg-card',
           {
             'touch-none select-none': asHandle,
             'cursor-default': context.flatCursor,
