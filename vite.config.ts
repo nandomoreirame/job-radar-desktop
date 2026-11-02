@@ -25,6 +25,9 @@ export default defineConfig({
     css: false,
     coverage: {
       provider: "v8",
+      // shadcn and Dice UI registry output is vendor-like generated code;
+      // application behavior is covered through its component tests.
+      exclude: ["src/shared/ui/**/*.tsx"],
       // Tier 2 gate: `vitest run --coverage` fails below any of these.
       thresholds: { statements: 80, branches: 80, functions: 80, lines: 80 },
     },

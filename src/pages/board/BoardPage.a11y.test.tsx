@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, it } from "vitest";
 import { expectNoAxeViolations } from "@/test/axe";
 import { fakeApi, makeCard } from "@/test/factories";
@@ -17,4 +18,12 @@ describe("BoardPage", () => {
     await screen.findByRole("heading", { level: 2, name: "Caixa de entrada" });
     await expectNoAxeViolations(container);
   });
+  it("has no axe violations with the palette open", async () => {
+    render(<BoardPage api={fakeApi(cards)} now={new Date("2026-11-02T12:00:00Z")} />);
+    await screen.findByRole("heading", { level: 2, name: "Caixa de entrada" });
+    await userEvent.keyboard("{Control>}k{/Control}");
+    await screen.findByRole("combobox");
+    await expectNoAxeViolations(document.body);
+  });
+
 });

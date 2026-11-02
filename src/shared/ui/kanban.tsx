@@ -664,7 +664,6 @@ function KanbanBoard(props: KanbanBoardProps) {
     defaultTagName: "div",
     props: mergeProps<"div">(
       {
-        "aria-orientation": context.orientation,
         ref,
         className: cn(
           "flex size-full gap-4",
