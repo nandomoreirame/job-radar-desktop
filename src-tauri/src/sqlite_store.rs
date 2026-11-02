@@ -370,4 +370,54 @@ mod tests {
             .unwrap();
         assert_eq!(tables, 0);
     }
+    #[test]
+    fn moves_and_edits_survive_a_reopen() {
+        use crate::domain::{CardDetails, Outcome, Stage};
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("job-radar.db");
+        {
+            let store = SqliteStore::open(&path).unwrap();
+            store
+                .seed_if_empty(&crate::mock_data::sample_cards())
+                .unwrap();
+            store
+                .move_card("c02", Stage::Closed, Some(Outcome::Rejected))
+                .unwrap();
+            store
+                .update_card(
+                    "c03",
+                    CardDetails {
+                        notes: "Retornar em dezembro".into(),
+                        ..CardDetails::default()
+                    },
+                )
+                .unwrap();
+        }
+        let cards = SqliteStore::open(&path).unwrap().list_cards().unwrap();
+        let c02 = cards.iter().find(|c| c.id == "c02").unwrap();
+        assert_eq!(
+            (c02.stage, c02.outcome),
+            (Stage::Closed, Some(Outcome::Rejected))
+        );
+        assert_eq!(
+            cards.iter().find(|c| c.id == "c03").unwrap().notes,
+            "Retornar em dezembro"
+        );
+        assert_eq!(cards.len(), crate::mock_data::sample_cards().len());
+    }
+    #[cfg(unix)]
+    #[test]
+    fn database_files_are_private() {
+        use std::os::unix::fs::PermissionsExt;
+        let mode = |p: &std::path::Path| std::fs::metadata(p).unwrap().permissions().mode() & 0o777;
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("data").join("job-radar.db");
+        crate::db_path::prepare(&path).unwrap();
+        let store = SqliteStore::open(&path).unwrap();
+        store
+            .seed_if_empty(&crate::mock_data::sample_cards())
+            .unwrap();
+        assert_eq!(mode(path.parent().unwrap()), 0o700);
+        assert_eq!(mode(&path), 0o600);
+    }
 }
