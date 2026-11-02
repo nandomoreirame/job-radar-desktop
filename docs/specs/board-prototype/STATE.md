@@ -1,6 +1,6 @@
 ---
 feature: board-prototype
-phase: plan-complete
+phase: implement
 started_at: 2026-11-02
 spec_path: docs/specs/board-prototype/SPEC.md
 plan_path: docs/plans/2026-11-02-board-prototype.md
@@ -10,7 +10,7 @@ plan_path: docs/plans/2026-11-02-board-prototype.md
 
 ## Current Phase
 
-plan-complete
+implement
 
 ## Context
 
