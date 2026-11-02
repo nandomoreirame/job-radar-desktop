@@ -1,0 +1,1022 @@
+{
+ "skills": [
+  "agentes de ia",
+  "agentic",
+  "ai agents",
+  "amazon web services",
+  "anthropic",
+  "aws",
+  "ci/cd",
+  "cicd",
+  "claude",
+  "claude code",
+  "codex",
+  "data pipeline",
+  "docker",
+  "etl",
+  "etl em produção",
+  "express",
+  "fastapi",
+  "genai",
+  "git",
+  "harness de agentes",
+  "hono",
+  "ia generativa",
+  "integração contínua",
+  "inteligência artificial",
+  "llm",
+  "llms",
+  "mcp",
+  "model context protocol",
+  "multi-agente",
+  "multiagente",
+  "next js",
+  "next.js",
+  "nextjs",
+  "node js",
+  "node.js",
+  "nodejs",
+  "nuxt",
+  "openai",
+  "orquestração de agentes",
+  "orquestração multi-agente",
+  "pipeline de dados",
+  "playwright",
+  "polars",
+  "python",
+  "react",
+  "rust",
+  "sql",
+  "tdd",
+  "test driven development",
+  "testes e2e",
+  "testes e2e com playwright",
+  "typescript",
+  "vue",
+  "vue.js e nuxt"
+ ],
+ "extracted": [
+  "aws",
+  "ci/cd",
+  "claude code",
+  "codex",
+  "docker",
+  "etl em produção",
+  "express",
+  "fastapi",
+  "git",
+  "harness de agentes",
+  "hono",
+  "mcp",
+  "next.js",
+  "node.js",
+  "orquestração multi-agente",
+  "polars",
+  "python",
+  "react",
+  "rust",
+  "sql",
+  "tdd",
+  "testes e2e com playwright",
+  "typescript",
+  "vue.js e nuxt"
+ ],
+ "jobs": [
+  {
+   "title": "Engenheiro de Software Sênior",
+   "description": "Python, AWS e TypeScript em produção.",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 55
+  },
+  {
+   "title": "Engenheiro de Software Sênior",
+   "description": "Python, AWS e TypeScript em produção.",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 55
+  },
+  {
+   "title": "Engenheiro de Software Sênior",
+   "description": "Python, AWS e TypeScript em produção.",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 50
+  },
+  {
+   "title": "Engenheiro de Software Sênior",
+   "description": "Python, AWS e TypeScript em produção.",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 45
+  },
+  {
+   "title": "Desenvolvedor Pleno",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Desenvolvedor Pleno",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Desenvolvedor Pleno",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 25
+  },
+  {
+   "title": "Desenvolvedor Pleno",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 20
+  },
+  {
+   "title": "Dev PL/SQL Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 4,
+   "score": 45
+  },
+  {
+   "title": "Dev PL/SQL Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 4,
+   "score": 45
+  },
+  {
+   "title": "Dev PL/SQL Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 4,
+   "score": 40
+  },
+  {
+   "title": "Dev PL/SQL Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 4,
+   "score": 35
+  },
+  {
+   "title": "Desenvolvedor Java Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Desenvolvedor Java Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Desenvolvedor Java Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Desenvolvedor Java Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Full Stack (React / Python / Go or Node.js or Java) Sênior",
+   "description": "AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 4,
+   "score": 60
+  },
+  {
+   "title": "Full Stack (React / Python / Go or Node.js or Java) Sênior",
+   "description": "AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 4,
+   "score": 60
+  },
+  {
+   "title": "Full Stack (React / Python / Go or Node.js or Java) Sênior",
+   "description": "AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 4,
+   "score": 55
+  },
+  {
+   "title": "Full Stack (React / Python / Go or Node.js or Java) Sênior",
+   "description": "AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 4,
+   "score": 50
+  },
+  {
+   "title": "Senior Developer",
+   "description": "JavaScript, python, aws, docker. Sem java no texto? javascript.",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Senior Developer",
+   "description": "JavaScript, python, aws, docker. Sem java no texto? javascript.",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Senior Developer",
+   "description": "JavaScript, python, aws, docker. Sem java no texto? javascript.",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Senior Developer",
+   "description": "JavaScript, python, aws, docker. Sem java no texto? javascript.",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "QA Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "QA Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "QA Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "QA Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Product Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Product Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Product Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Product Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Product Owner Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Product Owner Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Product Owner Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Product Owner Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Banco de Talentos Tecnologia",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Banco de Talentos Tecnologia",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Banco de Talentos Tecnologia",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 25
+  },
+  {
+   "title": "Banco de Talentos Tecnologia",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 20
+  },
+  {
+   "title": "Vaga afirmativa para mulheres - Dev Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Vaga afirmativa para mulheres - Dev Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Vaga afirmativa para mulheres - Dev Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Vaga afirmativa para mulheres - Dev Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Esta vaga é exclusiva para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Esta vaga é exclusiva para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Esta vaga é exclusiva para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Esta vaga é exclusiva para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Vagas sinalizadas como exclusivas ou não para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Vagas sinalizadas como exclusivas ou não para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Vagas sinalizadas como exclusivas ou não para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Vagas sinalizadas como exclusivas ou não para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Trabalho presencial. Python AWS Docker",
+   "location": "São Paulo, SP",
+   "hint": null,
+   "published_at": null,
+   "hits": 3,
+   "score": 25
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Trabalho presencial. Python AWS Docker",
+   "location": "São Paulo, SP",
+   "hint": null,
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 25
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Trabalho presencial. Python AWS Docker",
+   "location": "São Paulo, SP",
+   "hint": null,
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 20
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Trabalho presencial. Python AWS Docker",
+   "location": "São Paulo, SP",
+   "hint": null,
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 15
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Modelo híbrido. Python AWS Docker",
+   "location": "Campinas, SP",
+   "hint": null,
+   "published_at": null,
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Modelo híbrido. Python AWS Docker",
+   "location": "Campinas, SP",
+   "hint": null,
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Modelo híbrido. Python AWS Docker",
+   "location": "Campinas, SP",
+   "hint": null,
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 25
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Modelo híbrido. Python AWS Docker",
+   "location": "Campinas, SP",
+   "hint": null,
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 20
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Home office. Python AWS Docker",
+   "location": "",
+   "hint": null,
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Home office. Python AWS Docker",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Home office. Python AWS Docker",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Home office. Python AWS Docker",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Só Python",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 1,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Só Python",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 1,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Só Python",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 1,
+   "score": 25
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Só Python",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 1,
+   "score": 20
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. Salário R$ 5.000,00 PJ",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. Salário R$ 5.000,00 PJ",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. Salário R$ 5.000,00 PJ",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. Salário R$ 5.000,00 PJ",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. VR de R$ 1.000,00",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. VR de R$ 1.000,00",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 40
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. VR de R$ 1.000,00",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 3,
+   "score": 35
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. VR de R$ 1.000,00",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 3,
+   "score": 30
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker ci/cd node.js. 15k CLT",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 5,
+   "score": 50
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker ci/cd node.js. 15k CLT",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 5,
+   "score": 50
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker ci/cd node.js. 15k CLT",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 5,
+   "score": 45
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker ci/cd node.js. 15k CLT",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 5,
+   "score": 40
+  },
+  {
+   "title": "Consultor SAP Sênior",
+   "description": "SAP ABAP SAP MM. Python AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 2,
+   "score": 10
+  },
+  {
+   "title": "Consultor SAP Sênior",
+   "description": "SAP ABAP SAP MM. Python AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 2,
+   "score": 10
+  },
+  {
+   "title": "Consultor SAP Sênior",
+   "description": "SAP ABAP SAP MM. Python AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 2,
+   "score": 5
+  },
+  {
+   "title": "Consultor SAP Sênior",
+   "description": "SAP ABAP SAP MM. Python AWS",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 2,
+   "score": 0
+  },
+  {
+   "title": "",
+   "description": "",
+   "location": "",
+   "hint": null,
+   "published_at": null,
+   "hits": 0,
+   "score": 0
+  },
+  {
+   "title": "",
+   "description": "",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 0,
+   "score": 0
+  },
+  {
+   "title": "",
+   "description": "",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 0,
+   "score": 0
+  },
+  {
+   "title": "",
+   "description": "",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 0,
+   "score": 0
+  },
+  {
+   "title": "Staff AI Engineer",
+   "description": "Python TypeScript AWS FastAPI Docker SQL Polars Rust React Next.js MCP",
+   "location": "",
+   "hint": "remote",
+   "published_at": null,
+   "hits": 11,
+   "score": 100
+  },
+  {
+   "title": "Staff AI Engineer",
+   "description": "Python TypeScript AWS FastAPI Docker SQL Polars Rust React Next.js MCP",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 11,
+   "score": 100
+  },
+  {
+   "title": "Staff AI Engineer",
+   "description": "Python TypeScript AWS FastAPI Docker SQL Polars Rust React Next.js MCP",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 11,
+   "score": 95
+  },
+  {
+   "title": "Staff AI Engineer",
+   "description": "Python TypeScript AWS FastAPI Docker SQL Polars Rust React Next.js MCP",
+   "location": "",
+   "hint": "remote",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 11,
+   "score": 90
+  },
+  {
+   "title": "Engenheiro de Dados Sênior",
+   "description": "Python SQL Polars ETL",
+   "location": "",
+   "hint": "hybrid",
+   "published_at": null,
+   "hits": 4,
+   "score": 55
+  },
+  {
+   "title": "Engenheiro de Dados Sênior",
+   "description": "Python SQL Polars ETL",
+   "location": "",
+   "hint": "hybrid",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 4,
+   "score": 55
+  },
+  {
+   "title": "Engenheiro de Dados Sênior",
+   "description": "Python SQL Polars ETL",
+   "location": "",
+   "hint": "hybrid",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 4,
+   "score": 50
+  },
+  {
+   "title": "Engenheiro de Dados Sênior",
+   "description": "Python SQL Polars ETL",
+   "location": "",
+   "hint": "hybrid",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 4,
+   "score": 45
+  },
+  {
+   "title": "Arquiteto de Software",
+   "description": "Salesforce SAP Dynamics. Python",
+   "location": "",
+   "hint": null,
+   "published_at": null,
+   "hits": 1,
+   "score": 10
+  },
+  {
+   "title": "Arquiteto de Software",
+   "description": "Salesforce SAP Dynamics. Python",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 1,
+   "score": 10
+  },
+  {
+   "title": "Arquiteto de Software",
+   "description": "Salesforce SAP Dynamics. Python",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 1,
+   "score": 5
+  },
+  {
+   "title": "Arquiteto de Software",
+   "description": "Salesforce SAP Dynamics. Python",
+   "location": "",
+   "hint": null,
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 1,
+   "score": 0
+  },
+  {
+   "title": "Tech Lead",
+   "description": "Node.js e TypeScript",
+   "location": "",
+   "hint": "onsite",
+   "published_at": null,
+   "hits": 2,
+   "score": 40
+  },
+  {
+   "title": "Tech Lead",
+   "description": "Node.js e TypeScript",
+   "location": "",
+   "hint": "onsite",
+   "published_at": "2026-11-01T00:00:00+00:00",
+   "hits": 2,
+   "score": 40
+  },
+  {
+   "title": "Tech Lead",
+   "description": "Node.js e TypeScript",
+   "location": "",
+   "hint": "onsite",
+   "published_at": "2026-10-05T00:00:00+00:00",
+   "hits": 2,
+   "score": 35
+  },
+  {
+   "title": "Tech Lead",
+   "description": "Node.js e TypeScript",
+   "location": "",
+   "hint": "onsite",
+   "published_at": "2026-09-01T00:00:00+00:00",
+   "hits": 2,
+   "score": 30
+  }
+ ]
+}

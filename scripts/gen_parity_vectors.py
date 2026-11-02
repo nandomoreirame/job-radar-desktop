@@ -79,6 +79,44 @@ def filter_vectors():
     }
 
 
+import datetime as dt
+import job_radar.scoring as scoring
+from job_radar.profile import expand_synonyms, extract_skills
+
+
+class FixedDatetime(dt.datetime):
+    """Frozen clock; published dates are built from it so isinstance() still holds."""
+
+    @classmethod
+    def now(cls, tz=None):
+        base = cls(2026, 11, 2, 15, 0, 0, tzinfo=dt.timezone.utc)
+        return base.astimezone(tz) if tz else cls(2026, 11, 2, 12, 0, 0)
+
+
+def scoring_vectors():
+    scoring.datetime = FixedDatetime
+    utc = dt.timezone.utc
+    profile = (ROOT / "src-tauri" / "tests" / "fixtures" / "perfil.md").read_text(encoding="utf-8")
+    skills = expand_synonyms(extract_skills(profile))
+    dates = [None, FixedDatetime(2026, 11, 1, tzinfo=utc), FixedDatetime(2026, 10, 5, tzinfo=utc), FixedDatetime(2026, 9, 1, tzinfo=utc)]
+    extra = [
+        ("Staff AI Engineer", "Python TypeScript AWS FastAPI Docker SQL Polars Rust React Next.js MCP", "", "remote"),
+        ("Engenheiro de Dados Sênior", "Python SQL Polars ETL", "", "hybrid"),
+        ("Arquiteto de Software", "Salesforce SAP Dynamics. Python", "", None),
+        ("Tech Lead", "Node.js e TypeScript", "", "onsite"),
+    ]
+    rows = []
+    for title, desc, loc, hint in JOBS + extra:
+        for published in dates:
+            job = job_of(title, desc, loc, hint)
+            job.published_at = published
+            hits = count_skill_hits(job, skills)
+            rows.append({"title": title, "description": desc, "location": loc, "hint": hint,
+                         "published_at": published.isoformat() if published else None,
+                         "hits": len(hits), "score": scoring.score_job(job, skills, hits)})
+    return {"skills": sorted(skills), "extracted": sorted(extract_skills(profile)), "jobs": rows}
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     identity = {
@@ -88,6 +126,7 @@ def main():
         "urls": [[u, url_key(u)] for u in URLS],
     }
     (OUT / "identity.json").write_text(json.dumps(identity, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    (OUT / "scoring.json").write_text(json.dumps(scoring_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     (OUT / "filters.json").write_text(json.dumps(filter_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 if __name__ == "__main__":
