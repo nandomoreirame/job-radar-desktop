@@ -6,8 +6,8 @@ Local-first desktop tracker for a job search: board, filters and AI-assisted app
 
 ![job-radar-desktop board: six columns from Inbox to Closed with job cards, filters, metrics and the collapsible sidebar, over the Terminal Noir skyline](docs/images/board.png)
 
-> **Status: pre-alpha.** Cards, moves and edits are saved in a local SQLite file; there is no
-> crawler or AI integration yet; see [Roadmap](#roadmap).
+> **Status: pre-alpha.** Cards are saved in a local SQLite file and the crawler searches Gupy and
+> Solides; there is no AI integration yet; see [Roadmap](#roadmap).
 
 ## Why
 
@@ -57,12 +57,36 @@ On Wayland, if the window stays blank, run `WEBKIT_DISABLE_DMABUF_RENDERER=1 pnp
 | Move a job | Drag the card, or open its "..." menu and pick a column |
 | Close a job | Drop it on Closed and choose the outcome, or use "Close as" in its menu |
 | Filter | Source, target and minimum score in the toolbar |
+| Find new jobs | "Executar agora" (Run now) in the sidebar; jobs below the score cut land on Discarded |
 | Load a crawler's history | `job-radar-desktop import --seen seen.db --candidates candidates.json` (safe to repeat) |
 | Review discarded jobs | Open Discarded in the sidebar, then move a job to the Inbox or delete it for good |
 | Switch the visual style | Set `VITE_VISUAL_MODE=flat` (solid panels) or `glass` (default, translucent panels) |
 
 Everything is saved in SQLite at `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (development builds use `dev.nandomoreira.jobradar-local`). Set `JOB_RADAR_DB` to use another file. Imported jobs have no score until the crawler reads their page.
 An imported job shows "No score" until the crawler reads its page; a minimum score never hides it.
+
+## Configuration
+
+The crawler reads `crawler.json` from `~/.local/share/dev.nandomoreira.jobradar/` (development builds use `dev.nandomoreira.jobradar-local`). Without it, "Run now" says what to fix and makes no request.
+
+```json
+{
+  "profile_path": "/path/to/cv.md",
+  "min_score": 70
+}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `profile_path` | required | Your resume in Markdown; it needs a `## Stack técnica` table, the source of your skills |
+| `min_score` | `70` | Below this, a new job goes to Discarded |
+| `min_skills` | `3` | Fewer skills from your profile than this rejects the job |
+| `min_salary_pj`, `min_salary_clt` | `0` (off) | Salary floors; a job that states no salary passes |
+| `commute_cities` | empty | Cities where you accept hybrid work; on-site jobs are always rejected |
+| `max_job_age_days` | `0` (off) | Rejects older jobs |
+| `blocked_companies` | empty | Companies to reject |
+
+An unknown field or an invalid value refuses the run and names the field.
 
 ## Development
 
@@ -94,13 +118,15 @@ MVP progress and every planned milestone live in [ROADMAP.md](ROADMAP.md). The m
 
 ## Security
 
-- **No network access.** The app makes no HTTP requests; the content security policy only allows
-  the Tauri IPC channel (`connect-src ipc: http://ipc.localhost`).
+- **Requests only from Rust, only when you run the crawler.** It contacts `portal.gupy.io`, company
+  `*.gupy.io` job pages, `vagas.solides.com.br`, and each host's `robots.txt`. It sends a User-Agent
+  and the page path, never your profile, notes or any credential. It honors `robots.txt`, waits at
+  least 1 s per host and bounds time and body size. The webview's content security policy still
+  allows only the Tauri IPC channel (`connect-src ipc: http://ipc.localhost`).
 - **No open port.** The frontend talks to Rust through Tauri IPC, not a local web server. Only
   `pnpm tauri dev` starts Vite on `localhost:1420`, for development.
 - **Minimal permissions.** The window gets Tauri's core defaults plus minimize, maximize, close
   and drag for the custom title bar; no shell, file system or HTTP plugins are enabled. The opener plugin is used only from Rust, for a link already stored and checked; the webview cannot open a URL of its own.
-- **Import reads local files only,** read-only, and treats their content as untrusted.
 - **IPC input is validated.** Card ids are bounded (1 to 64 characters) and stage/outcome pairs
   are checked in Rust before any data changes.
 - **Import reads local files only,** read-only, and treats their content as untrusted.

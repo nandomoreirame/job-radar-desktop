@@ -6,8 +6,8 @@ Rastreador desktop local-first para busca de emprego: board, filtros e candidatu
 
 ![Board do job-radar-desktop: seis colunas, da Caixa de entrada a Encerradas, com cards de vagas, filtros, métricas e a sidebar recolhível, sobre o skyline do Terminal Noir](docs/images/board.png)
 
-> **Status: pré-alpha.** Cards, movimentações e edições ficam salvos num arquivo SQLite local; ainda
-> não há crawler nem integração com IA; veja o [Roadmap](#roadmap).
+> **Status: pré-alpha.** Os cards ficam salvos num arquivo SQLite local e o crawler busca na Gupy e
+> na Sólides; ainda não há integração com IA; veja o [Roadmap](#roadmap).
 
 ## Por quê
 
@@ -57,6 +57,7 @@ No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 
 | Editar uma vaga | Clique no título do card (ou chegue nele com Tab e aperte Enter), altere os campos e salve |
 | Mover uma vaga | Arraste o card, ou abra o menu "..." e escolha a coluna |
 | Encerrar uma vaga | Solte em Encerradas e escolha o motivo, ou use "Encerrar como" no menu |
+| Buscar vagas novas | "Executar agora" na sidebar; vagas abaixo do corte de score vão para Descartadas |
 | Carregar histórico do crawler | `job-radar-desktop import --seen seen.db --candidates candidates.json` (pode repetir com segurança) |
 | Revisar vagas descartadas | Abra Descartadas na sidebar, depois mova para a Caixa de entrada ou exclua de vez |
 | Filtrar | Fonte, alvo e score mínimo na barra de ferramentas |
@@ -64,6 +65,29 @@ No Wayland, se a janela ficar em branco, rode `WEBKIT_DISABLE_DMABUF_RENDERER=1 
 
 Tudo fica salvo em SQLite em `~/.local/share/dev.nandomoreira.jobradar/job-radar.db` (o build de desenvolvimento usa `dev.nandomoreira.jobradar-local`). Use `JOB_RADAR_DB` para apontar outro arquivo. Vagas importadas ficam sem score até o crawler ler a página.
 Uma vaga importada mostra "Sem nota" até o crawler ler a página dela; o score mínimo nunca a esconde.
+
+## Configuração
+
+O crawler lê o `crawler.json` em `~/.local/share/dev.nandomoreira.jobradar/` (o build de desenvolvimento usa `dev.nandomoreira.jobradar-local`). Sem esse arquivo, "Executar agora" diz o que corrigir e não faz nenhuma requisição.
+
+```json
+{
+  "profile_path": "/caminho/para/curriculo.md",
+  "min_score": 70
+}
+```
+
+| Campo | Padrão | Significado |
+|---|---|---|
+| `profile_path` | obrigatório | Seu currículo em Markdown; precisa de uma tabela `## Stack técnica`, de onde saem as suas skills |
+| `min_score` | `70` | Abaixo disso, a vaga nova vai para Descartadas |
+| `min_skills` | `3` | Menos skills do seu perfil do que isso reprova a vaga |
+| `min_salary_pj`, `min_salary_clt` | `0` (desligado) | Pisos de salário; vaga que não declara salário passa |
+| `commute_cities` | vazio | Cidades onde você aceita trabalho híbrido; vagas presenciais são sempre reprovadas |
+| `max_job_age_days` | `0` (desligado) | Reprova vagas mais antigas |
+| `blocked_companies` | vazio | Empresas a reprovar |
+
+Um campo desconhecido ou um valor inválido recusa a execução e diz qual é o campo.
 
 ## Desenvolvimento
 
@@ -95,8 +119,11 @@ O progresso até o MVP e todos os marcos planejados estão no [ROADMAP.md](ROADM
 
 ## Segurança
 
-- **Sem acesso à rede.** O app não faz requisições HTTP; a política de segurança de conteúdo só
-  permite o canal IPC do Tauri (`connect-src ipc: http://ipc.localhost`).
+- **Requisições só pelo Rust, só quando você roda o crawler.** Ele acessa `portal.gupy.io`, as páginas
+  de vaga em `*.gupy.io` das empresas, `vagas.solides.com.br` e o `robots.txt` de cada host. Envia um
+  User-Agent e o caminho da página, nunca o seu perfil, notas ou credenciais. Respeita o `robots.txt`,
+  espera ao menos 1 s por host e limita tempo e tamanho da resposta. A política de segurança de
+  conteúdo da webview continua permitindo só o canal IPC do Tauri (`connect-src ipc: http://ipc.localhost`).
 - **Nenhuma porta aberta.** O frontend fala com o Rust por IPC do Tauri, não por um servidor web
   local. Só o `pnpm tauri dev` sobe o Vite em `localhost:1420`, para desenvolvimento.
 - **Permissões mínimas.** A janela tem os padrões do núcleo do Tauri mais minimizar, maximizar,
