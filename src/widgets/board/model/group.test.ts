@@ -14,7 +14,7 @@ describe("groupByStage", () => {
   });
 });
 
-describe('inbox ordering', () => {
+describe('groupByStage', () => {
   it('sorts the inbox by score then newest', () => {
     const found = (at: string) => [{ at, kind: 'found' as const, label: 'x' }];
     const cards = [makeCard({ id: 'none', score: null, timeline: found('2026-10-30') }), makeCard({ id: 'old', score: 80, timeline: found('2026-09-01') }), makeCard({ id: 'new', score: 80, timeline: found('2026-10-01') }), makeCard({ id: 'top', score: 90, timeline: found('2026-08-01') })];
@@ -25,4 +25,3 @@ describe('inbox ordering', () => {
     expect(groupByStage(cards).triage.map(c => c.id)).toEqual(['a', 'b']);
   });
 });
-it('groupByStage sorts the inbox by score then newest', () => { const cards=[makeCard({id:'low',score:10}),makeCard({id:'high',score:90})]; expect(groupByStage(cards).inbox.map(c=>c.id)).toEqual(['high','low']); });

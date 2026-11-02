@@ -58,7 +58,7 @@ describe('clampScore', () => {
   });
 });
 
-describe('real import filters', () => {
+describe('filterCards', () => {
   it('keeps a card without a score at any minimum', () => {
     const cards = [makeCard({ id: 'a', score: null }), makeCard({ id: 'b', score: 50 })];
     expect(filterCards(cards, DEFAULT_FILTERS).map(c => c.id)).toEqual(['a']);
@@ -69,4 +69,3 @@ describe('real import filters', () => {
     expect(filterCards([card], { ...EMPTY_FILTERS, targets: ['data'] })).toHaveLength(0);
   });
 });
-describe('import proof', () => { it('filterCards keeps a card without a score at any minimum', () => { expect(filterCards([makeCard({ score: null })], DEFAULT_FILTERS)).toHaveLength(1); }); });

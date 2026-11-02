@@ -79,4 +79,7 @@ describe('BoardPage', () => {
     expect(await screen.findByRole('textbox', { name: 'Anotações' })).toHaveValue('Ligar na sexta');
   });
 });
-it('shows the empty state with no cards', async () => { render(<BoardPage api={fakeApi([])} />); expect(await screen.findByText('Nenhuma vaga ainda')).toBeInTheDocument(); });
+it('shows the empty state with no cards', async () => {
+  render(<BoardPage api={fakeApi([])} />);
+  expect(await screen.findByText('Nenhuma vaga ainda')).toBeInTheDocument();
+});
