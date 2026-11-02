@@ -233,7 +233,8 @@ impl<T: Transport> Source for Solides<T> {
         source == "solides"
     }
 
-    /// A failed detail keeps the job with no description, so rescoring retries it later.
+    /// A failed detail keeps the job with no description, as in Python: with too few skills
+    /// it is rejected and not stored, so the next crawl tries it again.
     fn collect(
         &self,
         keep: &dyn Fn(&Job) -> bool,

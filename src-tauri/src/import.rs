@@ -6,8 +6,8 @@ use rusqlite::{Connection, OpenFlags};
 use serde::Deserialize;
 use std::path::Path;
 pub const BELOW_CUT: &str = "abaixo do corte de score";
-const MAX_TEXT: usize = 200;
-const MAX_DESCRIPTION: usize = 50_000;
+pub(crate) const MAX_TEXT: usize = 200;
+pub(crate) const MAX_DESCRIPTION: usize = 50_000;
 #[derive(Debug, Default, PartialEq, Eq)]
 pub struct ImportReport {
     pub inbox: usize,
@@ -46,16 +46,16 @@ struct Seen {
     url: String,
     sent_at: String,
 }
-fn bounded(v: &str, max: usize) -> String {
+pub(crate) fn bounded(v: &str, max: usize) -> String {
     v.trim().chars().take(max).collect()
 }
-fn valid(fp: &str, title: &str, url: &str) -> bool {
+pub(crate) fn valid(fp: &str, title: &str, url: &str) -> bool {
     fp.len() == 16
         && fp.bytes().all(|b| b.is_ascii_hexdigit())
         && !title.trim().is_empty()
         && is_http_url(url)
 }
-fn date_or(raw: &str, today: &str) -> String {
+pub(crate) fn date_or(raw: &str, today: &str) -> String {
     let d = raw.get(..10).unwrap_or("");
     if d.len() == 10 && d.as_bytes()[4] == b'-' && d.as_bytes()[7] == b'-' && is_iso_date(d) {
         d.into()
@@ -71,7 +71,14 @@ fn work(hint: Option<&str>) -> Option<WorkModel> {
         _ => None,
     }
 }
-fn base(id: &str, source: &str, title: &str, company: &str, url: &str, found: &str) -> BoardCard {
+pub(crate) fn base(
+    id: &str,
+    source: &str,
+    title: &str,
+    company: &str,
+    url: &str,
+    found: &str,
+) -> BoardCard {
     BoardCard {
         id: id.into(),
         title: bounded(title, MAX_TEXT),
