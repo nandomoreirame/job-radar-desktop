@@ -19,13 +19,23 @@
     "discarded": "Discarded"
   },
   "crawler": {
-    "active": "Crawler active",
-    "lastRun": "Last run: today {{time}} · {{total}} jobs · {{fresh}} new",
-    "duration": "Last run: {{duration}}s",
-    "nextRun": "Next: {{time}}",
-    "sources": "{{ok}}/{{total}} sources ok",
+    "title": "Crawler",
     "runNow": "Run now",
-    "title": "Crawler"
+    "running": "Running...",
+    "never": "The crawler has not run yet.",
+    "interrupted": "The last run was interrupted.",
+    "lastRun": "Last: {{time}} · {{total}} jobs · {{fresh}} new",
+    "duration": "Took {{duration}}s",
+    "sources": "{{ok}}/{{total}} sources ok",
+    "errors": {
+      "config_missing": "Create crawler.json in the app data directory, with your resume's profile_path.",
+      "config_unreadable": "crawler.json could not be read.",
+      "config_invalid": "Invalid value in crawler.json: {{field}}.",
+      "profile_unreadable": "The resume in profile_path could not be read.",
+      "profile_no_skills": "The resume has no Stack técnica section.",
+      "already_running": "The crawler is already running.",
+      "unknown": "The crawler could not start."
+    }
   },
   "placeholder": {
     "body": "This screen arrives in upcoming plans."

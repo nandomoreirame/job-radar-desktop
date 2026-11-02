@@ -6,15 +6,18 @@ pub const RELEASE_DIR: &str = "dev.nandomoreira.jobradar";
 pub const DEBUG_DIR: &str = "dev.nandomoreira.jobradar-local";
 pub const DB_FILE: &str = "job-radar.db";
 pub const ENV_VAR: &str = "JOB_RADAR_DB";
+pub const CONFIG_FILE: &str = "crawler.json";
 /// A blank override is ignored; any other value is kept byte for byte, Unicode or not.
 pub fn db_path(env_override: Option<&OsStr>, data_dir: &Path, debug: bool) -> PathBuf {
     let is_blank = |value: &&OsStr| value.to_str().is_some_and(|v| v.trim().is_empty());
     match env_override.filter(|value| !value.is_empty() && !is_blank(value)) {
         Some(path) => PathBuf::from(path),
-        None => data_dir
-            .join(if debug { DEBUG_DIR } else { RELEASE_DIR })
-            .join(DB_FILE),
+        None => app_dir(data_dir, debug).join(DB_FILE),
     }
+}
+/// The app's own folder, kept apart between debug and release builds.
+pub fn app_dir(data_dir: &Path, debug: bool) -> PathBuf {
+    data_dir.join(if debug { DEBUG_DIR } else { RELEASE_DIR })
 }
 pub fn prepare(path: &Path) -> io::Result<()> {
     if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {

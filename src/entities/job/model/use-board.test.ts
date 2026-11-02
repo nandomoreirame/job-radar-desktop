@@ -18,6 +18,35 @@ describe("useBoard", () => {
     await waitFor(() => expect(result.current.status).toBe("error"));
   });
 
+  it("reloads the list and keeps the cards when a reload fails", async () => {
+    const api = fakeApi([makeCard()]);
+    const { result } = renderHook(() => useBoard(api));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    api.list = async () => [makeCard(), makeCard({ id: "c02" })];
+    await act(() => result.current.reload());
+    expect(result.current.cards).toHaveLength(2);
+    api.list = async () => Promise.reject(new Error("boom"));
+    await act(() => result.current.reload());
+    expect(result.current.cards).toHaveLength(2);
+    expect(result.current.status).toBe("ready");
+  });
+
+  it("ignores a slow answer that an older reload brings late", async () => {
+    const api = fakeApi([]);
+    const { result } = renderHook(() => useBoard(api));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    let answerOld: (cards: BoardCard[]) => void = () => {};
+    api.list = () => new Promise(resolve => (answerOld = resolve));
+    const older = result.current.reload();
+    api.list = async () => [makeCard({ id: "new" })];
+    await act(() => result.current.reload());
+    await act(async () => {
+      answerOld([makeCard({ id: "old" })]);
+      await older;
+    });
+    expect(result.current.cards.map(card => card.id)).toEqual(["new"]);
+  });
+
   it("replaces the moved card with the store answer", async () => {
     const api = fakeApi([makeCard()]);
     const { result } = renderHook(() => useBoard(api));

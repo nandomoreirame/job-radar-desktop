@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { BoardApi } from '@/shared/api/board';
 import type { BoardCard } from '@/shared/bindings/BoardCard';
 import type { CardDetails } from '@/shared/bindings/CardDetails';
@@ -12,22 +12,30 @@ export function useBoard(api: BoardApi) {
   const [status, setStatus] = useState<BoardStatus>('loading');
   const [moveError, setMoveError] = useState(false);
 
-  useEffect(() => {
-    let alive = true;
-    api.list().then(
+  // Only the newest request may answer: a slow old list must not undo a newer one.
+  const latest = useRef(0);
+  const reload = useCallback(() => {
+    latest.current += 1;
+    const request = latest.current;
+    return api.list().then(
       list => {
-        if (!alive) return;
+        if (request !== latest.current) return;
         setCards(list);
         setStatus('ready');
       },
       () => {
-        if (alive) setStatus('error');
+        // A failed reload keeps the cards on screen; only a first load has nothing to show.
+        if (request === latest.current) setStatus(current => (current === 'ready' ? current : 'error'));
       },
     );
-    return () => {
-      alive = false;
-    };
   }, [api]);
+
+  useEffect(() => {
+    void reload();
+    return () => {
+      latest.current += 1;
+    };
+  }, [reload]);
 
   const move = useCallback(
     async (id: string, stage: Stage, outcome: Outcome | null) => {
@@ -58,5 +66,5 @@ export function useBoard(api: BoardApi) {
     [api],
   );
 
-  return { cards, status, moveError, move, update };
+  return { cards, status, moveError, move, update, reload };
 }

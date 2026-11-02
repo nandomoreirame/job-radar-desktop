@@ -19,13 +19,23 @@
     "discarded": "Descartadas"
   },
   "crawler": {
-    "active": "Crawler ativo",
-    "lastRun": "Última varredura: hoje {{time}} · {{total}} vagas · {{fresh}} novas",
-    "duration": "Última execução: {{duration}}s",
-    "nextRun": "Próxima: {{time}}",
-    "sources": "{{ok}}/{{total}} fontes ok",
+    "title": "Crawler",
     "runNow": "Executar agora",
-    "title": "Crawler"
+    "running": "Executando...",
+    "never": "O crawler ainda não rodou.",
+    "interrupted": "A última execução foi interrompida.",
+    "lastRun": "Última: {{time}} · {{total}} vagas · {{fresh}} novas",
+    "duration": "Duração: {{duration}}s",
+    "sources": "{{ok}}/{{total}} fontes ok",
+    "errors": {
+      "config_missing": "Crie o crawler.json no diretório de dados do app, com o profile_path do seu currículo.",
+      "config_unreadable": "Não foi possível ler o crawler.json.",
+      "config_invalid": "Valor inválido no crawler.json: {{field}}.",
+      "profile_unreadable": "Não foi possível ler o currículo indicado em profile_path.",
+      "profile_no_skills": "O currículo não tem a seção Stack técnica.",
+      "already_running": "O crawler já está rodando.",
+      "unknown": "Não foi possível iniciar o crawler."
+    }
   },
   "placeholder": {
     "body": "Esta tela chega nos próximos planos."

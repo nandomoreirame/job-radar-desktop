@@ -2,14 +2,25 @@
 //! without a running Tauri app; the wrappers only unpack `State`.
 
 use std::env;
-use tauri::State;
+use std::path::PathBuf;
+use std::sync::Arc;
+use tauri::{AppHandle, Emitter, State};
 
+use crate::crawler::config::{CrawlSetup, load_crawl_setup};
+use crate::crawler::runner::{
+    RunGuard, RunTicket, config_error_code, crawl_with_real_sources, spawn_worker,
+};
 use crate::details::normalize_details;
-use crate::domain::{BoardCard, CardDetails, DiscardedJob, Outcome, Stage};
+use crate::domain::{BoardCard, CardDetails, CrawlerStatus, DiscardedJob, Outcome, Stage};
+use crate::sqlite_store::SqliteStore;
 use crate::store::{Store, StoreError};
 
 pub struct AppState {
-    pub store: Box<dyn Store>,
+    pub store: Arc<dyn Store>,
+    /// The crawl needs what only SQLite offers; tests with `MockStore` leave it empty.
+    pub crawl_store: Option<Arc<SqliteStore>>,
+    pub guard: RunGuard,
+    pub config_path: PathBuf,
 }
 
 /// Ids are short opaque strings; anything else from the webview is rejected.
@@ -53,6 +64,56 @@ fn report(error: StoreError) -> String {
         eprintln!("storage error: {detail}");
     }
     error.to_string()
+}
+
+/// Refuses before any request: a second run, a missing store, or a bad config.
+pub fn prepare_crawl(
+    state: &AppState,
+) -> Result<(RunTicket, CrawlSetup, Arc<SqliteStore>), String> {
+    let ticket = state.guard.try_start().map_err(str::to_owned)?;
+    let store = state.crawl_store.clone().ok_or("store_unavailable")?;
+    let setup = load_crawl_setup(&state.config_path).map_err(|e| config_error_code(&e))?;
+    Ok((ticket, setup, store))
+}
+
+#[tauri::command]
+pub fn start_crawl(app: AppHandle, state: State<'_, AppState>) -> Result<(), String> {
+    let (ticket, setup, store) = prepare_crawl(&state)?;
+    let notifier = app.clone();
+    spawn_worker(
+        ticket,
+        move || {
+            let progress = |text: &str| {
+                // A closed window cannot hear it, and the crawl goes on regardless.
+                let _ = app.emit("crawler-progress", text);
+            };
+            if let Err(error) =
+                crawl_with_real_sources(&store, &setup, crate::clock::now(), &progress)
+            {
+                eprintln!("storage error: {}", error.detail());
+            }
+        },
+        move || {
+            let _ = notifier.emit("crawler-finished", ());
+        },
+    );
+    Ok(())
+}
+
+pub fn crawler_status_impl(state: &AppState) -> Result<CrawlerStatus, String> {
+    let run = match &state.crawl_store {
+        Some(store) => store.last_run().map_err(report)?,
+        None => None,
+    };
+    Ok(CrawlerStatus {
+        running: state.guard.is_running(),
+        run,
+    })
+}
+
+#[tauri::command]
+pub fn crawler_status(state: State<'_, AppState>) -> Result<CrawlerStatus, String> {
+    crawler_status_impl(&state)
 }
 
 pub fn list_board_impl(state: &AppState) -> Result<Vec<BoardCard>, String> {
@@ -163,10 +224,72 @@ mod tests {
     use crate::mock_data::sample_cards;
     use crate::store::MockStore;
 
-    fn state() -> AppState {
+    fn state_with(store: impl Store + 'static) -> AppState {
         AppState {
-            store: Box::new(MockStore::new(sample_cards())),
+            store: Arc::new(store),
+            crawl_store: None,
+            guard: RunGuard::default(),
+            config_path: PathBuf::from("/data/none/crawler.json"),
         }
+    }
+
+    fn state() -> AppState {
+        state_with(MockStore::new(sample_cards()))
+    }
+
+    fn crawl_state(config_path: PathBuf) -> AppState {
+        AppState {
+            crawl_store: Some(Arc::new(SqliteStore::open_in_memory().unwrap())),
+            config_path,
+            ..state()
+        }
+    }
+
+    #[test]
+    fn a_bad_config_refuses_the_run_and_frees_the_guard() {
+        let state = crawl_state(PathBuf::from("/data/none/crawler.json"));
+        assert_eq!(
+            prepare_crawl(&state).err().as_deref(),
+            Some("config_missing")
+        );
+        assert!(!state.guard.is_running());
+        let status = crawler_status_impl(&state).unwrap();
+        assert_eq!(
+            status,
+            CrawlerStatus {
+                running: false,
+                run: None
+            }
+        );
+    }
+
+    #[test]
+    fn a_second_start_is_refused_while_one_runs() {
+        let dir = tempfile::tempdir().unwrap();
+        let profile = dir.path().join("perfil.md");
+        std::fs::write(&profile, include_str!("../tests/fixtures/perfil.md")).unwrap();
+        let config = dir.path().join("crawler.json");
+        let body = serde_json::json!({ "profile_path": profile }).to_string();
+        std::fs::write(&config, body).unwrap();
+        let state = crawl_state(config);
+        let (ticket, setup, _) = prepare_crawl(&state).unwrap();
+        assert!(!setup.skills.is_empty());
+        assert!(crawler_status_impl(&state).unwrap().running);
+        assert_eq!(
+            prepare_crawl(&state).err().as_deref(),
+            Some("already_running")
+        );
+        drop(ticket);
+        assert!(prepare_crawl(&state).is_ok());
+    }
+
+    #[test]
+    fn a_store_that_cannot_crawl_is_refused() {
+        assert_eq!(
+            prepare_crawl(&state()).err().as_deref(),
+            Some("store_unavailable")
+        );
+        assert!(!state().guard.is_running());
     }
 
     struct FailingStore;
@@ -205,9 +328,7 @@ mod tests {
 
     #[test]
     fn every_command_logs_the_storage_detail_and_hides_it() {
-        let state = AppState {
-            store: Box::new(FailingStore),
-        };
+        let state = state_with(FailingStore);
         let hidden = "storage error".to_string();
         assert_eq!(list_board_impl(&state).unwrap_err(), hidden);
         assert_eq!(

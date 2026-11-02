@@ -192,6 +192,15 @@ pub struct CrawlRun {
     pub stats: String,
 }
 
+/// What the sidebar needs: whether a crawl runs now, and the latest one on record.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export)]
+pub struct CrawlerStatus {
+    pub running: bool,
+    pub run: Option<CrawlRun>,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

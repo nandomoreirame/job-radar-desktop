@@ -3,6 +3,16 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SIDEBAR_KEY } from '@/shared/lib/sidebar-state';
 import { AppShell } from './AppShell';
+const crawler = vi.hoisted(() => ({
+  status: vi.fn(async () => ({ running: false, run: null })),
+  start: vi.fn(async () => {}),
+  onProgress: vi.fn(async () => () => {}),
+  onFinished: vi.fn(async () => () => {}),
+}));
+vi.mock('@/shared/api/board', async original => ({
+  ...(await original<typeof import('@/shared/api/board')>()),
+  crawlerApi: crawler,
+}));
 const controls = () => ({
   minimize: vi.fn(async () => {}),
   toggleMaximize: vi.fn(async () => {}),
@@ -59,11 +69,13 @@ describe('AppShell', () => {
     expect(toggle).not.toHaveTextContent('Alternar barra lateral');
   });
 
-  it('tells that running the crawler is not implemented yet', async () => {
+  it('starts the crawler from the sidebar', async () => {
     render(<AppShell controls={controls()} renderPage={() => null} />);
+    expect(await screen.findByText('O crawler ainda não rodou.')).toBeInTheDocument();
     const runNow = screen.getByRole('button', { name: 'Executar agora' });
     expect(runNow).toBeEnabled();
     await userEvent.click(runNow);
-    expect(screen.getByRole('status')).toHaveTextContent('Ainda não implementado.');
+    expect(crawler.start).toHaveBeenCalledOnce();
+    expect(screen.getByRole('button', { name: 'Executando...' })).toBeDisabled();
   });
 });

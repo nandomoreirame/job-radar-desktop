@@ -6,5 +6,6 @@ pub mod job;
 pub mod pipeline;
 pub mod profile;
 pub mod robots;
+pub mod runner;
 pub mod scoring;
 pub mod sources;

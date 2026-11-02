@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBoard } from '@/entities/job/model/use-board';
 import { JobDialog } from '@/entities/job/ui/JobDialog';
 import { DEFAULT_FILTERS, filterCards, type BoardFilters } from '@/features/filter-board/model/filter';
 import { Toolbar } from '@/features/filter-board/ui/Toolbar';
 import { JobCommand } from '@/features/search-jobs/ui/JobCommand';
-import { boardApi, type BoardApi } from '@/shared/api/board';
+import { boardApi, CRAWLER_CHANGED, type BoardApi } from '@/shared/api/board';
 import { useHotkey } from '@/shared/lib/hooks/use-hotkey';
 import { useOpenLink } from '@/shared/lib/hooks/use-open-link';
 import { Board } from '@/widgets/board/Board';
@@ -16,7 +16,11 @@ type Props = { api?: BoardApi; now?: Date };
 
 export function BoardPage({ api = boardApi, now }: Props) {
   const { t } = useTranslation();
-  const { cards, status, moveError, move, update } = useBoard(api);
+  const { cards, status, moveError, move, update, reload } = useBoard(api);
+  useEffect(() => {
+    window.addEventListener(CRAWLER_CHANGED, reload);
+    return () => window.removeEventListener(CRAWLER_CHANGED, reload);
+  }, [reload]);
   const [filters, setFilters] = useState<BoardFilters>(DEFAULT_FILTERS);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const visible = useMemo(() => filterCards(cards, filters), [cards, filters]);

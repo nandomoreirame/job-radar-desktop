@@ -1,8 +1,10 @@
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import type { BoardCard } from "@/shared/bindings/BoardCard";
 import type { CardDetails } from "@/shared/bindings/CardDetails";
 import type { Outcome } from "@/shared/bindings/Outcome";
 import type { Stage } from "@/shared/bindings/Stage";
+import type { CrawlerStatus } from "@/shared/bindings/CrawlerStatus";
 import type { DiscardedJob } from "@/shared/bindings/DiscardedJob";
 
 export type BoardApi = {
@@ -21,4 +23,22 @@ export const boardApi: BoardApi = {
   move: (id, stage, outcome) => invoke<BoardCard>("move_card", { id, stage, outcome }),
   update: (id, details) => invoke<BoardCard>("update_card", { id, details }),
   openLink: id => invoke<void>("open_job_url", { id }),
+};
+
+/** Window event the board listens to; the crawler changed what the store holds. */
+export const CRAWLER_CHANGED = "crawler-changed";
+
+export type CrawlerApi = {
+  status(): Promise<CrawlerStatus>;
+  /** Rejects with a stable code such as `config_missing` or `config_invalid:<field>`. */
+  start(): Promise<void>;
+  onProgress(handler: (text: string) => void): Promise<() => void>;
+  onFinished(handler: () => void): Promise<() => void>;
+};
+
+export const crawlerApi: CrawlerApi = {
+  status: () => invoke<CrawlerStatus>("crawler_status"),
+  start: () => invoke<void>("start_crawl"),
+  onProgress: handler => listen<string>("crawler-progress", event => handler(event.payload)),
+  onFinished: handler => listen("crawler-finished", () => handler()),
 };

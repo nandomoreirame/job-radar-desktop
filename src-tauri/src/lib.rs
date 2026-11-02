@@ -15,9 +15,11 @@ pub mod store;
 mod store_contract;
 
 use commands::AppState;
+use crawler::runner::RunGuard;
 use sqlite_store::SqliteStore;
 use std::ffi::{OsStr, OsString};
 use std::path::Path;
+use std::sync::Arc;
 use tauri::Manager;
 
 pub fn open_store(path: &Path) -> Result<SqliteStore, String> {
@@ -93,6 +95,8 @@ pub fn run() {
             commands::restore_card,
             commands::delete_card,
             commands::open_job_url,
+            commands::start_crawl,
+            commands::crawler_status,
             commands::window_controls
         ])
         .build(tauri::generate_context!());
@@ -100,8 +104,12 @@ pub fn run() {
         Ok(app) => app,
         Err(error) => startup_failed(&error.to_string()),
     };
+    let store = Arc::new(store);
     app.manage(AppState {
-        store: Box::new(store),
+        store: store.clone(),
+        crawl_store: Some(store),
+        guard: RunGuard::default(),
+        config_path: db_path::app_dir(&data_dir, cfg!(debug_assertions)).join(db_path::CONFIG_FILE),
     });
     app.run(|_, _| {});
 }

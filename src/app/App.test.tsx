@@ -3,7 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 
-vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn(async () => []) }));
+vi.mock("@tauri-apps/api/core", () => ({
+  invoke: vi.fn(async (command: string) => (command === "crawler_status" ? { running: false, run: null } : [])),
+}));
+vi.mock("@tauri-apps/api/event", () => ({ listen: vi.fn(async () => () => {}) }));
 
 describe("App", () => {
   it("shows a placeholder for pages not built yet", async () => {

@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
-import type { BoardApi } from '@/shared/api/board';
+import { CRAWLER_CHANGED, type BoardApi } from '@/shared/api/board';
 import { fakeApi, makeCard } from '@/test/factories';
 import { BoardPage } from './BoardPage';
 
@@ -25,6 +25,15 @@ describe('BoardPage', () => {
     const api: BoardApi = { ...fakeApi([]), list: () => new Promise(() => {}) };
     render(<BoardPage api={api} now={now} />);
     expect(screen.getByRole('status')).toHaveTextContent('Carregando vagas…');
+  });
+
+  it('reloads when the crawler changes the store', async () => {
+    const api = fakeApi([makeCard()]);
+    render(<BoardPage api={api} now={now} />);
+    await screen.findAllByText(makeCard().title);
+    api.list = async () => [makeCard(), makeCard({ id: 'c02', title: 'Vaga nova do crawler' })];
+    window.dispatchEvent(new Event(CRAWLER_CHANGED));
+    expect(await screen.findByText('Vaga nova do crawler')).toBeInTheDocument();
   });
 
   it('reports a failed load', async () => {
