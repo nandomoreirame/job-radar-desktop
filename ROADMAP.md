@@ -10,20 +10,20 @@ line is wanted but not required for it.
 ██████░░░░░░░░░░░░░░  30%  (3 of 11 milestones, weighted by effort)
 ```
 
-| #   | Milestone                                                                                                     |  Weight | Status                                             |
-| --- | ------------------------------------------------------------------------------------------------------------- | ------: | -------------------------------------------------- |
-| 1   | Board prototype: Tauri + React shell, Rust domain, six columns, filters, metrics, i18n                        |      10 | Done                                               |
-| 2   | UI on shadcn Base UI and Dice UI, Kanban, command palette, job edit form with validated `update_card`         |      10 | Done (independent review and manual check pending) |
-| 3   | SQLite store: cards and edits survive a restart                                                               |      10 | Done (independent review and manual startup check pending) |
-| 4   | Real jobs in: port the job-radar crawler to Rust (`job-radar crawl`) or import its output                     |      15 | Planned                                            |
-| 5   | Add a job by hand ("+ Adicionar vaga")                                                                        |       5 | Planned                                            |
-| 6   | Settings page: job sources, targets, score cut, visual mode, language                                         |       8 | Planned                                            |
-| 7   | Profile page: the career source of truth the AI actions read from                                             |       8 | Planned                                            |
-| 8   | AI actions through local CLIs (Claude Code, Codex, Grok): tailored CV first, with a tool allowlist per action |      15 | Planned                                            |
-| 9   | Resumes page: review and approve generated CVs                                                                |       5 | Planned                                            |
-| 10  | Preparation page: interview prep linked to each job                                                           |       6 | Planned                                            |
-| 11  | Linux release: AppImage and deb from `pnpm tauri build`, update notes                                         |       8 | Planned                                            |
-|     | **Total**                                                                                                     | **100** | **30 done**                                        |
+| #   | Milestone                                                                                                     |  Weight | Status                                                |
+| --- | ------------------------------------------------------------------------------------------------------------- | ------: | ----------------------------------------------------- |
+| 1   | Board prototype: Tauri + React shell, Rust domain, six columns, filters, metrics, i18n                        |      10 | Done                                                  |
+| 2   | UI on shadcn Base UI and Dice UI, Kanban, command palette, job edit form with validated `update_card`         |      10 | Done (independent review and manual check pending)    |
+| 3   | SQLite store: cards and edits survive a restart                                                               |      10 | Done (independent review and manual UI check pending) |
+| 4   | Real jobs in: port the job-radar crawler to Rust (`job-radar crawl`) or import its output                     |      15 | Planned                                               |
+| 5   | Add a job by hand ("+ Adicionar vaga")                                                                        |       5 | Planned                                               |
+| 6   | Settings page: job sources, targets, score cut, visual mode, language                                         |       8 | Planned                                               |
+| 7   | Profile page: the career source of truth the AI actions read from                                             |       8 | Planned                                               |
+| 8   | AI actions through local CLIs (Claude Code, Codex, Grok): tailored CV first, with a tool allowlist per action |      15 | Planned                                               |
+| 9   | Resumes page: review and approve generated CVs                                                                |       5 | Planned                                               |
+| 10  | Preparation page: interview prep linked to each job                                                           |       6 | Planned                                               |
+| 11  | Linux release: AppImage and deb from `pnpm tauri build`, update notes                                         |       8 | Planned                                               |
+|     | **Total**                                                                                                     | **100** | **30 done**                                           |
 
 The bar counts only milestones that are implemented and pass the test gates; partial work in a planned milestone counts
 as zero. "Gerar CV customizado" and "Executar agora" already exist as buttons, but they only say "not implemented yet"

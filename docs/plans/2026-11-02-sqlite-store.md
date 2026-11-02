@@ -37,6 +37,10 @@ Batches: B1 = Tasks 1-2 (error type, contract suite), B2 = Tasks 3-4 (schema, Sq
 - C12 (REQ-006): the webview sees "storage error" without SQL detail. Proof: run rust | store::tests::storage_errors_hide_the_detail ... ok
 - C13 (REQ-007): a database that cannot be opened returns the cause with the path, never a mock store. Proof: run rust | tests::open_store_reports_the_path_and_cause ... ok
 - C14 (REQ-002): the store work leaves the TypeScript bindings unchanged. Proof: `(cd src-tauri && cargo test -q) && git diff --exit-code -- src/shared/bindings`
+- C15 (REQ-004): a non-Unicode `JOB_RADAR_DB` is kept, not replaced by the default database. Proof: run rust | db_path::tests::env_override_keeps_a_non_unicode_path ... ok
+- C16 (REQ-004): startup resolves the override through the same path function. Proof: run rust | tests::open_configured_store_honors_the_env_override ... ok
+- C17 (REQ-006): every IPC command logs the storage detail and hides it from the webview. Proof: run rust | commands::tests::every_command_logs_the_storage_detail_and_hides_it ... ok
+- C18 (REQ-007): the failure dialog is skipped when there is no display, so the process can exit. Proof: run rust | tests::dialog_needs_a_display ... ok
 
 ---
 

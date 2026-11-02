@@ -37,3 +37,12 @@ ROADMAP milestone 3: a SQLite `Store` so cards and edits survive a restart, repl
 - 2026-11-02: A follow-up startup review found the GTK dialog could block after Tauri build;
   startup now resolves the data directory and opens SQLite before constructing Tauri. Non-Unicode
   JOB_RADAR_DB paths are preserved, the spec/roadmap were corrected, and the proof set is green.
+- 2026-11-02: review round 6 by Claude, with fixes authorized by the user: the opencode rounds 1, 3
+  and 5 closed with zero findings as self-review. Fixed: C6/C7 tested a function production no
+  longer called (one `db_path` over `OsStr` now), hang with no display, `report` test that could
+  not fail, duplicate `dirs` major, ROADMAP formatting, spec claims. Measured with the real binary
+  and an invalid database: dialog renders under Niri, exit 1 after closing it, exit 1 with no
+  display. Manual persistence through the UI is still pending; agy, Codex and Grok unavailable.
+- 2026-11-02: round 6 recorded zero findings as a self-assessment (Claude fixed and judged); phase
+  stays `implement` until an independent review, the manual UI check and `check_proofs.py` on a
+  clean tree.

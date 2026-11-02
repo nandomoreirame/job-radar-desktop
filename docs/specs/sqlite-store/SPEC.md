@@ -38,7 +38,10 @@ error dialog through `rfd`.
 | `rusqlite` 0.41.1 is the current release and its `bundled` feature compiles SQLite into the binary | `cargo search rusqlite` on 2026-11-02 | yes |
 | SQLite gives `-wal`/`-shm` files the permissions of the main database file | SQLite `unix` VFS (`robust_open` copies the db mode) | assumption (checked in a test) |
 | `rfd` 0.17.2 is current; its `gtk3` feature (no default features) shows message dialogs through GTK instead of the `zenity` binary used by the default `xdg-portal` backend | `cargo info rfd` on 2026-11-02 | yes (feature list); dialog rendering is an assumption checked manually in the startup task |
-| Startup opens the database before the Tauri event loop and reports failures through `rfd` | `src-tauri/src/lib.rs:45-70` | yes (startup path is unit-tested; native dialog remains manual) |
+| The `setup` hook runs inside `App::run` and a failure there panics; it never surfaces from `Builder::build` | `tauri-2.12` `src/app.rs:1443` | yes (assumption from the grilling refuted) |
+| After `Builder::build`, `rfd` (gtk3) blocks forever: its idle callback never runs while tao owns GTK | binary run with an invalid database on 2026-11-02: no window, main thread in `run_blocking` | yes |
+| `rfd` also blocks forever when GTK cannot start (no display) | binary run without `DISPLAY`/`WAYLAND_DISPLAY` on 2026-11-02 | yes |
+| Opened before `tauri::Builder`, the dialog renders under Niri and the process exits 1 when it closes | binary run with an invalid database on 2026-11-02 | yes (manual; `run()` has no automated test) |
 
 ## Requirements
 
@@ -50,7 +53,7 @@ error dialog through `rfd`.
 4. **[REQ-004]** WHEN the app starts THEN the system SHALL open the database at `$JOB_RADAR_DB` when that variable is set and non-empty, otherwise at `<data_dir>/<dir>/job-radar.db` where `<dir>` is `dev.nandomoreira.jobradar` in a release build and `dev.nandomoreira.jobradar-local` in a debug build, creating the parent directory with mode `0700`; on Unix a newly created database file SHALL have mode `0600`.
 5. **[REQ-005]** WHEN a debug build opens a database with no cards THEN the system SHALL insert the fictional `sample_cards()` in one transaction; a release build SHALL never seed.
 6. **[REQ-006]** WHEN a write fails midway or a stored value cannot be read back into the domain (unknown enum text, out-of-range number) THEN the system SHALL leave the previous data intact (one transaction per write) and SHALL return a storage error instead of panicking.
-7. **[REQ-007]** WHEN the database cannot be opened or migrated at startup THEN the app SHALL print the cause to stderr, SHALL show a native error dialog naming the cause and the database path, SHALL exit with status 1, and SHALL NOT fall back to the in-memory store.
+7. **[REQ-007]** WHEN the database cannot be opened or migrated at startup THEN the app SHALL print the cause to stderr, SHALL show a native error dialog naming the cause and the database path when a display is available, SHALL exit with status 1, and SHALL NOT fall back to the in-memory store.
 
 ### P2 (Next)
 
@@ -68,6 +71,8 @@ error dialog through `rfd`.
 
 - **`JOB_RADAR_DB` set but empty** - ignored; the default path is used.
 - **Database file is not SQLite or is corrupt** - open fails, startup dialog and exit 1 (REQ-007); the file is not touched.
+- **No display (`DISPLAY` and `WAYLAND_DISPLAY` unset or empty)** - startup failure skips the dialog, prints to stderr and exits 1. A variable set to a dead display still blocks inside `rfd`; accepted.
+- **Non-Unicode `JOB_RADAR_DB`** - used byte for byte; only an empty or blank value falls back to the default path.
 - **Database schema newer than the app** - refused before any write (REQ-003), same startup path.
 - **Debug build, database already has cards** - no seed; dev keeps what the developer did.
 - **Stored enum text the app does not know** (hand-edited file) - `list_cards` returns a storage error; nothing panics.
@@ -171,7 +176,7 @@ CREATE INDEX timeline_events_card ON timeline_events(card_id, at);
 |------|--------|------------|
 | `bundled` raises build time and binary size | Low | Accepted; release profile already uses LTO and strip |
 | A future schema change breaks existing user data | High | Append-only migrations, refusal of newer versions, a test that opens a v1 file |
-| `rfd` dialog fails to render on a given desktop | Low | stderr still carries the cause and the exit status is 1 |
+| `rfd` dialog fails to render on a given desktop | Low | stderr always carries the cause first; with no display the dialog is skipped and the exit status is 1 |
 
 ## Requirement Traceability
 
