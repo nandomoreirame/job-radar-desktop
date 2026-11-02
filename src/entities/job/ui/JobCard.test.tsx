@@ -53,4 +53,17 @@ describe("JobCard", () => {
     await userEvent.click(screen.getByRole("button", { name: "Abrir detalhes de Staff Engineer" }));
     expect(onOpen).toHaveBeenCalledWith(card);
   });
+
+  it("shows location, process step, unread flag and the next action", () => {
+    render(
+      <JobCard
+        card={makeCard({ location: "São Paulo", processStep: "Técnica", unread: true, nextAction: "Responder recrutador" })}
+        onOpen={() => {}}
+      />,
+    );
+    expect(screen.getByText(/São Paulo/)).toBeInTheDocument();
+    expect(screen.getByText("Técnica")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Não lida" })).toBeInTheDocument();
+    expect(screen.getByText("Responder recrutador")).toBeInTheDocument();
+  });
 });

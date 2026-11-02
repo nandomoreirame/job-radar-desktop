@@ -19,5 +19,14 @@ export default defineConfig({
     hmr: host ? { protocol: "ws", host, port: 1421 } : undefined,
     watch: { ignored: ["**/src-tauri/**"] },
   },
-  test: { environment: "jsdom", setupFiles: ["./src/test/setup.ts"], css: false },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
+    css: false,
+    coverage: {
+      provider: "v8",
+      // Tier 2 gate: `vitest run --coverage` fails below any of these.
+      thresholds: { statements: 80, branches: 80, functions: 80, lines: 80 },
+    },
+  },
 });

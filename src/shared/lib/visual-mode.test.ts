@@ -1,5 +1,7 @@
-import { describe, expect, it } from "vitest";
-import { applyVisualMode, resolveVisualMode } from "./visual-mode";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { VISUAL_MODE_KEY, applyVisualMode, readStoredVisualMode, resolveVisualMode } from "./visual-mode";
+
+afterEach(() => localStorage.clear());
 
 describe("resolveVisualMode", () => {
   it("prefers the stored mode", () => {
@@ -20,5 +22,20 @@ describe("applyVisualMode", () => {
     const root = document.createElement("html");
     applyVisualMode("flat", root);
     expect(root.dataset.visual).toBe("flat");
+  });
+});
+
+describe("readStoredVisualMode", () => {
+  it("returns the stored choice", () => {
+    localStorage.setItem(VISUAL_MODE_KEY, "flat");
+    expect(readStoredVisualMode()).toBe("flat");
+  });
+
+  it("returns null when storage throws", () => {
+    const spy = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    expect(readStoredVisualMode()).toBeNull();
+    spy.mockRestore();
   });
 });

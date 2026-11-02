@@ -4,13 +4,12 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  type Announcements,
   type DragEndEvent,
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { STAGES, isStage } from "@/entities/job/model/stages";
+import { STAGES } from "@/entities/job/model/stages";
 import { JobCard } from "@/entities/job/ui/JobCard";
 import { MoveMenu } from "@/features/move-card/ui/MoveMenu";
 import { OutcomeDialog } from "@/features/move-card/ui/OutcomeDialog";
@@ -18,6 +17,8 @@ import type { BoardCard } from "@/shared/bindings/BoardCard";
 import type { Outcome } from "@/shared/bindings/Outcome";
 import type { Stage } from "@/shared/bindings/Stage";
 import { BoardColumn } from "./BoardColumn";
+import { buildAnnouncements } from "./model/announcements";
+import { resolveDrop } from "./model/drop";
 import { groupByStage } from "./model/group";
 
 type Props = {
@@ -34,27 +35,16 @@ export function Board({ cards, onOpen, onMove }: Props) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const columns = groupByStage(cards);
   const find = (id: UniqueIdentifier | null | undefined) => cards.find((card) => card.id === id);
-  const title = (id: UniqueIdentifier) => find(id)?.title ?? "";
-  const column = (id: UniqueIdentifier) => (isStage(id) ? t(`stage.${id}`) : "");
-
-  const announcements: Announcements = {
-    onDragStart: ({ active }) => t("dnd.picked", { title: title(active.id) }),
-    onDragOver: ({ active, over }) =>
-      over ? t("dnd.over", { title: title(active.id), column: column(over.id) }) : undefined,
-    onDragEnd: ({ active, over }) =>
-      over
-        ? t("dnd.dropped", { title: title(active.id), column: column(over.id) })
-        : t("dnd.cancelled", { title: title(active.id) }),
-    onDragCancel: ({ active }) => t("dnd.cancelled", { title: title(active.id) }),
-  };
+  const announcements = buildAnnouncements(t, cards);
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveId(null);
     const card = find(active.id);
-    if (!card || !over || !isStage(over.id) || over.id === card.stage) return;
+    const drop = resolveDrop(card, over?.id);
+    if (!card || !drop) return;
     // Closing needs an outcome first; nothing moves until one is picked.
-    if (over.id === "closed") setPendingClose(card.id);
-    else onMove(card.id, over.id, null);
+    if (drop.kind === "close") setPendingClose(card.id);
+    else onMove(card.id, drop.stage, null);
   };
 
   const activeCard = find(activeId);

@@ -32,4 +32,16 @@ describe("JobDialog", () => {
     await userEvent.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
+
+  it("explains a missing salary and marks each artifact", () => {
+    render(
+      <JobDialog
+        card={makeCard({ salary: null, artifacts: { cv: true, coverage: false, interviewPrep: true } })}
+        onOpenChange={() => {}}
+      />,
+    );
+    expect(screen.getByText("Ainda sem negociação.")).toBeInTheDocument();
+    expect(screen.getByText(/CV customizado: pronto/)).toBeInTheDocument();
+    expect(screen.getByText(/Revisão de cobertura: pendente/)).toBeInTheDocument();
+  });
 });
