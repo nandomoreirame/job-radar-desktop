@@ -127,7 +127,6 @@
     "close": "Close",
     "edit": "Edit job",
     "save": "Save",
-    "cancel": "Cancel",
     "saveError": "Could not save the job.",
     "sections": {
       "process": "Process",

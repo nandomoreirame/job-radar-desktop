@@ -127,7 +127,6 @@
     "close": "Fechar",
     "edit": "Editar vaga",
     "save": "Salvar",
-    "cancel": "Cancelar",
     "saveError": "Não foi possível salvar a vaga.",
     "sections": {
       "process": "Processo",

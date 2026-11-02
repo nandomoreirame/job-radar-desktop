@@ -38,7 +38,7 @@ describe('BoardPage', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Abrir detalhes de Lead AI Architect' }));
     const dialog = await screen.findByRole('dialog');
     expect(within(dialog).getByRole('heading', { name: 'Lead AI Architect' })).toBeInTheDocument();
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancelar' }));
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Fechar' }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
@@ -71,7 +71,7 @@ describe('BoardPage', () => {
     render(<BoardPage api={fakeApi(cards)} now={now} />);
     await userEvent.click(await screen.findByRole('button', { name: 'Abrir detalhes de Lead AI Architect' }));
     const dialog = await screen.findByRole('dialog');
-    await waitFor(() => expect(within(dialog).getByRole('textbox', { name: 'Etapa do processo' })).toHaveFocus());
+    await waitFor(() => expect(within(dialog).getByRole('button', { name: 'Fechar' })).toHaveFocus());
     await userEvent.type(within(dialog).getByRole('textbox', { name: 'Anotações' }), 'Ligar na sexta');
     await userEvent.click(within(dialog).getByRole('button', { name: 'Salvar' }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());

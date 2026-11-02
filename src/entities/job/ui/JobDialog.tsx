@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BoardCard } from '@/shared/bindings/BoardCard';
@@ -104,7 +104,14 @@ function JobForm({ card, onSave, onDone }: { card: BoardCard; onSave: SaveDetail
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-      <ResponsiveDialogHeader>
+      {/* ResponsiveDialogClose drops children when given `render`, so style it directly. */}
+      <ResponsiveDialogClose
+        aria-label={t('dialog.close')}
+        className="absolute top-3 right-3 grid size-8 place-items-center rounded-md text-noir-muted hover:bg-white/5 hover:text-noir-text focus-visible:outline-2 focus-visible:outline-noir-amber"
+      >
+        <X aria-hidden="true" className="size-4" />
+      </ResponsiveDialogClose>
+      <ResponsiveDialogHeader className="pr-10">
         <ResponsiveDialogTitle>{card.title}</ResponsiveDialogTitle>
         <ResponsiveDialogDescription>
           {[card.company, card.source, t(`target.${card.target}`), t(`workModel.${card.workModel}`)].join(' · ')}
@@ -174,23 +181,21 @@ function JobForm({ card, onSave, onDone }: { card: BoardCard; onSave: SaveDetail
         </p>
       )}
 
-      <ResponsiveDialogFooter className="items-center gap-3">
-        {notice && (
-          <p role="status" className="mr-auto text-xs text-noir-muted">
-            {t('app.notImplemented')}
-          </p>
-        )}
+      <ResponsiveDialogFooter className="items-center gap-3 sm:justify-between">
         {/* CV tailoring starts from a fresh job; the AI CLI runner comes in a later plan. */}
-        {card.stage === 'inbox' && (
-          <Button type="button" variant="outline" onClick={() => setNotice(true)}>
-            <Sparkles aria-hidden="true" />
-            {t('dialog.generateCv')}
-          </Button>
-        )}
-        {/* ResponsiveDialogClose drops children when given `render`, so style it directly. */}
-        <ResponsiveDialogClose className="inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium hover:bg-white/5">
-          {t('dialog.cancel')}
-        </ResponsiveDialogClose>
+        <div className="flex items-center gap-3">
+          {card.stage === 'inbox' && (
+            <Button type="button" variant="outline" onClick={() => setNotice(true)}>
+              <Sparkles aria-hidden="true" />
+              {t('dialog.generateCv')}
+            </Button>
+          )}
+          {notice && (
+            <p role="status" className="text-xs text-noir-muted">
+              {t('app.notImplemented')}
+            </p>
+          )}
+        </div>
         <Button type="submit" disabled={saving}>
           {t('dialog.save')}
         </Button>

@@ -28,7 +28,7 @@ describe('JobDialog', () => {
     render(<JobDialog card={card} onOpenChange={onOpenChange} onSave={onSave} />);
     // Base UI moves the initial focus into the dialog asynchronously; typing before
     // that lands would be split across fields.
-    await waitFor(() => expect(screen.getByRole('textbox', { name: 'Etapa do processo' })).toHaveFocus());
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Fechar' })).toHaveFocus());
     const notes = screen.getByRole('textbox', { name: 'Anotações' });
     await userEvent.clear(notes);
     await userEvent.type(notes, 'Ligar na sexta');
@@ -84,11 +84,12 @@ describe('JobDialog', () => {
     expect(screen.getByText(/Revisão de cobertura: pendente/)).toBeInTheDocument();
   });
 
-  it('closes without saving on Cancelar', async () => {
+  it('closes without saving from the close button at the top', async () => {
     const onSave = saveOk();
     const onOpenChange = vi.fn();
     render(<JobDialog card={card} onOpenChange={onOpenChange} onSave={onSave} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
+    expect(screen.queryByRole('button', { name: 'Cancelar' })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Fechar' }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(onSave).not.toHaveBeenCalled();
   });
