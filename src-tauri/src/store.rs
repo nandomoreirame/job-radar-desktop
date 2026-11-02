@@ -107,6 +107,13 @@ mod tests {
     }
 
     #[test]
+    fn mock_store_honors_the_store_contract() {
+        crate::store_contract::check_all(|| {
+            Box::new(MockStore::new(crate::mock_data::sample_cards()))
+        });
+    }
+
+    #[test]
     fn storage_errors_hide_the_detail() {
         let error = StoreError::Storage("no such table: cards".into());
         assert_eq!(error.to_string(), "storage error");
