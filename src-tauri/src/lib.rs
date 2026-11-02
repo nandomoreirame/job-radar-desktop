@@ -2,6 +2,7 @@ pub mod commands;
 pub mod details;
 pub mod domain;
 pub mod mock_data;
+pub mod sqlite_store;
 pub mod store;
 #[cfg(test)]
 mod store_contract;
