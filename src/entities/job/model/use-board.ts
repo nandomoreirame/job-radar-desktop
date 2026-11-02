@@ -37,6 +37,7 @@ export function useBoard(api: BoardApi) {
       } catch {
         // The store rejected the move; the card stays where it was.
         setMoveError(true);
+        setCards((list) => [...list]);
       }
     },
     [api],

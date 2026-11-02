@@ -55,4 +55,14 @@ describe("useBoard", () => {
     unmount();
     await act(async () => fail(new Error("boom")));
   });
+  it("hands out a fresh list after a failed move so views resync", async () => {
+    const api = fakeApi([makeCard()]);
+    const { result } = renderHook(() => useBoard(api));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    const before = result.current.cards;
+    await act(() => result.current.move("missing", "triage", null));
+    expect(result.current.cards).not.toBe(before);
+    expect(result.current.cards).toEqual(before);
+  });
+
 });

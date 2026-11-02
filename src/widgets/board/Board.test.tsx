@@ -51,4 +51,18 @@ describe("Board", () => {
     await userEvent.click(await screen.findByRole("menuitem", { name: "Contratado" }));
     expect(onMove).toHaveBeenCalledWith("a", "closed", "hired");
   });
+  it("labels each drag handle", () => {
+    render(<Board cards={cards} onOpen={noop} onMove={noop} />);
+    expect(screen.getByRole("button", { name: "Arrastar Alpha Engineer" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Arrastar Gamma Lead" })).toBeInTheDocument();
+  });
+
+  it("keeps the move menu next to the handle", async () => {
+    const onMove = vi.fn();
+    render(<Board cards={cards} onOpen={noop} onMove={onMove} />);
+    await userEvent.click(screen.getByRole("button", { name: "Ações de Gamma Lead" }));
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Em processo" }));
+    expect(onMove).toHaveBeenCalledWith("c", "in_process", null);
+  });
+
 });
