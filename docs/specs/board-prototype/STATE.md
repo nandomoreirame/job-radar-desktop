@@ -33,3 +33,17 @@ drag-and-drop, card dialog) in pt-BR/en.
   `@vitest/coverage-v8`, then passed after adding the provider, 80% thresholds and tests that
   lift coverage to 91/85/87/92.
 - 2026-11-02: `check_proofs.py` PASS on a clean tree (C1-C19). Independent review pending.
+- 2026-11-02: self-review found two checks that passed without proving their claim: C6 compared
+  only the card count and C14 tested accents on company names only. Both tests were
+  strengthened in 987984b; `check_proofs.py` PASS again and `validate_verification.py` exits 0.
+- 2026-11-02: independent review pending. agy, Codex and Grok all returned exit 3
+  (auth/quota/rate-limit) while the network was up, so `docs/reviews/board-prototype.md` is a
+  self-assessment with zero open code findings, not a cross-model review. Phase stays
+  `implement` and the WebKitGTK glass/flat spike is still a manual step.
+
+## Review Status
+
+- Review file: `docs/reviews/board-prototype.md` (round 1, zero open code findings).
+- Independent reviewer: pending. Tried agy, Codex and Grok; all unavailable (exit 3).
+- Manual validation pending: `pnpm tauri dev` on Niri for glass vs flat, pointer drag across
+  columns and the window controls.
