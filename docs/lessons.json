@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "ac_gap:verify startup failure paths by running the real binary a unit test of the helper does not prove the dialog or the exit status",
+      "signal": "ac_gap",
+      "text": "Verify startup failure paths by running the real binary; a unit test of the helper does not prove the dialog or the exit status.",
+      "scope": "startup",
+      "status": "candidate",
+      "features": [
+        "sqlite-store"
+      ],
+      "sources": [
+        "C13"
+      ],
+      "penalties": 0
+    },
+    {
+      "id": "L-002",
+      "key": "weak_test:a check must exercise the function production calls when a fix adds a new entry point replace the old one instead of leaving it covered by the tests",
+      "signal": "weak_test",
+      "text": "A check must exercise the function production calls; when a fix adds a new entry point, replace the old one instead of leaving it covered by the tests.",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "sqlite-store"
+      ],
+      "sources": [
+        "C6"
+      ],
+      "penalties": 0
+    },
+    {
+      "id": "L-003",
+      "key": "weak_test:a test that claims a refused operation leaves a file untouched must compare the file bytes not derived fields",
+      "signal": "weak_test",
+      "text": "A test that claims a refused operation leaves a file untouched must compare the file bytes, not derived fields.",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "sqlite-store"
+      ],
+      "sources": [
+        "C5"
+      ],
+      "penalties": 0
+    },
+    {
+      "id": "L-004",
+      "key": "review_finding:an implementer closing a review round with itself as reviewer does not close the round record the review as pending",
+      "signal": "review_finding",
+      "text": "An implementer closing a review round with itself as reviewer does not close the round; record the review as pending.",
+      "scope": "process",
+      "status": "candidate",
+      "features": [
+        "sqlite-store"
+      ],
+      "sources": [
+        "docs/reviews/sqlite-store.rounds.jsonl"
+      ],
+      "penalties": 0
+    }
+  ]
+}

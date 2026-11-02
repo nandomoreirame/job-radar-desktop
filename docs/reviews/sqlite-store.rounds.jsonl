@@ -3,3 +3,4 @@
 {"round": 3, "implementer": "opencode", "reviewer": "opencode", "identities": [], "open_count": 0}
 {"round": 4, "implementer": "opencode", "reviewer": "claude", "identities": ["src-tauri/src/lib.rs:40", "src-tauri/src/lib.rs:59", "src-tauri/src/commands.rs:113", "docs/specs/sqlite-store/SPEC.md:41", "ROADMAP.md:17"], "open_count": 5}
 {"round": 5, "implementer": "opencode", "reviewer": "opencode", "identities": [], "open_count": 0}
+{"round": 6, "implementer": "claude", "reviewer": "claude", "identities": [], "open_count": 0}
