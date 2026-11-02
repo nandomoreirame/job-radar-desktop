@@ -1,0 +1,373 @@
+{
+ "settings": {
+  "MIN_SALARY_PJ": "10000",
+  "MIN_SALARY_CLT": "9000",
+  "COMMUTE_CITIES": "São Paulo",
+  "MAX_JOB_AGE_DAYS": "0",
+  "BLOCKED_COMPANIES": "Bloqueada S.A."
+ },
+ "skills": [
+  "aws",
+  "c#x",
+  "ci/cd",
+  "docker",
+  "node.js",
+  "python",
+  "react",
+  "typescript"
+ ],
+ "jobs": [
+  {
+   "title": "Engenheiro de Software Sênior",
+   "description": "Python, AWS e TypeScript em produção.",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "python",
+    "typescript"
+   ]
+  },
+  {
+   "title": "Desenvolvedor Pleno",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "senioridade abaixo de sênior",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev PL/SQL Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Desenvolvedor Java Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "linguagem principal fora do perfil",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Full Stack (React / Python / Go or Node.js or Java) Sênior",
+   "description": "AWS",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "node.js",
+    "python",
+    "react"
+   ]
+  },
+  {
+   "title": "Senior Developer",
+   "description": "JavaScript, python, aws, docker. Sem java no texto? javascript.",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "QA Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "função fora do perfil",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Product Engineer Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Product Owner Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "função fora do perfil",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Banco de Talentos Tecnologia",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "não é vaga (banco de talentos)",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Vaga afirmativa para mulheres - Dev Sênior",
+   "description": "Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "vaga afirmativa (reservada a grupo específico)",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Esta vaga é exclusiva para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Vagas sinalizadas como exclusivas ou não para pessoas com deficiência. Python AWS Docker",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Trabalho presencial. Python AWS Docker",
+   "location": "São Paulo, SP",
+   "hint": null,
+   "ok": false,
+   "reason": "modalidade presencial",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Modelo híbrido. Python AWS Docker",
+   "location": "Campinas, SP",
+   "hint": null,
+   "ok": false,
+   "reason": "modalidade híbrida fora da região configurada",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Home office. Python AWS Docker",
+   "location": "",
+   "hint": null,
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Só Python",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "qualificações insuficientes (1 de 3 exigidas)",
+   "hits": [
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. Salário R$ 5.000,00 PJ",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "salário declarado (R$ 5.000) abaixo do piso de R$ 10.000",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker. VR de R$ 1.000,00",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "docker",
+    "python"
+   ]
+  },
+  {
+   "title": "Dev Sênior",
+   "description": "Python AWS Docker ci/cd node.js. 15k CLT",
+   "location": "",
+   "hint": "remote",
+   "ok": true,
+   "reason": "",
+   "hits": [
+    "aws",
+    "ci/cd",
+    "docker",
+    "node.js",
+    "python"
+   ]
+  },
+  {
+   "title": "Consultor SAP Sênior",
+   "description": "SAP ABAP SAP MM. Python AWS",
+   "location": "",
+   "hint": "remote",
+   "ok": false,
+   "reason": "linguagem principal fora do perfil",
+   "hits": [
+    "aws",
+    "python"
+   ]
+  },
+  {
+   "title": "",
+   "description": "",
+   "location": "",
+   "hint": null,
+   "ok": false,
+   "reason": "qualificações insuficientes (0 de 3 exigidas)",
+   "hits": []
+  }
+ ],
+ "blocked": [
+  false,
+  "empresa bloqueada"
+ ],
+ "clean_html": [
+  [
+   "<p>Olá&nbsp;<b>mundo</b></p>",
+   "Olá mundo"
+  ],
+  [
+   "&quot;a&quot; &amp; b",
+   "\"a\" & b"
+  ],
+  [
+   "",
+   ""
+  ],
+  [
+   "a\n\n b",
+   "a b"
+  ]
+ ],
+ "salaries": [
+  [
+   "R$ 14.000,00",
+   14000
+  ],
+  [
+   "até 14k",
+   14000
+  ],
+  [
+   "VR R$ 900",
+   null
+  ],
+  [
+   "R$ 14.000 a R$ 20.000",
+   14000
+  ],
+  [
+   "ano de 2026",
+   null
+  ],
+  [
+   "",
+   null
+  ]
+ ],
+ "contracts": [
+  [
+   "vaga PJ",
+   "PJ"
+  ],
+  [
+   "CLT",
+   "CLT"
+  ],
+  [
+   "regime celetista",
+   "CLT"
+  ],
+  [
+   "nada",
+   null
+  ],
+  [
+   "",
+   null
+  ]
+ ]
+}

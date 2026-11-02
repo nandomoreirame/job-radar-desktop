@@ -28,6 +28,57 @@ URLS = [
     "https://example.com/?b=&a=1", "https://example.com/", "not a url", "", "ftp://example.com/a", "HTTPS://Example.COM/Path/",
 ]
 
+import os
+from job_radar.filters import count_skill_hits, detect_contract, detect_seniority, detect_work_mode, parse_salary, passes_hard_filters
+from job_radar.models import Job, clean_html
+
+SKILLS = {"python", "aws", "typescript", "node.js", "c#x", "react", "ci/cd", "docker"}
+JOBS = [
+    ("Engenheiro de Software Sênior", "Python, AWS e TypeScript em produção.", "", "remote"),
+    ("Desenvolvedor Pleno", "Python AWS Docker", "", "remote"),
+    ("Dev PL/SQL Sênior", "Python AWS Docker", "", "remote"),
+    ("Desenvolvedor Java Sênior", "Python AWS Docker", "", "remote"),
+    ("Full Stack (React / Python / Go or Node.js or Java) Sênior", "AWS", "", "remote"),
+    ("Senior Developer", "JavaScript, python, aws, docker. Sem java no texto? javascript.", "", "remote"),
+    ("QA Engineer Sênior", "Python AWS Docker", "", "remote"),
+    ("Product Engineer Sênior", "Python AWS Docker", "", "remote"),
+    ("Product Owner Sênior", "Python AWS Docker", "", "remote"),
+    ("Banco de Talentos Tecnologia", "Python AWS Docker", "", "remote"),
+    ("Vaga afirmativa para mulheres - Dev Sênior", "Python AWS Docker", "", "remote"),
+    ("Dev Sênior", "Esta vaga é exclusiva para pessoas com deficiência. Python AWS Docker", "", "remote"),
+    ("Dev Sênior", "Vagas sinalizadas como exclusivas ou não para pessoas com deficiência. Python AWS Docker", "", "remote"),
+    ("Dev Sênior", "Trabalho presencial. Python AWS Docker", "São Paulo, SP", None),
+    ("Dev Sênior", "Modelo híbrido. Python AWS Docker", "Campinas, SP", None),
+    ("Dev Sênior", "Home office. Python AWS Docker", "", None),
+    ("Dev Sênior", "Só Python", "", "remote"),
+    ("Dev Sênior", "Python AWS Docker. Salário R$ 5.000,00 PJ", "", "remote"),
+    ("Dev Sênior", "Python AWS Docker. VR de R$ 1.000,00", "", "remote"),
+    ("Dev Sênior", "Python AWS Docker ci/cd node.js. 15k CLT", "", "remote"),
+    ("Consultor SAP Sênior", "SAP ABAP SAP MM. Python AWS", "", "remote"),
+    ("", "", "", None),
+]
+SETTINGS = {"MIN_SALARY_PJ": "10000", "MIN_SALARY_CLT": "9000", "COMMUTE_CITIES": "São Paulo", "MAX_JOB_AGE_DAYS": "0", "BLOCKED_COMPANIES": "Bloqueada S.A."}
+
+def job_of(title, desc, loc, hint, company="Acme"):
+    return Job(source="gupy", external_id="1", title=title, company=company, url="https://a.example/1", description=desc, location=loc, work_mode_hint=hint)
+
+def filter_vectors():
+    os.environ.update(SETTINGS)
+    rows = []
+    for title, desc, loc, hint in JOBS:
+        job = job_of(title, desc, loc, hint)
+        ok, reason = passes_hard_filters(job, SKILLS, 3)
+        rows.append({"title": title, "description": desc, "location": loc, "hint": hint, "ok": ok, "reason": reason, "hits": sorted(count_skill_hits(job, SKILLS))})
+    blocked = passes_hard_filters(job_of("Dev Sênior", "Python AWS Docker", "", "remote", company="BLOQUEADA"), SKILLS, 3)
+    html = ["<p>Olá&nbsp;<b>mundo</b></p>", "&quot;a&quot; &amp; b", "", "a\n\n b"]
+    return {
+        "settings": SETTINGS, "skills": sorted(SKILLS), "jobs": rows, "blocked": list(blocked),
+        "clean_html": [[h, clean_html(h)] for h in html],
+        "salaries": [[t, parse_salary(t)] for t in ["R$ 14.000,00", "até 14k", "VR R$ 900", "R$ 14.000 a R$ 20.000", "ano de 2026", ""]],
+        "contracts": [[t, detect_contract(t)] for t in ["vaga PJ", "CLT", "regime celetista", "nada", ""]],
+    }
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     identity = {
@@ -37,6 +88,7 @@ def main():
         "urls": [[u, url_key(u)] for u in URLS],
     }
     (OUT / "identity.json").write_text(json.dumps(identity, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    (OUT / "filters.json").write_text(json.dumps(filter_vectors(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 if __name__ == "__main__":
     main()

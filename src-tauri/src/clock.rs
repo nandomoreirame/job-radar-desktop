@@ -1,4 +1,17 @@
 use std::time::{SystemTime, UNIX_EPOCH};
+
+/// A moment with its UTC offset, as job sources publish it.
+pub type Now = chrono::DateTime<chrono::FixedOffset>;
+
+pub fn now() -> Now {
+    chrono::Local::now().fixed_offset()
+}
+
+/// The fixed clock every crawler test shares: 2026-11-02 12:00 in São Paulo.
+#[cfg(test)]
+pub fn fixed_now() -> Now {
+    chrono::DateTime::parse_from_rfc3339("2026-11-02T12:00:00-03:00").unwrap()
+}
 pub fn today() -> String {
     let days = (SystemTime::now()
         .duration_since(UNIX_EPOCH)
