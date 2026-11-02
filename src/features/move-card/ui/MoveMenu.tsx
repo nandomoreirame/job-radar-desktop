@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -16,30 +17,36 @@ import {
 
 type Props = { card: BoardCard; onMove: (stage: Stage, outcome: Outcome | null) => void };
 
-/** Keyboard path for every move that drag-and-drop offers. */
+/** Keyboard path for every move, and the only way to close with an explicit outcome. */
 export function MoveMenu({ card, onMove }: Props) {
   const { t } = useTranslation();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-7" aria-label={t("card.menu", { title: card.title })}>
-          <MoreHorizontal aria-hidden="true" />
-        </Button>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="ghost" size="icon" className="size-7" aria-label={t("card.menu", { title: card.title })} />
+        }
+      >
+        <MoreHorizontal aria-hidden="true" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>{t("move.to")}</DropdownMenuLabel>
-        {STAGES.filter((stage) => stage !== "closed" && stage !== card.stage).map((stage) => (
-          <DropdownMenuItem key={stage} onSelect={() => onMove(stage, null)}>
-            {t(`stage.${stage}`)}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>{t("move.to")}</DropdownMenuLabel>
+          {STAGES.filter((stage) => stage !== "closed" && stage !== card.stage).map((stage) => (
+            <DropdownMenuItem key={stage} onClick={() => onMove(stage, null)}>
+              {t(`stage.${stage}`)}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>{t("move.closeAs")}</DropdownMenuLabel>
-        {OUTCOMES.filter((outcome) => outcome !== card.outcome).map((outcome) => (
-          <DropdownMenuItem key={outcome} onSelect={() => onMove("closed", outcome)}>
-            {t(`outcome.${outcome}`)}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>{t("move.closeAs")}</DropdownMenuLabel>
+          {OUTCOMES.filter((outcome) => outcome !== card.outcome).map((outcome) => (
+            <DropdownMenuItem key={outcome} onClick={() => onMove("closed", outcome)}>
+              {t(`outcome.${outcome}`)}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

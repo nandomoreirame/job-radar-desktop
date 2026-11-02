@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "radix-nova",
+  "style": "base-nova",
   "rsc": false,
   "tsx": true,
   "tailwind": {
@@ -11,6 +11,9 @@
     "prefix": ""
   },
   "iconLibrary": "lucide",
+  "registries": {
+    "@diceui": "https://diceui.com/r/{name}.json"
+  },
   "aliases": {
     "components": "@/shared/ui",
     "ui": "@/shared/ui",

@@ -19,7 +19,7 @@ type Props = { card: BoardCard | null; onOpenChange: (open: boolean) => void };
 export function JobDialog({ card, onOpenChange }: Props) {
   const { t } = useTranslation();
   return (
-    <Dialog open={card !== null} onOpenChange={onOpenChange}>
+    <Dialog open={card !== null} onOpenChange={(open) => onOpenChange(open)}>
       {card && (
         <DialogContent showCloseButton={false} className="noir-panel max-w-2xl">
           <DialogHeader>
@@ -79,9 +79,7 @@ export function JobDialog({ card, onOpenChange }: Props) {
               <Sparkles aria-hidden="true" />
               {t("dialog.generateCv")}
             </Button>
-            <DialogClose asChild>
-              <Button variant="ghost">{t("dialog.close")}</Button>
-            </DialogClose>
+            <DialogClose render={<Button variant="ghost" />}>{t("dialog.close")}</DialogClose>
           </DialogFooter>
         </DialogContent>
       )}

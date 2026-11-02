@@ -35,11 +35,9 @@ export function Toolbar({ filters, sources, onChange }: Props) {
       </div>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="h-9">
-            {t("filters.source")}: {summary(filters.sources.length)}
-            <ChevronDown aria-hidden="true" />
-          </Button>
+        <DropdownMenuTrigger render={<Button variant="outline" className="h-9" />}>
+          {t("filters.source")}: {summary(filters.sources.length)}
+          <ChevronDown aria-hidden="true" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           {sources.map((source) => (
@@ -47,7 +45,6 @@ export function Toolbar({ filters, sources, onChange }: Props) {
               key={source}
               checked={filters.sources.includes(source)}
               onCheckedChange={() => onChange({ ...filters, sources: toggle(filters.sources, source) })}
-              onSelect={(event) => event.preventDefault()}
             >
               {source}
             </DropdownMenuCheckboxItem>
@@ -56,11 +53,9 @@ export function Toolbar({ filters, sources, onChange }: Props) {
       </DropdownMenu>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="h-9">
-            {t("filters.target")}: {summary(filters.targets.length)}
-            <ChevronDown aria-hidden="true" />
-          </Button>
+        <DropdownMenuTrigger render={<Button variant="outline" className="h-9" />}>
+          {t("filters.target")}: {summary(filters.targets.length)}
+          <ChevronDown aria-hidden="true" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           {TARGETS.map((target) => (
@@ -68,7 +63,6 @@ export function Toolbar({ filters, sources, onChange }: Props) {
               key={target}
               checked={filters.targets.includes(target)}
               onCheckedChange={() => onChange({ ...filters, targets: toggle(filters.targets, target) })}
-              onSelect={(event) => event.preventDefault()}
             >
               {t(`target.${target}`)}
             </DropdownMenuCheckboxItem>
